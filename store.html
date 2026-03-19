@@ -14,11 +14,9 @@
       --muted:#94a3b8;
       --accent:#22c55e;
       --accent2:#38bdf8;
-      /* เงาวงด้านบน ใช้เฉพาะโหมดมืด */
       --header-shadow: radial-gradient(900px 500px at top, #1e293b 0%, transparent 60%);
     }
 
-    /* Light mode */
     body.light{
       --bg1:#f5f7fa;
       --bg2:#e2e8f0;
@@ -35,465 +33,224 @@
       min-height:100vh;
       font-family:system-ui,-apple-system,Segoe UI,Arial;
       color:var(--text);
-      background:
-        var(--header-shadow),
-        linear-gradient(180deg,var(--bg1),var(--bg2));
+      background:var(--header-shadow),linear-gradient(180deg,var(--bg1),var(--bg2));
       transition:background .25s ease,color .25s ease;
     }
 
-    /* ปุ่มสลับธีม */
+    /* floating controls (desktop default) */
     .toggle-theme{
-      position:fixed;
-      top:16px;
-      right:16px;
-      z-index:2000;
-      padding:8px 14px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background:var(--glass);
-      color:var(--text);
-      cursor:pointer;
-      backdrop-filter:blur(10px);
-      font-size:13px;
+      position:fixed;top:16px;right:16px;z-index:2000;
+      padding:8px 14px;border-radius:12px;border:1px solid var(--border);
+      background:var(--glass);color:var(--text);cursor:pointer;
+      backdrop-filter:blur(10px);font-size:13px;
     }
 
-    /* ปุ่มเลือกภาษา ข้างๆ ปุ่มธีม */
     .lang-switch{
-      position:fixed;
-      top:16px;
-      right:120px;
-      z-index:2000;
-      padding:6px 12px;
-      border-radius:10px;
-      border:1px solid var(--border);
-      background:var(--glass);
-      color:var(--text);
-      cursor:pointer;
-      font-size:12px;
-      backdrop-filter:blur(8px);
+      position:fixed;top:16px;right:120px;z-index:2000;
+      padding:6px 12px;border-radius:10px;border:1px solid var(--border);
+      background:var(--glass);color:var(--text);cursor:pointer;
+      font-size:12px;backdrop-filter:blur(8px);
+      /* Fix: dropdown popup is usually white, force readable */
+      color-scheme: light;
     }
-
-    body.light .lang-switch{
-      background:rgba(255,255,255,.95);
-      border-color:rgba(15,23,42,.15);
-    }
+    .lang-switch option{ background:#ffffff; color:#0f172a; }
+    body.light .lang-switch{ background:rgba(255,255,255,.95);border-color:rgba(15,23,42,.15); }
 
     /* ===== TOP BAR ===== */
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:1000;
-      backdrop-filter: blur(14px);
-      background:rgba(2,6,23,.65);
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    body.light .topbar{
-      background: rgba(255,255,255,0.72);
-      border-bottom: 1px solid rgba(0,0,0,0.12);
-      backdrop-filter: blur(18px);
-    }
+    .topbar{ position:sticky; top:0; z-index:1000; backdrop-filter: blur(14px);
+      background:rgba(2,6,23,.65); border-bottom:1px solid rgba(255,255,255,.08); }
+    body.light .topbar{ background: rgba(255,255,255,0.72); border-bottom: 1px solid rgba(0,0,0,0.12); backdrop-filter: blur(18px); }
 
-    .wrap{
-      max-width:1200px;
-      margin:0 auto;
-      padding:14px 16px 12px;
-    }
+    .wrap{ max-width:1200px; margin:0 auto; padding:14px 16px 12px; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
 
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    /* Back */
-    .back-btn{
-      padding:10px 14px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.10);
-      color:#fff;
-      cursor:pointer;
-    }
+    .back-btn{ padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.10); color:#fff; cursor:pointer; }
     .back-btn:hover{ filter:brightness(1.06); }
+    body.light .back-btn{ background: rgba(255,255,255,0.55); color: #0f172a; border: 1px solid rgba(0,0,0,0.15); }
 
-    body.light .back-btn{
-      background: rgba(255,255,255,0.55);
-      color: #0f172a;
-      border: 1px solid rgba(0,0,0,0.15);
-    }
-
-    /* Brand */
-    .brand{
-      margin-left:auto;
-      text-align:right;
-    }
-    .brand .h1{
-      font-weight:900;
-      letter-spacing:.6px;
-      font-size:14px;
-    }
-    .brand .sub{
-      color:var(--muted);
-      font-size:11px;
-      margin-top:2px;
-    }
-
-    /* ===== SEARCH AREA ===== */
-    .search-area{
-      margin-top:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    /* Search row: input + button */
-    .search-row{
-      display:grid;
-      grid-template-columns: 1fr 160px;
-      gap:12px;
-      align-items:stretch;
-    }
-
-    .search-row input{
-      width:100%;
-      height:56px;
-      border-radius:999px;
+    /* Mobile-only ⋮ button */
+    .more-btn{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
       border:1px solid var(--border);
       background:var(--glass);
       color:var(--text);
-      padding:0 18px;
-      font-size:16px;
-      -webkit-appearance:none;
-      appearance:none;
-      outline:none;
+      cursor:pointer;
+      font-size:18px;
+      line-height:1;
+      min-width:44px;
     }
+    .more-btn:hover{ filter:brightness(1.06); }
+
+    .brand{ margin-left:auto; text-align:right; }
+    .brand .h1{ font-weight:900; letter-spacing:.6px; font-size:14px; }
+    .brand .sub{ color:var(--muted); font-size:11px; margin-top:2px; }
+
+    /* ===== SEARCH AREA ===== */
+    .search-area{ margin-top:12px; display:flex; flex-direction:column; gap:10px; }
+
+    .search-row{ display:grid; grid-template-columns: 1fr 160px; gap:12px; align-items:stretch; }
+    .search-row input{ width:100%; height:56px; border-radius:999px; border:1px solid var(--border);
+      background:var(--glass); color:var(--text); padding:0 18px; font-size:16px;
+      -webkit-appearance:none; appearance:none; outline:none; }
     .search-row input::placeholder{ color:var(--muted); }
 
-    /* Buttons */
-    .btn{
-      height:56px;
-      min-height:56px;
-      padding:0 18px;
-      border-radius:999px;
-      border:none;
-      cursor:pointer;
-      width:100%;
-      display:block;
-      text-align:center;
-      line-height:56px;
-      font-weight:900;
-      font-size:16px;
-      letter-spacing:.3px;
-      white-space:nowrap;
-      color:#fff;
-      box-shadow:0 14px 36px rgba(0,0,0,.35);
-      transition:transform .15s ease, filter .15s ease;
-    }
+    .btn{ height:56px; min-height:56px; padding:0 18px; border-radius:999px; border:none; cursor:pointer;
+      width:100%; display:block; text-align:center; line-height:56px; font-weight:900; font-size:16px;
+      letter-spacing:.3px; white-space:nowrap; color:#fff; box-shadow:0 14px 36px rgba(0,0,0,.35);
+      transition:transform .15s ease, filter .15s ease; }
     .btn:hover{ filter:brightness(1.06); }
     .btn:active{ transform:scale(.98); }
     .btn.search{ background:linear-gradient(135deg,#34d399,var(--accent)); }
     .btn.issue-main{ background:linear-gradient(135deg,#f97373,#e11d48); }
 
-    body.light .search-row input{
-      background:#ffffff;
-      color:var(--text);
-      border-color:rgba(148,163,184,.7);
-    }
+    body.light .search-row input{ background:#ffffff; color:var(--text); border-color:rgba(148,163,184,.7); }
 
-    /* Status */
-    .status{
-      margin-top:2px;
-      color:var(--muted);
-      font-size:12px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
+    .status{ margin-top:2px; color:var(--muted); font-size:12px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
     body.light .status{ color:#1e293b; }
 
-    /* Mobile toggle (arrow) */
-    .mobile-toggle{
-      display:none;
-      width:100%;
-      margin-top:10px;
-      height:38px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:var(--glass);
-      color:var(--text);
-      cursor:pointer;
-      font-weight:900;
-      letter-spacing:.3px;
-      backdrop-filter:blur(10px);
-      box-shadow:0 10px 28px rgba(0,0,0,.28);
-    }
+    .mobile-toggle{ display:none; width:100%; margin-top:10px; height:38px; border-radius:999px; border:1px solid var(--border);
+      background:var(--glass); color:var(--text); cursor:pointer; font-weight:900; letter-spacing:.3px;
+      backdrop-filter:blur(10px); box-shadow:0 10px 28px rgba(0,0,0,.28); }
     .mobile-toggle:hover{ filter:brightness(1.06); }
 
-    /* Desktop fine-tune */
     @media (min-width: 900px){
       .search-row{ grid-template-columns: 1fr 170px; }
       .btn{ font-size:15px; }
     }
 
-    /* Mobile */
     @media (max-width: 480px){
+      /* hide floating controls on mobile, use ⋮ */
+      .toggle-theme, .lang-switch{ display:none; }
+      .more-btn{ display:inline-flex; align-items:center; justify-content:center; }
+
       .search-row{ grid-template-columns: 1fr 96px; }
       .search-row input{ font-size:17px; height:58px; }
       .btn{ font-size:17px; height:58px; min-height:58px; line-height:58px; }
       .mobile-toggle{ display:block; }
-
-      /* collapse behaviour */
       body.mobile-collapsed #searchArea{ display:none; }
     }
 
     /* ===== GRID ===== */
-    .grid{
-      max-width:1200px;
-      margin:0 auto;
-      padding:16px 16px 34px;
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap:16px;
-    }
+    .grid{ max-width:1200px; margin:0 auto; padding:16px 16px 34px;
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:16px; }
 
     /* ===== CARD ===== */
-    .card{
-      background:var(--glass);
-      border:1px solid var(--border);
-      border-radius:22px;
-      padding:16px;
-      box-shadow:0 20px 55px rgba(0,0,0,.45);
-      transition:transform .2s ease, box-shadow .2s ease;
-    }
-    .card:hover{
-      transform:translateY(-4px);
-      box-shadow:0 26px 70px rgba(0,0,0,.55);
-    }
+    .card{ background:var(--glass); border:1px solid var(--border); border-radius:22px; padding:16px;
+      box-shadow:0 20px 55px rgba(0,0,0,.45); transition:transform .2s ease, box-shadow .2s ease; }
+    .card:hover{ transform:translateY(-4px); box-shadow:0 26px 70px rgba(0,0,0,.55); }
     body.light .card{ box-shadow:0 12px 30px rgba(15,23,42,.12); }
 
-    .head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .loc{
-      font-size:18px;
-      font-weight:900;
-      letter-spacing:.5px;
-      color:var(--accent);
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:4px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.08);
-      color:#fff;
-    }
+    .head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+    .loc{ font-size:18px; font-weight:900; letter-spacing:.5px; color:var(--accent); }
+
+    .badge{ display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px;
+      font-size:12px; font-weight:900; border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.08); color:#fff; }
     .badge.ok{ color:#bbf7d0; border-color:rgba(34,197,94,.35); }
     .badge.ng{ color:#fecaca; border-color:rgba(239,68,68,.35); }
 
-    body.light .badge{
-      background:rgba(59,130,246,.12);
-      border-color:rgba(37,99,235,.3);
-      color:#1e293b;
-    }
-    body.light .badge.ok{
-      background:rgba(34,197,94,.12);
-      border-color:rgba(22,163,74,.4);
-      color:#14532d;
-    }
-    body.light .badge.ng{
-      background:rgba(248,113,113,.12);
-      border-color:rgba(220,38,38,.4);
-      color:#7f1d1d;
-    }
+    body.light .badge{ background:rgba(59,130,246,.12); border-color:rgba(37,99,235,.3); color:#1e293b; }
+    body.light .badge.ok{ background:rgba(34,197,94,.12); border-color:rgba(22,163,74,.4); color:#14532d; }
+    body.light .badge.ng{ background:rgba(248,113,113,.12); border-color:rgba(220,38,38,.4); color:#7f1d1d; }
 
-    .field{
-      margin:6px 0;
-      font-size:14px;
-      color:#dbeafe;
-    }
-    .field span.label{
-      color:var(--muted);
-      margin-right:6px;
-    }
-
-    /* ทำให้ช่อง “ลูกค้า:” และ “งาน:” ชัดขึ้นใน Light Mode */
+    .field{ margin:6px 0; font-size:14px; color:#dbeafe; }
+    .field span.label{ color:var(--muted); margin-right:6px; }
     body.light .field{ color:#0f172a; }
     body.light .field span.label{ color:#334155; }
 
-    /* Layout image */
-    .thumb{
-      margin-top:12px;
-      border-radius:18px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.15);
-    }
-    .thumb img{
-      width:100%;
-      height:190px;
-      object-fit:cover;
-      display:block;
-      cursor:pointer;
-    }
+    .thumb{ margin-top:12px; border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.15); }
+    .thumb img{ width:100%; height:190px; object-fit:cover; display:block; cursor:pointer; }
 
-    /* Card actions */
-    .card-actions{
-      margin-top:10px;
-      display:flex;
-      justify-content:flex-end;
-    }
-    .card-actions .report-btn{
-      height:38px;
-      padding:0 16px;
-      border-radius:999px;
-      border:none;
-      cursor:pointer;
-      font-size:13px;
-      font-weight:800;
-      background:linear-gradient(135deg,#f97373,#e11d48);
-      color:#fff;
-      box-shadow:0 12px 30px rgba(0,0,0,.45);
-    }
+    .card-actions{ margin-top:10px; display:flex; justify-content:flex-end; }
+    .card-actions .report-btn{ height:38px; padding:0 16px; border-radius:999px; border:none; cursor:pointer;
+      font-size:13px; font-weight:800; background:linear-gradient(135deg,#f97373,#e11d48);
+      color:#fff; box-shadow:0 12px 30px rgba(0,0,0,.45); }
     .card-actions .report-btn:hover{ filter:brightness(1.06); }
 
-    /* Highlight */
-    mark{
-      background:rgba(56,189,248,.25);
-      color:#e0f2fe;
-      padding:0 3px;
-      border-radius:6px;
-    }
+    mark{ background:rgba(56,189,248,.25); color:#e0f2fe; padding:0 3px; border-radius:6px; }
 
-    /* Modal */
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.78);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:9999;
-    }
-    .modal img{
-      max-width:96vw;
-      max-height:92vh;
-      object-fit:contain;
-      border-radius:14px;
-      box-shadow:0 24px 70px rgba(0,0,0,.6);
-    }
-    .modal .close{
-      position:fixed;
-      top:18px;
-      right:18px;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.22);
-      background:rgba(255,255,255,.12);
-      color:#fff;
-      cursor:pointer;
-    }
-    body.light .modal .close{
-      background:rgba(15,23,42,.8);
-      border-color:rgba(15,23,42,.7);
-    }
+    .modal{ position:fixed; inset:0; background:rgba(0,0,0,.78); display:none; align-items:center; justify-content:center; z-index:9999; }
+    .modal img{ max-width:96vw; max-height:92vh; object-fit:contain; border-radius:14px; box-shadow:0 24px 70px rgba(0,0,0,.6); }
+    .modal .close{ position:fixed; top:18px; right:18px; padding:10px 12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.12); color:#fff; cursor:pointer; }
+    body.light .modal .close{ background:rgba(15,23,42,.8); border-color:rgba(15,23,42,.7); }
 
-    /* Loading overlay */
-    .loading{
-      position:fixed;
-      inset:0;
-      background:rgba(2,6,23,.70);
-      backdrop-filter:blur(8px);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:9000;
-    }
+    .loading{ position:fixed; inset:0; background:rgba(2,6,23,.70); backdrop-filter:blur(8px);
+      display:none; align-items:center; justify-content:center; z-index:9000; }
     .loading .box{ text-align:center; }
-    .loading .logo{
-      width:92px;
-      filter: drop-shadow(0 0 18px rgba(56,189,248,.35));
-      animation:breath 2.2s ease-in-out infinite;
-    }
-    @keyframes breath{
-      0%,100%{ opacity:.55; transform:scale(1); }
-      50%{ opacity:1; transform:scale(1.03); }
-    }
-    .loading .txt{
-      margin-top:14px;
-      color:var(--muted);
-      font-size:13px;
-    }
+    .loading .logo{ width:92px; filter: drop-shadow(0 0 18px rgba(56,189,248,.35)); animation:breath 2.2s ease-in-out infinite; }
+    @keyframes breath{ 0%,100%{ opacity:.55; transform:scale(1);} 50%{ opacity:1; transform:scale(1.03);} }
+    .loading .txt{ margin-top:14px; color:var(--muted); font-size:13px; }
 
-    /* REPORT MODAL */
-    .report-overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.35);
-      backdrop-filter:blur(8px);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:40000;
-    }
-    .report-modal{
-      width:380px;
-      max-width:92vw;
-      background:rgba(255,255,255,.96);
-      border-radius:18px;
-      box-shadow:0 30px 80px rgba(0,0,0,.45);
-      overflow:hidden;
-    }
-    .report-header{
-      padding:14px 16px;
-      font-size:18px;
-      font-weight:900;
-      background:#0b1220;
-      color:#e5e7eb;
-      border-bottom:1px solid rgba(0,0,0,.25);
-    }
-    .report-body{
-      padding:14px 16px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
+    .report-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.35); backdrop-filter:blur(8px);
+      display:none; align-items:center; justify-content:center; z-index:40000; }
+    .report-modal{ width:380px; max-width:92vw; background:rgba(255,255,255,.96); border-radius:18px;
+      box-shadow:0 30px 80px rgba(0,0,0,.45); overflow:hidden; }
+    .report-header{ padding:14px 16px; font-size:18px; font-weight:900; background:#0b1220; color:#e5e7eb;
+      border-bottom:1px solid rgba(0,0,0,.25); }
+    .report-body{ padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
     .report-body label{ font-size:13px; font-weight:800; color:#111827; }
-    .report-body input,.report-body textarea{
-      border:1px solid #e5e7eb;
-      border-radius:10px;
-      padding:9px 10px;
-      font-size:14px;
-      outline:none;
-    }
+    .report-body input,.report-body textarea{ border:1px solid #e5e7eb; border-radius:10px; padding:9px 10px; font-size:14px; outline:none; }
     .report-body textarea{ min-height:80px; resize:none; }
     .report-options{ display:flex; flex-direction:column; gap:6px; font-size:14px; color:#111827; }
-    .report-footer{
-      display:flex;
-      gap:10px;
-      padding:12px 16px;
-      border-top:1px solid #e5e7eb;
-    }
+    .report-footer{ display:flex; gap:10px; padding:12px 16px; border-top:1px solid #e5e7eb; }
     .report-footer button{ flex:1; height:40px; border-radius:10px; border:1px solid rgba(0,0,0,.08); cursor:pointer; }
     .hide-location{ display:none!important; }
     body.light .report-modal{ background:#ffffff; }
-  
 
-/* Fix: dropdown options readable in dark theme (popup is usually white) */
-.lang-switch{ color-scheme: light; color: var(--text); }
-.lang-switch option{ background:#ffffff; color:#0f172a; }
+    /* ===== Bottom Sheet (mobile settings) ===== */
+    .sheet-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.38); backdrop-filter:blur(10px);
+      display:none; align-items:flex-end; justify-content:center; z-index:50000; padding:18px 14px;
+      opacity:0; pointer-events:none; transition:opacity .22s ease; }
+    .sheet-overlay.open{ opacity:1; pointer-events:auto; }
 
-</style>
+    .sheet{ width:520px; max-width:100%; border-radius:18px; border:1px solid var(--border); background:var(--glass);
+      box-shadow:0 30px 90px rgba(0,0,0,.55); overflow:hidden;
+      transform:translateY(28px); opacity:0; transition:transform .28s cubic-bezier(.2,.9,.2,1), opacity .22s ease;
+      will-change:transform,opacity; }
+    body.light .sheet{ background:rgba(255,255,255,.96); border-color:rgba(15,23,42,.14); box-shadow:0 22px 65px rgba(15,23,42,.20); }
+    .sheet-overlay.open .sheet{ transform:translateY(0); opacity:1; }
+
+    .sheet-header{ padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+      font-weight:900; color:var(--text); border-bottom:1px solid rgba(255,255,255,.12); }
+    body.light .sheet-header{ border-bottom:1px solid rgba(15,23,42,.10); }
+
+    .sheet-close{ height:34px; padding:0 12px; border-radius:12px; border:1px solid var(--border);
+      background:transparent; color:var(--text); cursor:pointer; font-weight:900; }
+
+    .sheet-body{ padding:14px 16px 16px; display:flex; flex-direction:column; gap:12px; color:var(--text); }
+
+    .sheet-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 12px;
+      border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.10); }
+    body.light .sheet-row{ border-color:rgba(15,23,42,.10); background:rgba(15,23,42,.04); }
+
+    .sheet-row .label{ display:flex; flex-direction:column; gap:2px; }
+    .sheet-row .label b{ font-size:14px; }
+    .sheet-row .label small{ color:var(--muted); font-size:12px; }
+
+    .sheet-select{ height:36px; border-radius:12px; border:1px solid var(--border);
+      background:rgba(255,255,255,.10); color:var(--text); padding:0 10px; outline:none; }
+    body.light .sheet-select{ background:#fff; color:var(--text); border-color:rgba(148,163,184,.7); }
+
+    /* Toggle switch */
+    .switch{ position:relative; width:54px; height:30px; flex:0 0 auto; }
+    .switch input{ display:none; }
+    .slider{ position:absolute; inset:0; border-radius:999px; background:rgba(148,163,184,.35);
+      border:1px solid rgba(255,255,255,.18); transition:.2s ease; }
+    body.light .slider{ background:rgba(148,163,184,.25); border-color:rgba(15,23,42,.14); }
+    .slider:before{ content:''; position:absolute; height:24px; width:24px; left:3px; top:2px; border-radius:50%;
+      background:linear-gradient(135deg,#34d399,var(--accent)); box-shadow:0 10px 22px rgba(0,0,0,.35); transition:.2s ease; }
+    .switch input:checked + .slider{ background:rgba(34,197,94,.25); border-color:rgba(34,197,94,.35); }
+    .switch input:checked + .slider:before{ transform:translateX(24px); }
+
+    @media (prefers-reduced-motion: reduce){
+      .sheet-overlay{ transition:none; }
+      .sheet{ transition:none; }
+    }
+  </style>
 </head>
 <body>
   <button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
@@ -507,13 +264,13 @@
     <div class="wrap">
       <div class="row">
         <button class="back-btn" onclick="location.href='index.html'"><span id="t_back">⬅ เมนูหลัก</span></button>
+        <button class="more-btn" id="btnMore" type="button" aria-label="เมนู">⋮</button>
         <div class="brand">
-          <div class="h1">KAOSU PACKING</div>
-          <div class="sub">Smart Warehouse · Prachinburi Branch</div>
+          <div class="h1" id="t_brand">KAOSU PACKING</div>
+          <div class="sub" id="t_brand_sub">Smart Warehouse · Prachinburi Branch</div>
         </div>
       </div>
 
-      <!-- SEARCH AREA (collapsible on mobile) -->
       <div id="searchArea" class="search-area">
         <div class="search-row">
           <input id="q" type="search" placeholder="ค้นหา Location / งาน / ลูกค้า เช่น A2-54, CL-066, K5581">
@@ -524,11 +281,10 @@
 
         <div class="status">
           <div id="note">พร้อมใช้งาน</div>
-          <div>ผลลัพธ์: <b id="count">0</b> รายการ</div>
+          <div><span id="t_result">ผลลัพธ์:</span> <b id="count">0</b> <span id="t_items">รายการ</span></div>
         </div>
       </div>
 
-      <!-- Mobile collapse/expand arrow (only mobile) -->
       <button id="toggleSearchMobile" class="mobile-toggle" type="button" aria-expanded="true">⌃</button>
     </div>
   </div>
@@ -536,18 +292,17 @@
   <div class="grid" id="grid"></div>
 
   <div class="modal" id="modal" onclick="closeModal()">
-    <button class="close" onclick="closeModal(); event.stopPropagation();">✕ ปิด</button>
+    <button class="close" id="t_modal_close" onclick="closeModal(); event.stopPropagation();">✕ ปิด</button>
     <img id="modalImg" alt="พรีวิว">
   </div>
 
   <div class="loading" id="loading">
     <div class="box">
       <img class="logo" src="assets/logo.png" alt="Kaosu Logo">
-      <div class="txt">กำลังโหลดข้อมูลคลังอัจฉริยะ…</div>
+      <div class="txt" id="t_loading_txt">กำลังโหลดข้อมูลคลังอัจฉริยะ…</div>
     </div>
   </div>
 
-  <!-- REPORT ISSUE MODAL -->
   <div class="report-overlay" id="reportOverlay" onclick="closeReportModal()">
     <div class="report-modal" onclick="event.stopPropagation()">
       <div class="report-header" id="t_report_header">🚨 แจ้งปัญหา</div>
@@ -556,15 +311,15 @@
         <input id="reportItem" placeholder="เช่น A1-01 / Part Name">
 
         <div class="hide-location">
-          <label>Location</label>
+          <label id="t_report_location_lbl">Location</label>
           <input id="reportLocation" placeholder="Location (ถ้ามี)">
         </div>
 
         <label id="t_report_type_lbl">ประเภทปัญหา</label>
-        <div class="report-options">
-          <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> ตำแหน่งไม่ตรง</label>
-          <label><input type="radio" name="reportType" value="ปริ้น WI"> ปริ้น WI</label>
-          <label><input type="radio" name="reportType" value="อื่นๆ"> อื่นๆ</label>
+        <div class="report-options" id="reportOptions">
+          <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> <span id="t_type_loc">ตำแหน่งไม่ตรง</span></label>
+          <label><input type="radio" name="reportType" value="ปริ้น WI"> <span id="t_type_print">ปริ้น WI</span></label>
+          <label><input type="radio" name="reportType" value="อื่นๆ"> <span id="t_type_other">อื่นๆ</span></label>
         </div>
 
         <label id="t_report_detail_lbl">รายละเอียดเพิ่มเติม</label>
@@ -577,124 +332,194 @@
     </div>
   </div>
 
+  <!-- SETTINGS BOTTOM SHEET (mobile) -->
+  <div class="sheet-overlay" id="settingsOverlay" onclick="closeSettings()">
+    <div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header">
+        <div id="t_settings_title">⚙️ ตั้งค่า</div>
+        <button class="sheet-close" type="button" id="t_settings_close" onclick="closeSettings()">ปิด</button>
+      </div>
+      <div class="sheet-body">
+        <div class="sheet-row">
+          <div class="label">
+            <b id="t_settings_theme">🌙 ธีม:</b>
+            <small id="t_settings_theme_hint">Dark / Light</small>
+          </div>
+          <label class="switch" title="theme">
+            <input id="themeSwitch" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="sheet-row">
+          <div class="label">
+            <b id="t_settings_lang">🌐 ภาษา:</b>
+            <small id="t_settings_lang_hint">TH / MM / 繁體</small>
+          </div>
+          <select id="langSheet" class="sheet-select" onchange="setLang(this.value)">
+            <option value="th">🇹🇭 TH</option>
+            <option value="mm">🇲🇲 MM</option>
+            <option value="cn">🇹🇼 繁體</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ===== THEME GLOBAL =====
-(function(){
-  const theme = localStorage.getItem("theme") || "dark";
-  if(theme === "light") document.body.classList.add("light");
-})();
+    (function(){
+      const theme = localStorage.getItem("theme") || "dark";
+      if(theme === "light") document.body.classList.add("light");
+    })();
 
-    function toggleTheme(){
-      if(document.body.classList.contains("light")){
-        document.body.classList.remove("light");
-        localStorage.setItem("theme","dark");
+    function setTheme(mode){
+      if(mode === 'light'){
+        document.body.classList.add('light');
+        localStorage.setItem('theme','light');
       }else{
-        document.body.classList.add("light");
-        localStorage.setItem("theme","light");
+        document.body.classList.remove('light');
+        localStorage.setItem('theme','dark');
       }
+      const sw = document.getElementById('themeSwitch');
+      if(sw) sw.checked = document.body.classList.contains('light');
     }
 
-    // ===== LANGUAGE GLOBAL =====
+    function toggleTheme(){
+      const isLight = document.body.classList.contains('light');
+      setTheme(isLight ? 'dark' : 'light');
+    }
 
-// ===== I18N (languages.json) =====
-let I18N = null;
-let LANG = localStorage.getItem("lang") || "th";
-const STR = {}; // current strings cache
+    // ===== I18N (languages.json) =====
+    let I18N = null;
+    let LANG = localStorage.getItem("lang") || "th";
+    const STR = {}; // dynamic strings cache
 
-async function loadI18N(){
-  if(I18N) return I18N;
-  try{
-    const res = await fetch('languages.json', { cache: 'no-store' });
-    I18N = await res.json();
-  }catch(err){
-    console.warn('โหลด languages.json ไม่สำเร็จ', err);
-    I18N = {};
-  }
-  return I18N;
-}
+    async function loadI18N(){
+      if(I18N) return I18N;
+      try{
+        const res = await fetch('languages.json', { cache: 'no-store' });
+        I18N = await res.json();
+      }catch(err){
+        console.warn('โหลด languages.json ไม่สำเร็จ', err);
+        I18N = {};
+      }
+      return I18N;
+    }
 
-function t(key, fallback=''){
-  const pack = (I18N && I18N[LANG]) ? I18N[LANG] : null;
-  return (pack && (pack[key] !== undefined)) ? String(pack[key]) : fallback;
-}
+    function t(key, fallback=''){
+      const pack = (I18N && I18N[LANG]) ? I18N[LANG] : null;
+      return (pack && (pack[key] !== undefined)) ? String(pack[key]) : fallback;
+    }
 
-function applyLang(code){
-  LANG = code || (localStorage.getItem('lang') || 'th');
-  localStorage.setItem('lang', LANG);
+    function applyLang(code){
+      LANG = code || (localStorage.getItem('lang') || 'th');
+      localStorage.setItem('lang', LANG);
 
-  const sel = document.getElementById('langSwitcher');
-  if(sel) sel.value = LANG;
+      const sel = document.getElementById('langSwitcher');
+      const sheetSel = document.getElementById('langSheet');
+      if(sel) sel.value = LANG;
+      if(sheetSel) sheetSel.value = LANG;
 
-  // cache strings used in dynamic UI
-  STR.ready = t('store_ready', t('ready_text', 'พร้อมใช้งาน'));
-  STR.loading = t('store_loading', 'กำลังโหลด...');
-  STR.searching = t('store_searching', 'กำลังค้นหา...');
-  STR.loadFail = t('store_load_fail', 'โหลดไม่สำเร็จ:');
-  STR.searchFail = t('store_search_fail', 'ค้นหาไม่สำเร็จ:');
-  STR.hasLayout = t('store_has_layout', 'มีผัง');
-  STR.noLayout = t('store_no_layout', 'ไม่มีผัง');
+      // cache strings used in dynamic UI
+      STR.ready = t('store_ready', t('ready_text', 'พร้อมใช้งาน'));
+      STR.loading = t('store_loading', 'กำลังโหลด...');
+      STR.searching = t('store_searching', 'กำลังค้นหา...');
+      STR.loadFail = t('store_load_fail', 'โหลดไม่สำเร็จ:');
+      STR.searchFail = t('store_search_fail', 'ค้นหาไม่สำเร็จ:');
+      STR.hasLayout = t('store_has_layout', 'มีผัง');
+      STR.noLayout = t('store_no_layout', 'ไม่มีผัง');
+      STR.customer = t('store_customer', 'ลูกค้า:');
+      STR.job = t('store_job', 'งาน:');
+      STR.reportBtn = t('store_report', '🚨 แจ้งปัญหา');
 
-  // static labels
-  const back = document.getElementById('t_back');
-  if(back) back.textContent = t('store_back_menu', t('back_menu_main', '⬅ เมนูหลัก'));
+      // topbar
+      const back = document.getElementById('t_back');
+      if(back) back.textContent = t('store_back_menu', t('back_menu_main', '⬅ เมนูหลัก'));
+      const brand = document.getElementById('t_brand');
+      if(brand) brand.textContent = t('store_main_brand', t('brand_main','KAOSU PACKING'));
+      const brandSub = document.getElementById('t_brand_sub');
+      if(brandSub) brandSub.textContent = t('brand_sub_store', brandSub.textContent);
 
-  const q = document.getElementById('q');
-  if(q) q.placeholder = t('store_search_placeholder', q.placeholder);
+      // search
+      const q = document.getElementById('q');
+      if(q) q.placeholder = t('store_search_placeholder', q.placeholder);
+      const bs = document.getElementById('btnSearch');
+      if(bs) bs.textContent = t('store_search_btn', t('store_search', bs.textContent));
+      const br = document.getElementById('btnReportMain');
+      if(br) br.textContent = t('store_report_main', br.textContent);
 
-  const bs = document.getElementById('btnSearch');
-  if(bs) bs.textContent = t('store_search_btn', t('store_search', bs.textContent));
+      // status
+      const noteEl = document.getElementById('note');
+      if(noteEl && (!noteEl.dataset.locked || noteEl.dataset.locked==='0')){
+        // if not locked by an active search message
+        noteEl.textContent = STR.ready;
+      }
+      const r1 = document.getElementById('t_result');
+      if(r1) r1.textContent = t('store_result', 'ผลลัพธ์:');
+      const r2 = document.getElementById('t_items');
+      if(r2) r2.textContent = t('store_items', 'รายการ');
 
-  const br = document.getElementById('btnReportMain');
-  if(br) br.textContent = t('store_report_main', br.textContent);
+      // modal
+      const mclose = document.getElementById('t_modal_close');
+      if(mclose) mclose.textContent = '✕ ' + t('settings_close', 'ปิด');
 
-  const noteEl = document.getElementById('note');
-  if(noteEl && (!noteEl.textContent || noteEl.textContent.trim()==='' )){
-    noteEl.textContent = STR.ready;
-  }
+      const loadTxt = document.getElementById('t_loading_txt');
+      if(loadTxt) loadTxt.textContent = t('loading_text', t('store_ai_loading', loadTxt.textContent));
 
-  const rh = document.getElementById('t_report_header');
-  if(rh) rh.textContent = t('store_report', rh.textContent);
+      // report modal
+      const rh = document.getElementById('t_report_header');
+      if(rh) rh.textContent = t('store_report', rh.textContent);
+      const rl1 = document.getElementById('t_report_item_lbl');
+      if(rl1) rl1.textContent = t('store_report_item', rl1.textContent);
+      const rlLoc = document.getElementById('t_report_location_lbl');
+      if(rlLoc) rlLoc.textContent = t('store_report_location', rlLoc.textContent);
+      const rl2 = document.getElementById('t_report_type_lbl');
+      if(rl2) rl2.textContent = t('store_report_type', rl2.textContent);
+      const rl3 = document.getElementById('t_report_detail_lbl');
+      if(rl3) rl3.textContent = t('store_report_detail_more', rl3.textContent);
 
-  const rl1 = document.getElementById('t_report_item_lbl');
-  if(rl1) rl1.textContent = t('store_report_item', rl1.textContent);
+      const ri = document.getElementById('reportItem');
+      if(ri) ri.placeholder = t('store_report_item_ph', ri.placeholder);
+      const rloc = document.getElementById('reportLocation');
+      if(rloc) rloc.placeholder = t('store_report_location_ph', rloc.placeholder);
+      const rd = document.getElementById('reportDetail');
+      if(rd) rd.placeholder = t('store_report_detail_ph', rd.placeholder);
 
-  const rl2 = document.getElementById('t_report_type_lbl');
-  if(rl2) rl2.textContent = t('store_report_type', rl2.textContent);
+      const tloc = document.getElementById('t_type_loc');
+      if(tloc) tloc.textContent = t('store_report_type_location', tloc.textContent);
+      const tprint = document.getElementById('t_type_print');
+      if(tprint) tprint.textContent = t('store_report_type_print', tprint.textContent);
+      const tother = document.getElementById('t_type_other');
+      if(tother) tother.textContent = t('store_report_type_other', tother.textContent);
 
-  const rl3 = document.getElementById('t_report_detail_lbl');
-  if(rl3) rl3.textContent = t('store_report_detail_more', rl3.textContent);
+      const cancel = document.getElementById('btnReportCancel');
+      if(cancel) cancel.textContent = t('store_cancel', cancel.textContent);
+      const submit = document.getElementById('btnReportSubmit');
+      if(submit) submit.textContent = t('store_submit', submit.textContent);
 
-  const ri = document.getElementById('reportItem');
-  if(ri) ri.placeholder = t('store_report_item_ph', ri.placeholder);
+      // settings sheet
+      const st = document.getElementById('t_settings_title');
+      if(st) st.textContent = t('settings_title', st.textContent);
+      const stc = document.getElementById('t_settings_close');
+      if(stc) stc.textContent = t('settings_close', stc.textContent);
+      const sth = document.getElementById('t_settings_theme');
+      if(sth) sth.textContent = t('settings_theme', sth.textContent);
+      const sl = document.getElementById('t_settings_lang');
+      if(sl) sl.textContent = t('settings_language', sl.textContent);
 
-  const rloc = document.getElementById('reportLocation');
-  if(rloc) rloc.placeholder = t('store_report_location_ph', rloc.placeholder);
+      // update switch state after language set
+      const sw = document.getElementById('themeSwitch');
+      if(sw) sw.checked = document.body.classList.contains('light');
+    }
 
-  const rd = document.getElementById('reportDetail');
-  if(rd) rd.placeholder = t('store_report_detail_ph', rd.placeholder);
+    function setLang(code){
+      applyLang(code);
+      // re-render current view to update dynamic labels
+      render(currentQuery);
+    }
 
-  const cancel = document.getElementById('btnReportCancel');
-  if(cancel) cancel.textContent = t('store_cancel', cancel.textContent);
-
-  const submit = document.getElementById('btnReportSubmit');
-  if(submit) submit.textContent = t('store_submit', submit.textContent);
-
-  // radio visible label text
-  document.querySelectorAll('input[name="reportType"]').forEach((inp)=>{
-    const lab = inp.closest('label');
-    if(!lab) return;
-    const val = inp.value;
-    if(val === 'ตำแหน่งไม่ตรง') lab.lastChild.textContent = ' ' + t('store_report_type_location', 'ตำแหน่งไม่ตรง');
-    if(val === 'ปริ้น WI') lab.lastChild.textContent = ' ' + t('store_report_type_print', 'ปริ้น WI');
-    if(val === 'อื่นๆ') lab.lastChild.textContent = ' ' + t('store_report_type_other', 'อื่นๆ');
-  });
-}
-
-function setLang(code){
-  applyLang(code);
-}
-
-// ===================== CONFIG =====================
+    // ===================== CONFIG =====================
     const API_BASE = "https://script.google.com/macros/s/AKfycbwi367iEscZhY4E_o9TI8FeIRsTBVkN5yjedzMkmjOyH_xEgQp-2Lgw8bP13mDapBao9w/exec";
     const LIMIT = 200;
 
@@ -712,44 +537,48 @@ function setLang(code){
     const reportItem = document.getElementById("reportItem");
     const reportLocation = document.getElementById("reportLocation");
     const reportDetail = document.getElementById("reportDetail");
-
-    // Mobile collapse
     const toggleBtn = document.getElementById("toggleSearchMobile");
+
+    // settings
+    const btnMore = document.getElementById('btnMore');
+    const settingsOverlay = document.getElementById('settingsOverlay');
+    const themeSwitch = document.getElementById('themeSwitch');
 
     // ===================== STATE =====================
     let ALL = [];
     let VIEW = [];
     let fetching = false;
     let CURRENT_REPORT = null;
+    let currentQuery = "";
 
     // ===================== HELPERS =====================
     const ok = v => {
-      const t = String(v ?? "").trim();
-      return t !== "" && t !== "#N/A";
+      const tt = String(v ?? "").trim();
+      return tt !== "" && tt !== "#N/A";
     };
 
     function showLoading(){ loading.style.display="flex"; }
     function hideLoading(){ loading.style.display="none"; }
 
     function escapeHtml(s){
-  return String(s ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#39;");
-}
+      return String(s ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/\"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+    }
 
     function escapeRegExp(s){
-  return String(s).replace(/[.*+?^${}()|[\]\]/g, "\$&");
-}
+      return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
 
     function highlight(text, q){
-      const t = String(text ?? "");
+      const tt = String(text ?? "");
       const qq = String(q ?? "").trim();
-      if(!qq) return escapeHtml(t);
+      if(!qq) return escapeHtml(tt);
       const re = new RegExp(escapeRegExp(qq), "ig");
-      return escapeHtml(t).replace(re, m => `<mark>${escapeHtml(m)}</mark>`);
+      return escapeHtml(tt).replace(re, m => `<mark>${escapeHtml(m)}</mark>`);
     }
 
     // ===================== JSONP =====================
@@ -789,6 +618,29 @@ function setLang(code){
       modalImg.src = "";
     }
 
+    // ===================== SETTINGS SHEET =====================
+    function openSettings(){
+      if(!settingsOverlay) return;
+      // sync
+      if(themeSwitch) themeSwitch.checked = document.body.classList.contains('light');
+      const sheetSel = document.getElementById('langSheet');
+      if(sheetSel) sheetSel.value = LANG;
+      settingsOverlay.style.display = 'flex';
+      requestAnimationFrame(() => settingsOverlay.classList.add('open'));
+    }
+    function closeSettings(){
+      if(!settingsOverlay) return;
+      settingsOverlay.classList.remove('open');
+      setTimeout(() => { if(!settingsOverlay.classList.contains('open')) settingsOverlay.style.display='none'; }, 260);
+    }
+    if(btnMore) btnMore.onclick = openSettings;
+    if(themeSwitch){
+      themeSwitch.addEventListener('change', () => {
+        setTheme(themeSwitch.checked ? 'light' : 'dark');
+      });
+    }
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeSettings(); });
+
     // ===================== REPORT MODAL =====================
     function openReportModal(itemEncoded){
       try{
@@ -803,7 +655,6 @@ function setLang(code){
         reportItem.value = "";
         reportLocation.value = "";
       }
-
       document.querySelectorAll('input[name="reportType"]').forEach(r=>r.checked=false);
       reportDetail.value = "";
       reportOverlay.style.display = "flex";
@@ -830,7 +681,7 @@ function setLang(code){
       const detail = reportDetail.value || "";
 
       if(!item && !detail){
-        alert(t("store_err_need_info","กรุณาระบุอย่างน้อยชื่อ Location/งาน หรือรายละเอียดปัญหา"));
+        alert(t('store_err_need_info', 'กรุณาระบุอย่างน้อยชื่อ Location/งาน หรือรายละเอียดปัญหา'));
         return;
       }
 
@@ -851,13 +702,13 @@ function setLang(code){
         closeReportModal();
 
         if(res && res.ok === true && res.saved === true){
-          alert("ส่งแจ้งปัญหาเรียบร้อย ✅" + (res.lineSent ? "\nLINE ส่งแล้ว ✅" : "\nLINE ยังไม่ส่ง ⚠️"));
+          alert(t('store_send_success','ส่งแจ้งปัญหาเรียบร้อย ✅') + (res.lineSent ? "\n" + t('store_line_sent','LINE ส่งแล้ว ✅') : "\n" + t('store_line_not_sent','LINE ยังไม่ส่ง ⚠️')));
         }else{
-          alert("ส่งไม่สำเร็จ ❌\n" + JSON.stringify(res));
+          alert(t('store_send_fail','ส่งไม่สำเร็จ ❌') + "\n" + JSON.stringify(res));
         }
       }catch(err){
         hideLoading();
-        alert(t("store_backend_fail","เรียกหลังบ้านไม่สำเร็จ ❌") + "\n" + err.message);
+        alert(t('store_backend_fail','เรียกหลังบ้านไม่สำเร็จ ❌') + "\n" + err.message);
       }
     }
 
@@ -874,25 +725,38 @@ function setLang(code){
             <div class="loc">${highlight(loc, q)}</div>
             <div class="badge ${hasLayout ? 'ok' : 'ng'}">${hasLayout ? (STR.hasLayout||'มีผัง') : (STR.noLayout||'ไม่มีผัง')}</div>
           </div>
-          <div class="field"><span class="label">ลูกค้า:</span> <b>${highlight(customer, q)}</b></div>
-          <div class="field"><span class="label">งาน:</span> <b>${highlight(part, q)}</b></div>
+          <div class="field"><span class="label">${escapeHtml(STR.customer||'ลูกค้า:')}</span> <b>${highlight(customer, q)}</b></div>
+          <div class="field"><span class="label">${escapeHtml(STR.job||'งาน:')}</span> <b>${highlight(part, q)}</b></div>
           ${hasLayout ? `
             <div class="thumb">
               <img src="${it.layout_image_url}" alt="layout" onclick="openModal('${it.layout_image_url}')">
             </div>
           ` : ''}
           <div class="card-actions">
-            <button class="report-btn" onclick="openReportModal('${encodeURIComponent(JSON.stringify(it))}')">🚨 แจ้งปัญหา</button>
+            <button class="report-btn" onclick="openReportModal('${encodeURIComponent(JSON.stringify(it))}')">${escapeHtml(STR.reportBtn||'🚨 แจ้งปัญหา')}</button>
           </div>
         </div>
       `;
     }
 
     function render(q=""){
+      currentQuery = q;
       grid.innerHTML = "";
       VIEW.forEach(it => grid.insertAdjacentHTML("beforeend", card(it, q)));
       count.textContent = VIEW.length;
-      note.textContent = q ? `ผลการค้นหา "${q}" (${VIEW.length} รายการ)` : `แสดงทั้งหมด (${VIEW.length} รายการ)`;
+
+      // status text (use translated pieces)
+      const showAllText = t('store_show_all', 'แสดงทั้งหมด');
+      const foundText = t('issue_found', 'พบ');
+      const itemsText = t('store_items','รายการ');
+
+      if(q){
+        note.textContent = `${showAllText} → ${foundText} \"${q}\" (${VIEW.length} ${itemsText})`;
+        note.dataset.locked = '1';
+      }else{
+        note.textContent = STR.ready || 'พร้อมใช้งาน';
+        note.dataset.locked = '0';
+      }
     }
 
     // ===================== DATA LOAD =====================
@@ -901,6 +765,7 @@ function setLang(code){
       fetching = true;
       showLoading();
       note.textContent = (STR.loading || "กำลังโหลด...");
+      note.dataset.locked = '1';
       grid.innerHTML = "";
       count.textContent = "0";
 
@@ -937,13 +802,14 @@ function setLang(code){
       }finally{
         hideLoading();
         fetching = false;
+        note.dataset.locked = '0';
       }
     }
 
     async function doSearch(){
       const qv = (qEl.value || "").trim();
 
-      // ตามที่ขอ: ถ้าช่องว่างแล้วกดค้นหา => แสดงทั้งหมด
+      // ถ้าช่องว่างแล้วกดค้นหา => แสดงทั้งหมด
       if(!qv){
         await loadAll();
         return;
@@ -951,6 +817,7 @@ function setLang(code){
 
       showLoading();
       note.textContent = (STR.searching || "กำลังค้นหา...");
+      note.dataset.locked = '1';
       grid.innerHTML = "";
       count.textContent = "0";
 
@@ -974,6 +841,7 @@ function setLang(code){
         console.error(err);
       }finally{
         hideLoading();
+        note.dataset.locked = '0';
       }
     }
 
@@ -993,7 +861,6 @@ function setLang(code){
       }
     });
 
-    // Mobile collapse/expand (เฉพาะมือถือ)
     if(toggleBtn){
       toggleBtn.onclick = () => {
         document.body.classList.toggle("mobile-collapsed");
@@ -1004,7 +871,13 @@ function setLang(code){
     }
 
     // START
-loadI18N().then(()=>{ applyLang(LANG); loadAll(); });
+    loadI18N().then(()=>{
+      applyLang(LANG);
+      // sync theme switch state
+      const sw = document.getElementById('themeSwitch');
+      if(sw) sw.checked = document.body.classList.contains('light');
+      loadAll();
+    });
   </script>
 </body>
 </html>
