@@ -878,6 +878,11 @@
       if(sw) sw.checked = document.body.classList.contains('light');
       loadAll();
     });
+    
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+
   </script>
 </body>
 </html>
