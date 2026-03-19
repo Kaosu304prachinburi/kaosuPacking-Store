@@ -487,6 +487,190 @@
     .report-footer button{ flex:1; height:40px; border-radius:10px; border:1px solid rgba(0,0,0,.08); cursor:pointer; }
     .hide-location{ display:none!important; }
     body.light .report-modal{ background:#ffffff; }
+  
+
+    /* ===== Mobile Settings Menu (⋮) ===== */
+    .more-btn{
+      display:none; /* show only on mobile */
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      cursor:pointer;
+      font-size:18px;
+      line-height:1;
+      min-width:44px;
+    }
+    .more-btn:hover{ filter:brightness(1.06); }
+    body.light .more-btn{
+      background: rgba(255,255,255,0.55);
+      color: #0f172a;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    /* Hide floating theme/lang on mobile (use ⋮ menu instead) */
+    @media (max-width: 480px){
+      .toggle-theme, .lang-switch{ display:none; }
+      .more-btn{ display:inline-flex; align-items:center; justify-content:center; }
+    }
+
+    /* ===== Bottom Sheet (iOS/Android style) ===== */
+    .sheet-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.38);
+      backdrop-filter:blur(10px);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      z-index:50000;
+      padding:18px 14px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .22s ease;
+    }
+    .sheet-overlay.open{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .sheet{
+      width:520px;
+      max-width:100%;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:var(--glass);
+      box-shadow:0 30px 90px rgba(0,0,0,.55);
+      overflow:hidden;
+      transform:translateY(28px);
+      opacity:0;
+      transition:transform .28s cubic-bezier(.2,.9,.2,1), opacity .22s ease;
+      will-change:transform,opacity;
+    }
+    body.light .sheet{
+      background:rgba(255,255,255,.96);
+      border-color:rgba(15,23,42,.14);
+      box-shadow:0 22px 65px rgba(15,23,42,.20);
+    }
+    .sheet-overlay.open .sheet{
+      transform:translateY(0);
+      opacity:1;
+    }
+
+    .sheet-header{
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-weight:900;
+      letter-spacing:.2px;
+      color:var(--text);
+      border-bottom:1px solid rgba(255,255,255,.12);
+    }
+    body.light .sheet-header{ border-bottom:1px solid rgba(15,23,42,.10); }
+
+    .sheet-close{
+      height:34px;
+      padding:0 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:transparent;
+      color:var(--text);
+      cursor:pointer;
+      font-weight:900;
+    }
+
+    .sheet-body{
+      padding:14px 16px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      color:var(--text);
+    }
+
+    .sheet-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.10);
+    }
+    body.light .sheet-row{
+      border-color:rgba(15,23,42,.10);
+      background:rgba(15,23,42,.04);
+    }
+
+    .sheet-row .label{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .sheet-row .label b{ font-size:14px; }
+    .sheet-row .label small{ color:var(--muted); font-size:12px; }
+
+    /* Toggle switch */
+    .switch{
+      position:relative;
+      width:54px;
+      height:30px;
+      flex:0 0 auto;
+    }
+    .switch input{ display:none; }
+    .slider{
+      position:absolute;
+      inset:0;
+      border-radius:999px;
+      background:rgba(148,163,184,.35);
+      border:1px solid rgba(255,255,255,.18);
+      transition:.2s ease;
+    }
+    body.light .slider{
+      background:rgba(148,163,184,.25);
+      border-color:rgba(15,23,42,.14);
+    }
+    .slider:before{
+      content:'';
+      position:absolute;
+      height:24px;
+      width:24px;
+      left:3px;
+      top:2px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#34d399,var(--accent));
+      box-shadow:0 10px 22px rgba(0,0,0,.35);
+      transition:.2s ease;
+    }
+    .switch input:checked + .slider{
+      background:rgba(34,197,94,.25);
+      border-color:rgba(34,197,94,.35);
+    }
+    .switch input:checked + .slider:before{ transform:translateX(24px); }
+
+    .sheet-select{
+      height:36px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.10);
+      color:var(--text);
+      padding:0 10px;
+      outline:none;
+    }
+    body.light .sheet-select{
+      background:#fff;
+      color:var(--text);
+      border-color:rgba(148,163,184,.7);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .sheet-overlay{ transition:none; }
+      .sheet{ transition:none; }
+    }
+
   </style>
 </head>
 <body>
@@ -501,6 +685,7 @@
     <div class="wrap">
       <div class="row">
         <button class="back-btn" onclick="location.href='index.html'">⬅ เมนูหลัก</button>
+        <button class=\"more-btn\" id=\"btnMore\" type=\"button\" aria-label=\"เมนู\">⋮</button>
         <div class="brand">
           <div class="h1">KAOSU PACKING</div>
           <div class="sub">Smart Warehouse · Prachinburi Branch</div>
@@ -567,6 +752,41 @@
       <div class="report-footer">
         <button type="button" onclick="closeReportModal()">ยกเลิก</button>
         <button type="button" onclick="submitReport()">ส่งแจ้งปัญหา</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SETTINGS BOTTOM SHEET (Mobile menu) -->
+  <div class="sheet-overlay" id="settingsOverlay" onclick="closeSettings()">
+    <div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header">
+        <div>ตั้งค่า</div>
+        <button class="sheet-close" type="button" onclick="closeSettings()">✕</button>
+      </div>
+      <div class="sheet-body">
+        <div class="sheet-row">
+          <div class="label">
+            <b>สลับโหมด</b>
+            <small>Dark / Light</small>
+          </div>
+          <label class="switch" title="สลับโหมด">
+            <input id="themeSwitch" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="sheet-row">
+          <div class="label">
+            <b>ภาษา</b>
+            <small>เลือกภาษา</small>
+          </div>
+          <select id="langSheet" class="sheet-select" onchange="setLang(this.value)">
+            <option value="th">🇹🇭 TH</option>
+            <option value="mm">🇲🇲 MM</option>
+            <option value="cn">🇹🇼 繁體</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -907,6 +1127,83 @@
         toggleBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
       };
     }
+
+
+    // ===== SETTINGS MENU (⋮) + Bottom Sheet =====
+    const btnMore = document.getElementById("btnMore");
+    const settingsOverlay = document.getElementById("settingsOverlay");
+    const themeSwitch = document.getElementById("themeSwitch");
+    const langSheet = document.getElementById("langSheet");
+    const langDesktop = document.getElementById("langSwitcher");
+
+    function openSettings(){
+      if(!settingsOverlay) return;
+      // sync current state
+      if(themeSwitch){
+        themeSwitch.checked = document.body.classList.contains("light");
+      }
+      if(langSheet){
+        langSheet.value = localStorage.getItem("lang") || "th";
+      }
+      settingsOverlay.style.display = "flex";
+      // trigger slide-up animation
+      requestAnimationFrame(() => settingsOverlay.classList.add("open"));
+    }
+
+    function closeSettings(){
+      if(!settingsOverlay) return;
+      settingsOverlay.classList.remove("open");
+      // wait for transition then fully hide
+      setTimeout(() => {
+        if(!settingsOverlay.classList.contains("open")) settingsOverlay.style.display = "none";
+      }, 260);
+    }
+
+    function setTheme(mode){
+      // mode: 'light' | 'dark'
+      if(mode === 'light'){
+        document.body.classList.add('light');
+        localStorage.setItem('theme','light');
+      }else{
+        document.body.classList.remove('light');
+        localStorage.setItem('theme','dark');
+      }
+      if(themeSwitch){
+        themeSwitch.checked = document.body.classList.contains("light");
+      }
+    }
+
+    // Make toggleTheme deterministic-friendly (keeps all toggles in sync)
+    window.toggleTheme = function(){
+      const isLight = document.body.classList.contains('light');
+      setTheme(isLight ? 'dark' : 'light');
+    };
+
+    // Menu button
+    if(btnMore){
+      btnMore.onclick = openSettings;
+    }
+
+    // Theme switch inside sheet
+    if(themeSwitch){
+      themeSwitch.addEventListener('change', () => {
+        setTheme(themeSwitch.checked ? 'light' : 'dark');
+      });
+    }
+
+    // Sync language between desktop select and bottom sheet select
+    window.setLang = function(code){
+      localStorage.setItem("lang", code);
+      if(langDesktop) langDesktop.value = code;
+      if(langSheet) langSheet.value = code;
+      // ยังไม่มี applyLang จริง (เก็บค่าไว้ก่อน)
+    };
+
+    // Close with ESC
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') closeSettings();
+    });
+
 
     // START
     applyLangFromStorage();
