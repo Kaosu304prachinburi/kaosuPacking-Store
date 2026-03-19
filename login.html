@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login | KAOSU PACKING</title>
+
+<style>
+:root{
+  --header-shadow: radial-gradient(900px 500px at top, var(--bg2) 0%, transparent 60%);
+  --bg1:#020617;
+  --bg2:#0f172a;
+  --glass:rgba(255,255,255,.08);
+  --border:rgba(255,255,255,.18);
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --accent:#22c55e;
+  --accent2:#38bdf8;
+  --danger:#ef4444;
+}
+
+/* Light Mode Variables */
+body.light {
+  --header-shadow: none;
+  --bg1:#f5f7fa;
+  --bg2:#e2e8f0;
+  --glass:rgba(255,255,255,.9);
+  --border:rgba(15,23,42,.08);
+  --text:#0f172a;
+  --muted:#64748b;
+  --accent:#16a34a;
+}
+
+/* reset */
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    var(--header-shadow),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:system-ui,-apple-system,Segoe UI,Arial;
+  color:var(--text);
+  transition:background .25s ease,color .25s ease;
+}
+
+/* ปุ่มกลับหน้าหลัก */
+.back-btn{
+  position:fixed;
+  top:16px;
+  left:16px;
+  z-index:9999;
+  padding:8px 14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--glass);
+  color:var(--text);
+  cursor:pointer;
+  backdrop-filter:blur(8px);
+  font-size:13px;
+}
+.back-btn:hover{ filter:brightness(1.05); }
+
+/* ปุ่มสลับธีม */
+.toggle-theme{
+  position:fixed;
+  top:16px;
+  right:16px;
+  z-index:9999;
+  padding:8px 14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--glass);
+  color:var(--text);
+  cursor:pointer;
+  backdrop-filter:blur(8px);
+  font-size:13px;
+}
+
+/* LOGIN CARD */
+.card{
+  width:340px;
+  padding:28px 24px 34px;
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:22px;
+  backdrop-filter:blur(14px);
+  text-align:center;
+  box-shadow:0 20px 55px rgba(0,0,0,.45);
+  animation:fadeUp .35s ease-out forwards;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(12px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* LOGO */
+.logo{
+  width:90px;
+  height:90px;
+  margin:0 auto 14px;
+}
+.logo img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+/* INPUT */
+input{
+  width:100%;
+  height:48px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.07);
+  color:var(--text);
+  font-size:15px;
+  padding:0 14px;
+  margin-top:12px;
+  outline:none;
+}
+input::placeholder{ color:var(--muted); }
+input:focus{
+  border-color:rgba(56,189,248,.45);
+  box-shadow:0 0 0 3px rgba(56,189,248,.18);
+}
+
+/* BUTTON */
+button.login-btn{
+  width:100%;
+  height:50px;
+  margin-top:20px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  background:linear-gradient(135deg,#34d399,var(--accent));
+  color:#fff;
+  font-size:16px;
+  font-weight:900;
+  letter-spacing:.3px;
+  box-shadow:0 14px 36px rgba(0,0,0,.25);
+  transition:transform .15s ease, filter .15s ease;
+}
+button.login-btn:hover{ filter:brightness(1.06); }
+button.login-btn:active{ transform:scale(.97); }
+
+/* MSG */
+.msg{
+  margin-top:14px;
+  font-size:13px;
+  color:var(--muted);
+  min-height:20px;
+}
+</style>
+</head>
+
+<body>
+
+<button class="back-btn" onclick="location.href='index.html'">⬅ กลับเมนูหลัก</button>
+<button class="toggle-theme" onclick="toggleTheme()" id="themeBtn">🔆 โหมดสว่าง</button>
+
+<div class="card">
+
+  <div class="logo">
+    <!-- ใส่รูปโลโก้จริงของคุณ -->
+    <img src="assets/logo.png" alt="KAOSU Logo">
+  </div>
+
+  <h2 style="font-weight:900;margin-bottom:6px;">เข้าสู่ระบบ</h2>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:18px;">
+    KAOSU PACKING · Smart Operation
+  </div>
+
+  <input id="username" placeholder="Username" autocomplete="off">
+  <input id="password" type="password" placeholder="Password">
+
+  <button class="login-btn" onclick="doLogin()">เข้าระบบ</button>
+
+  <div class="msg" id="msg"></div>
+</div>
+
+<script>
+// 🔥 ใช้ Script ตัวนี้ทั้งระบบ (คุณบอกว่าใช้แล้ว)
+const API = "https://script.google.com/macros/s/AKfycbwi367iEscZhY4E_o9TI8FeIRsTBVkN5yjedzMkmjOyH_xEgQp-2Lgw8bP13mDapBao9w/exec";
+
+// ---------- THEME ----------
+function applyThemeFromStorage(){
+  const t = localStorage.getItem("theme") || "dark";
+  const body = document.body;
+  const btn  = document.getElementById("themeBtn");
+
+  if(t === "light"){
+    body.classList.add("light");
+    btn.textContent = "🌙 โหมดมืด";
+  }else{
+    body.classList.remove("light");
+    btn.textContent = "🔆 โหมดสว่าง";
+  }
+}
+
+function toggleTheme(){
+  const body = document.body;
+  const btn  = document.getElementById("themeBtn");
+
+  if(body.classList.contains("light")){
+    body.classList.remove("light");
+    localStorage.setItem("theme","dark");
+    btn.textContent = "🔆 โหมดสว่าง";
+  }else{
+    body.classList.add("light");
+    localStorage.setItem("theme","light");
+    btn.textContent = "🌙 โหมดมืด";
+  }
+}
+
+// เรียกตอนโหลดหน้า
+applyThemeFromStorage();
+
+// ---------- LOGIN ----------
+async function doLogin(){
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
+  const msg  = document.getElementById("msg");
+
+  if(!user || !pass){
+    msg.textContent = "⚠ กรุณากรอก Username และ Password";
+    msg.style.color = "var(--danger)";
+    return;
+  }
+
+  msg.textContent = "⏳ ตรวจสอบข้อมูล...";
+  msg.style.color = "var(--muted)";
+
+  try{
+    const res = await fetch(`${API}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`);
+    const data = await res.json();
+
+    if(!data.ok){
+      msg.textContent = "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+      msg.style.color = "var(--danger)";
+      return;
+    }
+
+    localStorage.setItem("user", JSON.stringify(data));
+
+    msg.textContent = "✅ เข้าสู่ระบบสำเร็จ กำลังนำทาง...";
+    msg.style.color = "#22c55e";
+
+    setTimeout(()=> location.href="issue-center.html", 700);
+
+  }catch(e){
+    msg.textContent = "❌ error: " + e;
+    msg.style.color = "var(--danger)";
+  }
+}
+</script>
+
+</body>
+</html>
