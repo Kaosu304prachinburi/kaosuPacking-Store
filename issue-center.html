@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISSUE CENTER | KAOSU PACKING</title>
+
+<style>
+/* ===== THEME (match STORE / PACKING) ===== */
+:root{
+  --bg1:#020617;
+  --bg2:#0f172a;
+  --glass:rgba(255,255,255,.08);
+  --border:rgba(255,255,255,.18);
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+
+  --accent:#22c55e;
+  --accent2:#38bdf8;
+  --blue:#3b82f6;
+  --warn:#f59e0b;
+  --danger:#ef4444;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Arial;
+  color:var(--text);
+  background:
+    radial-gradient(900px 500px at top, #1e293b 0%, transparent 60%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+}
+
+.wrap{max-width:1200px;margin:auto;padding:16px}
+
+/* ===== BACK BUTTON (เหมือน PACKING) ===== */
+.back-fixed{
+  position:fixed;
+  top:16px;
+  left:16px;
+  z-index:9999;
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  cursor:pointer;
+  backdrop-filter:blur(8px);
+}
+.back-fixed:hover{ filter:brightness(1.06); }
+
+/* ===== HEADER ===== */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:6px 0 14px;
+}
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.logo{
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+.logo img{max-width:80%;max-height:80%}
+.title{font-size:18px;font-weight:900;letter-spacing:.3px}
+.subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* user pill */
+.user-pill{
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(15,23,42,.8);
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.user-pill button{
+  height:26px;
+  padding:0 10px;
+  border-radius:999px;
+  border:none;
+  background:rgba(239,68,68,.85);
+  color:#fff;
+  cursor:pointer;
+  font-size:11px;
+  font-weight:800;
+}
+
+/* ===== FILTER CARD ===== */
+.search-card{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:12px;
+  backdrop-filter: blur(14px);
+  box-shadow:0 18px 50px rgba(0,0,0,.35);
+}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+
+.filter-label{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+
+input,select,button{
+  border-radius:14px;
+  font-size:14px;
+}
+input[type="date"], select{
+  height:42px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(15,23,42,.85);
+  color:#e5e7eb;
+  padding:0 12px;
+  outline:none;
+}
+input[type="date"]::placeholder,
+select::placeholder{
+  color:var(--muted);
+}
+input[type="date"]:focus,
+select:focus{
+  border-color:rgba(56,189,248,.45);
+  box-shadow:0 0 0 3px rgba(56,189,248,.18);
+}
+
+/* ปุ่ม filter */
+button.filter-btn{
+  height:42px;
+  padding:0 16px;
+  border:none;
+  cursor:pointer;
+  font-weight:900;
+  letter-spacing:.2px;
+  background:linear-gradient(135deg,#34d399,var(--accent));
+  color:#fff;
+  box-shadow:0 14px 36px rgba(0,0,0,.35);
+}
+button.filter-btn:hover{filter:brightness(1.06)}
+
+.filter-note{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  gap:18px;
+  grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
+}
+
+/* ===== CARD (ใช้สไตล์เดียวกับ PACKING item) ===== */
+.item{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:20px;
+  overflow:hidden;
+  position:relative;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  backdrop-filter: blur(14px);
+  box-shadow:0 20px 55px rgba(0,0,0,.45);
+}
+.item:hover{
+  transform:translateY(-4px);
+  box-shadow:0 26px 70px rgba(0,0,0,.55);
+}
+.item-body{
+  padding:16px;
+}
+
+/* Fade-in */
+.item{opacity:0;transform:translateY(10px);animation:fadeUp .28s ease-out forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+/* status badge */
+.badge-status{
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:999px;
+  font-size:12px;
+  margin-bottom:6px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(15,23,42,.9);
+}
+.badge-open{ border-color:rgba(148,163,184,.6); color:#e5e7eb; }
+.badge-progress{ border-color:rgba(245,158,11,.7); color:#fde68a; background:rgba(245,158,11,.2); }
+.badge-done{ border-color:rgba(34,197,94,.7); color:#bbf7d0; background:rgba(34,197,94,.2); }
+
+.field{margin:4px 0;font-size:13px;}
+.field-label{color:var(--muted);margin-right:4px;}
+.field-strong{font-weight:700;color:#e5e7eb;}
+.field-small{font-size:12px;color:#9ca3af;}
+
+/* กล่องบันทึกการแก้ไข */
+.fix-box{
+  margin-top:10px;
+  padding-top:8px;
+  border-top:1px dashed rgba(148,163,184,.6);
+  font-size:13px;
+}
+.fix-box textarea{
+  width:100%;
+  min-height:56px;
+  border-radius:10px;
+  border:none;
+  padding:6px 8px;
+  margin-top:4px;
+  margin-bottom:6px;
+  font-family:inherit;
+  font-size:13px;
+  background:rgba(15,23,42,.9);
+  color:#e5e7eb;
+}
+.fix-box input{
+  width:100%;
+  border-radius:10px;
+  border:none;
+  padding:6px 8px;
+  margin-bottom:6px;
+  font-size:13px;
+  background:rgba(15,23,42,.9);
+  color:#e5e7eb;
+}
+
+/* action bar ด้านล่างการ์ด */
+.action-bar{
+  display:flex;
+  gap:8px;
+  padding:10px 12px 12px;
+  border-top:1px solid rgba(255,255,255,.10);
+  background:rgba(0,0,0,.18);
+}
+.action-bar button{
+  flex:1;
+  height:38px;
+  border-radius:12px;
+  border:none;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+}
+.btn-save{
+  background:rgba(59,130,246,.18);
+  color:#bfdbfe;
+  border:1px solid rgba(59,130,246,.45);
+}
+.btn-save:hover{filter:brightness(1.08)}
+.btn-head{
+  background:linear-gradient(135deg,#34d399,var(--accent));
+  color:#fff;
+}
+.btn-head.warn{
+  background:linear-gradient(135deg,#f59e0b,#f97316);
+}
+.btn-head:hover{filter:brightness(1.06)}
+
+/* ===== LOADING OVERLAY (เหมือน PACKING) ===== */
+.loading-overlay{
+  position:fixed;inset:0;background:rgba(2,6,23,.70);
+  backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;z-index:20000;
+}
+.loading-box{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.18);
+  padding:26px 34px;border-radius:22px;text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,.55);
+  min-width:220px;
+}
+.loading-logo{
+  width:76px;margin-bottom:12px;
+  filter: drop-shadow(0 0 18px rgba(56,189,248,.35));
+  animation:breath 2.2s ease-in-out infinite;
+}
+@keyframes breath{
+  0%,100%{opacity:.55;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.03)}
+}
+.spinner{
+  width:38px;height:38px;border:4px solid rgba(255,255,255,.18);
+  border-top:4px solid var(--accent2);
+  border-radius:50%;margin:10px auto;animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== MOBILE ===== */
+@media (max-width:640px){
+  .grid{grid-template-columns:1fr}
+  .header{flex-direction:column;align-items:flex-start}
+  .user-pill{margin-top:6px;}
+}
+  /* ปุ่มสลับธีมมุมขวาบน */
+.toggle-theme{
+  position:fixed;
+  top:16px;
+  right:16px;
+  z-index:9999;
+  padding:8px 14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--glass);
+  backdrop-filter:blur(12px);
+  color:var(--text);
+  cursor:pointer;
+  font-size:13px;
+}
+  /* ========== LIGHT MODE FOR ISSUE CENTER ========== */
+
+/* พื้นหลังหลัก */
+body.light {
+  background: linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+
+/* ปรับ topbar ให้สว่าง */
+body.light .back-fixed {
+  background: rgba(255,255,255,0.55);
+  color: #0f172a;
+  border-color: rgba(0,0,0,0.15);
+}
+
+body.light .header-left .logo {
+  background: rgba(255,255,255,0.65);
+  border-color: rgba(0,0,0,0.15);
+}
+
+body.light .subtitle {
+  color: var(--muted);
+}
+
+/* SEARCH CARD */
+body.light .search-card {
+  background: rgba(255,255,255,0.85);
+  border:1px solid rgba(15,23,42,0.12);
+  box-shadow: 0 8px 24px rgba(15,23,42,.12);
+}
+
+/* INPUT / SELECT */
+body.light input[type="date"],
+body.light select {
+  background:#ffffff;
+  border-color: rgba(148,163,184,.6);
+  color:#0f172a;
+}
+
+body.light input[type="date"]::placeholder,
+body.light select {
+  color:#64748b;
+}
+
+/* CARD */
+body.light .item{
+  background: rgba(255,255,255,0.9);
+  border:1px solid rgba(0,0,0,.12);
+  box-shadow:0 12px 30px rgba(15,23,42,.12);
+}
+
+body.light .fix-box textarea,
+body.light .fix-box input {
+  background:#ffffff;
+  color:#0f172a;
+  border:1px solid rgba(148,163,184,.5);
+}
+
+/* STATUS BADGE */
+body.light .badge-status{
+  background: rgba(241,245,249,.9);
+  border-color: rgba(148,163,184,.4);
+  color:#0f172a;
+}
+
+body.light .badge-progress{
+  background: rgba(245,158,11,.2);
+  border-color: rgba(245,158,11,.5);
+  color:#92400e;
+}
+
+body.light .badge-done{
+  background: rgba(34,197,94,.2);
+  border-color: rgba(34,197,94,.5);
+  color:#14532d;
+}
+
+/* ACTION BAR */
+body.light .action-bar{
+  background:rgba(255,255,255,.85);
+  border-top:1px solid rgba(0,0,0,.10);
+}
+
+body.light .btn-save{
+  background: rgba(59,130,246,.15);
+  border-color: rgba(59,130,246,.35);
+  color:#1e3a8a;
+}
+
+body.light .btn-head{
+  background:linear-gradient(135deg,#34d399,#22c55e);
+  color:#fff;
+}
+  /* ========== LIGHT MODE FOR ISSUE CENTER (C : PACKING + STORE MIX) ========== */
+
+/* พื้นหลังหลักแบบ STORE */
+body.light {
+  background: linear-gradient(180deg, #f1f5f9, #e2e8f0);
+  color: #0f172a;
+}
+
+/* ปุ่มกลับแบบ STORE */
+body.light .back-fixed {
+  background: rgba(255,255,255,0.7);
+  color: #0f172a;
+  border-color: rgba(0,0,0,0.12);
+}
+
+/* Header โลโก้แบบ Store */
+body.light .header-left .logo {
+  background: rgba(255,255,255,0.9);
+  border-color: rgba(0,0,0,0.12);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+body.light .title{
+  color:#0f172a;
+}
+
+body.light .subtitle {
+  color: #64748b;
+}
+
+/* SEARCH CARD แบบ STORE */
+body.light .search-card {
+  background: rgba(255,255,255,0.92);
+  border:1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+/* Input / Select แบบ STORE */
+body.light input[type="date"],
+body.light select {
+  background:#ffffff;
+  border-color: rgba(148,163,184,.6);
+  color:#0f172a;
+}
+
+body.light input[type="date"]::placeholder,
+body.light select {
+  color:#64748b;
+}
+
+/* การ์ด ISSUE แบบ PACKING-light */
+body.light .item{
+  background: rgba(255,255,255,0.95);
+  border:1px solid rgba(0,0,0,.12);
+  box-shadow:0 16px 34px rgba(0,0,0,.10);
+}
+
+/* กล่อง FIX แบบสว่าง */
+body.light .fix-box textarea,
+body.light .fix-box input {
+  background:#ffffff;
+  color:#0f172a;
+  border:1px solid rgba(148,163,184,.35);
+}
+
+/* Badge สถานะแบบ Light */
+body.light .badge-status{
+  background: rgba(241,245,249,.95);
+  border-color: rgba(148,163,184,.4);
+  color:#0f172a;
+}
+
+body.light .badge-progress{
+  background: rgba(245,158,11,.2);
+  border-color: rgba(245,158,11,.5);
+  color:#92400e;
+}
+
+body.light .badge-done{
+  background: rgba(34,197,94,.15);
+  border-color: rgba(34,197,94,.45);
+  color:#166534;
+}
+
+/* Action bar แบบ Store */
+body.light .action-bar{
+  background:rgba(255,255,255,.9);
+  border-top:1px solid rgba(0,0,0,.1);
+}
+
+body.light .btn-save{
+  background: rgba(59,130,246,.12);
+  border-color: rgba(59,130,246,.35);
+  color:#1e3a8a;
+}
+
+body.light .btn-head{
+  background:linear-gradient(135deg,#34d399,#22c55e);
+  color:#fff;
+}
+  /* ===== USER PILL (Light Mode Fix) ===== */
+body.light .user-pill{
+  background: rgba(255,255,255,0.85);      /* พื้นหลังขาวใสแบบ Store */
+  border: 1px solid rgba(0,0,0,0.12);       /* เส้นบางแบบ Store */
+  color: #0f172a;                           /* ตัวหนังสือเข้มแบบ Light Mode */
+  box-shadow: 0 4px 12px rgba(0,0,0,.10);
+}
+
+/* ปุ่ม logout ใน Light Mode */
+body.light .user-pill button{
+  background: rgba(239,68,68,.85);          /* โทนเดิมได้เลย */
+  color: white;
+}
+</style>
+</head>
+
+<body>
+<button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
+<!-- ปุ่มกลับเมนูหลัก -->
+<button class="back-fixed" onclick="location.href='index.html'">⬅ กลับเมนู</button>
+
+<div class="wrap">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">
+        <img src="assets/logo.png" alt="Logo">
+      </div>
+      <div>
+        <div class="title">ISSUE CENTER</div>
+        <div class="subtitle">KAOSU PACKING · Smart Operation</div>
+      </div>
+    </div>
+
+    <!-- แสดง user + logout -->
+    <div id="userArea" class="user-pill"></div>
+  </div>
+
+  <!-- FILTER CARD -->
+  <div class="search-card">
+    <div class="row" style="margin-bottom:8px;">
+      <div style="flex:1;min-width:200px;">
+        <div class="filter-label">วันที่เริ่ม</div>
+        <input type="date" id="startDate">
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div class="filter-label">ถึงวันที่</div>
+        <input type="date" id="endDate">
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div class="filter-label">สถานะ</div>
+        <select id="statusFilter">
+          <option value="">ทั้งหมด</option>
+          <option value="open">OPEN</option>
+          <option value="in_progress">IN PROGRESS</option>
+          <option value="done">DONE</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-end;">
+        <button class="filter-btn" onclick="loadIssues()">ค้นหา</button>
+      </div>
+    </div>
+    <div class="filter-note" id="filterNote">
+      แสดงปัญหาทั้งหมด
+    </div>
+  </div>
+
+  <!-- GRID ของการ์ด -->
+  <div id="list" class="grid"></div>
+
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loading" class="loading-overlay">
+  <div class="loading-box">
+    <img src="assets/logo.png" class="loading-logo" alt="logo">
+    <div class="spinner"></div>
+    <div style="font-size:13px;color:#e5e7eb;margin-top:6px;">กำลังโหลดข้อมูลปัญหา…</div>
+  </div>
+</div>
+
+<script>
+// 🔥 URL Apps Script ของ ISSUE (ของคุณ)
+const API = "https://script.google.com/macros/s/AKfycbwi367iEscZhY4E_o9TI8FeIRsTBVkN5yjedzMkmjOyH_xEgQp-2Lgw8bP13mDapBao9w/exec";
+// ===== THEME GLOBAL =====
+(function(){
+  const t = localStorage.getItem("theme") || "dark";
+  if(t === "light") document.body.classList.add("light");
+})();
+
+function toggleTheme(){
+  if(document.body.classList.contains("light")){
+    document.body.classList.remove("light");
+    localStorage.setItem("theme","dark");
+  }else{
+    document.body.classList.add("light");
+    localStorage.setItem("theme","light");
+  }
+}
+/* เมื่อเปิดหน้า ต้องล็อกอินแล้วเท่านั้น */
+(function checkLogin(){
+  const raw = localStorage.getItem("user");
+  if(!raw){
+    location.href = "login.html";
+  }
+})();
+
+/* helper loading */
+function showLoading(){ document.getElementById("loading").style.display="flex"; }
+function hideLoading(){ document.getElementById("loading").style.display="none"; }
+
+/* แสดงชื่อผู้ใช้มุมขวาบน + ปุ่ม logout */
+function renderUser(){
+  const box = document.getElementById("userArea");
+  const raw = localStorage.getItem("user");
+
+  if(!raw){
+    box.innerHTML = `
+      <span>ยังไม่ได้เข้าสู่ระบบ</span>
+      <button onclick="location.href='login.html'">เข้าสู่ระบบ</button>
+    `;
+    return;
+  }
+
+  try{
+    const u = JSON.parse(raw);
+    box.innerHTML = `
+      <span>👤 ${u.username || "UNKNOWN"} (${u.role || "user"})</span>
+      <button onclick="logout()">ออกจากระบบ</button>
+    `;
+  }catch(e){
+    localStorage.removeItem("user");
+    location.href = "login.html";
+  }
+}
+
+function logout(){
+  localStorage.removeItem("user");
+  location.href = "login.html";
+}
+
+/* โหลดรายการปัญหา */
+async function loadIssues(){
+  const box = document.getElementById("list");
+  const filterNote = document.getElementById("filterNote");
+  box.innerHTML = "";
+
+  showLoading();
+
+  // อ่าน user ปัจจุบัน
+  const rawUser = localStorage.getItem("user");
+  let currentUser = null;
+  try{
+    currentUser = rawUser ? JSON.parse(rawUser) : null;
+  }catch(e){
+    currentUser = null;
+  }
+  const role = currentUser && currentUser.role ? currentUser.role : "employee";
+
+  // อ่านค่าจากฟิลเตอร์
+  const status = document.getElementById("statusFilter").value;
+  const startDate = document.getElementById("startDate").value;
+  const endDate = document.getElementById("endDate").value;
+
+  try{
+    let url = API + "?action=issue_list";
+    if(status){
+      url += "&status=" + encodeURIComponent(status);
+    }
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if(!data.ok){
+      box.innerHTML = "<div style='color:#fecaca;'>❌ โหลดข้อมูลไม่สำเร็จ</div>";
+      hideLoading();
+      return;
+    }
+
+    let items = data.items || [];
+
+    // filter วันที่ฝั่งหน้าเว็บ
+    if(startDate || endDate){
+      const start = startDate ? new Date(startDate) : null;
+      const end = endDate ? new Date(endDate) : null;
+
+      items = items.filter(issue => {
+        if(!issue.timestamp) return false;
+        const t = new Date(issue.timestamp);
+
+        if(start && t < start) return false;
+        if(end){
+          const endDay = new Date(end);
+          endDay.setHours(23,59,59,999);
+          if(t > endDay) return false;
+        }
+        return true;
+      });
+    }
+
+    // อัปเดตข้อความ filter note
+    const parts = [];
+    if(startDate || endDate){
+      parts.push(`ช่วงวันที่ ${startDate || "?"} ถึง ${endDate || "?"}`);
+    }else{
+      parts.push("ทุกช่วงเวลา");
+    }
+    if(status){
+      parts.push(`สถานะ: ${status.toUpperCase()}`);
+    }else{
+      parts.push("ทุกสถานะ");
+    }
+    filterNote.textContent = `เงื่อนไข: ${parts.join(" · ")} / พบ ${items.length} รายการ`;
+
+    if(items.length === 0){
+      box.innerHTML = "<div style='color:#cbd5f5;font-size:13px;'>ไม่พบข้อมูลตามเงื่อนไข</div>";
+      hideLoading();
+      return;
+    }
+
+    // วาดการ์ด
+    box.innerHTML = items.map(issue => buildCard(issue, role)).join("");
+
+  }catch(e){
+    box.innerHTML = "❌ error: " + e;
+  }finally{
+    hideLoading();
+  }
+}
+
+/* สร้าง HTML ของการ์ด 1 ใบ */
+function buildCard(issue, role){
+  let statusClass = "badge-open";
+  let statusLabel = issue.status ? issue.status.toUpperCase() : "UNKNOWN";
+  if(issue.status === "in_progress"){
+    statusClass = "badge-progress";
+  }else if(issue.status === "done"){
+    statusClass = "badge-done";
+  }
+
+  const id = String(issue.id || "").trim();
+  const fixDetailValue = issue.fix_detail || "";
+  const fixByValue = issue.fix_by || "";
+  const fixTimeValue = issue.fix_time || "";
+
+  // action ของหัวหน้าเท่านั้น
+  let headActions = "";
+  if (role === "head" || role === "admin") {
+    headActions = `
+      <button class="btn-head warn" onclick="updateStatus('${id}','in_progress')">เริ่มแก้ไข</button>
+      <button class="btn-head" style="flex:1" onclick="updateStatus('${id}','done')">ปิดงาน</button>
+    `;
+  }
+
+  return `
+    <div class="item">
+      <div class="item-body">
+        <div class="field">
+          <span class="badge-status ${statusClass}">สถานะ: ${statusLabel}</span>
+        </div>
+
+        <div class="field"><span class="field-label">รหัส:</span> <span class="field-strong">${id || "-"}</span></div>
+        <div class="field"><span class="field-label">ITEM:</span> <span class="field-strong">${issue.item || "-"}</span></div>
+        <div class="field"><span class="field-label">Location:</span> ${issue.location || "-"}</div>
+        <div class="field"><span class="field-label">ประเภทปัญหา:</span> ${issue.type || issue.problem_type || "-"}</div>
+        <div class="field"><span class="field-label">รายละเอียดแจ้ง:</span> ${issue.detail || "-"}</div>
+        <div class="field field-small"><span class="field-label">เวลาแจ้ง:</span> ${issue.timestamp || "-"}</div>
+
+        <div class="field field-small">
+          <span class="field-label">แก้ไขโดย:</span> ${fixByValue || "-"}
+          ${fixTimeValue ? ` · เวลา: ${fixTimeValue}` : ""}
+        </div>
+        <div class="field field-small">
+          <span class="field-label">รายละเอียดการแก้ไข:</span> ${fixDetailValue || "-"}
+        </div>
+
+        <div class="fix-box">
+          <div>🛠 บันทึกรายละเอียดการแก้ไข</div>
+          <textarea id="fix_detail_${id}" placeholder="เช่น เปลี่ยน WI ใหม่, เคลียร์พื้นที่, ทดสอบแล้ว OK">${fixDetailValue}</textarea>
+          <input id="fix_by_${id}" placeholder="ชื่อผู้แก้ไข / รหัสพนักงาน" value="${fixByValue}">
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn-save" onclick="saveFix('${id}')">บันทึกการแก้ไข</button>
+        ${headActions}
+      </div>
+    </div>
+  `;
+}
+
+/* ฟังก์ชันให้หัวหน้าเปลี่ยนสถานะ */
+async function updateStatus(id, newStatus){
+  if(!id){
+    alert("ไม่พบรหัส Issue");
+    return;
+  }
+
+  const rawUser = localStorage.getItem("user");
+  if(!rawUser){
+    alert("กรุณาเข้าสู่ระบบใหม่");
+    location.href = "login.html";
+    return;
+  }
+
+  let user;
+  try{
+    user = JSON.parse(rawUser);
+  }catch(e){
+    alert("ข้อมูลผู้ใช้ไม่ถูกต้อง กรุณาล็อกอินใหม่");
+    localStorage.removeItem("user");
+    location.href = "login.html";
+    return;
+  }
+
+  const assigned = user.username || "";
+
+  if(!confirm(`ยืนยันเปลี่ยนสถานะเป็น ${newStatus.toUpperCase()} ?`)){
+    return;
+  }
+
+  try{
+    showLoading();
+
+    const url =
+      `${API}?action=issue_update` +
+      `&id=${encodeURIComponent(id)}` +
+      `&status=${encodeURIComponent(newStatus)}` +
+      `&assigned_to=${encodeURIComponent(assigned)}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    hideLoading();
+
+    if(!data.ok){
+      alert("อัปเดตไม่สำเร็จ: " + (data.error || ""));
+      return;
+    }
+
+    alert("อัปเดตสถานะเรียบร้อย");
+    loadIssues();
+  }catch(e){
+    hideLoading();
+    alert("error: " + e);
+  }
+}
+
+/* ฟังก์ชันบันทึกการแก้ไขของพนักงาน (ใช้ action=issue_fix) */
+async function saveFix(id){
+  const detailBox = document.getElementById("fix_detail_" + id);
+  const byBox = document.getElementById("fix_by_" + id);
+
+  if(!detailBox || !byBox){
+    alert("ไม่พบฟิลด์สำหรับบันทึก");
+    return;
+  }
+
+  const fixDetail = detailBox.value.trim();
+  const fixBy = byBox.value.trim();
+
+  if(!fixDetail || !fixBy){
+    alert("กรุณากรอกทั้งรายละเอียดการแก้ไข และชื่อผู้แก้ไข");
+    return;
+  }
+
+  try{
+    showLoading();
+
+    const url =
+      `${API}?action=issue_fix` +
+      `&id=${encodeURIComponent(id)}` +
+      `&fix_detail=${encodeURIComponent(fixDetail)}` +
+      `&fix_by=${encodeURIComponent(fixBy)}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    hideLoading();
+
+    if(!data.ok){
+      alert("บันทึกการแก้ไขไม่สำเร็จ: " + (data.error || ""));
+      return;
+    }
+
+    alert("บันทึกการแก้ไขเรียบร้อย");
+    loadIssues(); // โหลดใหม่ให้เห็นค่าล่าสุด
+
+  }catch(e){
+    hideLoading();
+    alert("error: " + e);
+  }
+}
+
+// เริ่มต้น
+renderUser();
+loadIssues();
+</script>
+
+</body>
+</html>
