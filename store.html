@@ -487,7 +487,13 @@
     .report-footer button{ flex:1; height:40px; border-radius:10px; border:1px solid rgba(0,0,0,.08); cursor:pointer; }
     .hide-location{ display:none!important; }
     body.light .report-modal{ background:#ffffff; }
-  </style>
+  
+
+/* Fix: dropdown options readable in dark theme (popup is usually white) */
+.lang-switch{ color-scheme: light; color: var(--text); }
+.lang-switch option{ background:#ffffff; color:#0f172a; }
+
+</style>
 </head>
 <body>
   <button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
@@ -500,7 +506,7 @@
   <div class="topbar">
     <div class="wrap">
       <div class="row">
-        <button class="back-btn" onclick="location.href='index.html'">⬅ เมนูหลัก</button>
+        <button class="back-btn" onclick="location.href='index.html'"><span id="t_back">⬅ เมนูหลัก</span></button>
         <div class="brand">
           <div class="h1">KAOSU PACKING</div>
           <div class="sub">Smart Warehouse · Prachinburi Branch</div>
@@ -544,9 +550,9 @@
   <!-- REPORT ISSUE MODAL -->
   <div class="report-overlay" id="reportOverlay" onclick="closeReportModal()">
     <div class="report-modal" onclick="event.stopPropagation()">
-      <div class="report-header">🚨 แจ้งปัญหา</div>
+      <div class="report-header" id="t_report_header">🚨 แจ้งปัญหา</div>
       <div class="report-body">
-        <label>Location / งาน</label>
+        <label id="t_report_item_lbl">Location / งาน</label>
         <input id="reportItem" placeholder="เช่น A1-01 / Part Name">
 
         <div class="hide-location">
@@ -554,29 +560,29 @@
           <input id="reportLocation" placeholder="Location (ถ้ามี)">
         </div>
 
-        <label>ประเภทปัญหา</label>
+        <label id="t_report_type_lbl">ประเภทปัญหา</label>
         <div class="report-options">
           <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> ตำแหน่งไม่ตรง</label>
           <label><input type="radio" name="reportType" value="ปริ้น WI"> ปริ้น WI</label>
           <label><input type="radio" name="reportType" value="อื่นๆ"> อื่นๆ</label>
         </div>
 
-        <label>รายละเอียดเพิ่มเติม</label>
+        <label id="t_report_detail_lbl">รายละเอียดเพิ่มเติม</label>
         <textarea id="reportDetail" placeholder="รายละเอียดปัญหา เช่น ผังไม่ตรงของจริง, ผังไม่ชัด, ฯลฯ"></textarea>
       </div>
       <div class="report-footer">
-        <button type="button" onclick="closeReportModal()">ยกเลิก</button>
-        <button type="button" onclick="submitReport()">ส่งแจ้งปัญหา</button>
+        <button type="button" id="btnReportCancel" onclick="closeReportModal()">ยกเลิก</button>
+        <button type="button" id="btnReportSubmit" onclick="submitReport()">ส่งแจ้งปัญหา</button>
       </div>
     </div>
   </div>
 
   <script>
     // ===== THEME GLOBAL =====
-    (function(){
-      const theme = localStorage.getItem("theme") || "dark";
-      if(theme === "light") document.body.classList.add("light");
-    })();
+(function(){
+  const theme = localStorage.getItem("theme") || "dark";
+  if(theme === "light") document.body.classList.add("light");
+})();
 
     function toggleTheme(){
       if(document.body.classList.contains("light")){
@@ -589,17 +595,106 @@
     }
 
     // ===== LANGUAGE GLOBAL =====
-    function applyLangFromStorage(){
-      const lang = localStorage.getItem("lang") || "th";
-      const sel = document.getElementById("langSwitcher");
-      if(sel) sel.value = lang;
-    }
-    function setLang(code){
-      localStorage.setItem("lang", code);
-      // ยังไม่ได้ทำการแปลข้อความในหน้า (เก็บค่าไว้ก่อน)
-    }
 
-    // ===================== CONFIG =====================
+// ===== I18N (languages.json) =====
+let I18N = null;
+let LANG = localStorage.getItem("lang") || "th";
+const STR = {}; // current strings cache
+
+async function loadI18N(){
+  if(I18N) return I18N;
+  try{
+    const res = await fetch('languages.json', { cache: 'no-store' });
+    I18N = await res.json();
+  }catch(err){
+    console.warn('โหลด languages.json ไม่สำเร็จ', err);
+    I18N = {};
+  }
+  return I18N;
+}
+
+function t(key, fallback=''){
+  const pack = (I18N && I18N[LANG]) ? I18N[LANG] : null;
+  return (pack && (pack[key] !== undefined)) ? String(pack[key]) : fallback;
+}
+
+function applyLang(code){
+  LANG = code || (localStorage.getItem('lang') || 'th');
+  localStorage.setItem('lang', LANG);
+
+  const sel = document.getElementById('langSwitcher');
+  if(sel) sel.value = LANG;
+
+  // cache strings used in dynamic UI
+  STR.ready = t('store_ready', t('ready_text', 'พร้อมใช้งาน'));
+  STR.loading = t('store_loading', 'กำลังโหลด...');
+  STR.searching = t('store_searching', 'กำลังค้นหา...');
+  STR.loadFail = t('store_load_fail', 'โหลดไม่สำเร็จ:');
+  STR.searchFail = t('store_search_fail', 'ค้นหาไม่สำเร็จ:');
+  STR.hasLayout = t('store_has_layout', 'มีผัง');
+  STR.noLayout = t('store_no_layout', 'ไม่มีผัง');
+
+  // static labels
+  const back = document.getElementById('t_back');
+  if(back) back.textContent = t('store_back_menu', t('back_menu_main', '⬅ เมนูหลัก'));
+
+  const q = document.getElementById('q');
+  if(q) q.placeholder = t('store_search_placeholder', q.placeholder);
+
+  const bs = document.getElementById('btnSearch');
+  if(bs) bs.textContent = t('store_search_btn', t('store_search', bs.textContent));
+
+  const br = document.getElementById('btnReportMain');
+  if(br) br.textContent = t('store_report_main', br.textContent);
+
+  const noteEl = document.getElementById('note');
+  if(noteEl && (!noteEl.textContent || noteEl.textContent.trim()==='' )){
+    noteEl.textContent = STR.ready;
+  }
+
+  const rh = document.getElementById('t_report_header');
+  if(rh) rh.textContent = t('store_report', rh.textContent);
+
+  const rl1 = document.getElementById('t_report_item_lbl');
+  if(rl1) rl1.textContent = t('store_report_item', rl1.textContent);
+
+  const rl2 = document.getElementById('t_report_type_lbl');
+  if(rl2) rl2.textContent = t('store_report_type', rl2.textContent);
+
+  const rl3 = document.getElementById('t_report_detail_lbl');
+  if(rl3) rl3.textContent = t('store_report_detail_more', rl3.textContent);
+
+  const ri = document.getElementById('reportItem');
+  if(ri) ri.placeholder = t('store_report_item_ph', ri.placeholder);
+
+  const rloc = document.getElementById('reportLocation');
+  if(rloc) rloc.placeholder = t('store_report_location_ph', rloc.placeholder);
+
+  const rd = document.getElementById('reportDetail');
+  if(rd) rd.placeholder = t('store_report_detail_ph', rd.placeholder);
+
+  const cancel = document.getElementById('btnReportCancel');
+  if(cancel) cancel.textContent = t('store_cancel', cancel.textContent);
+
+  const submit = document.getElementById('btnReportSubmit');
+  if(submit) submit.textContent = t('store_submit', submit.textContent);
+
+  // radio visible label text
+  document.querySelectorAll('input[name="reportType"]').forEach((inp)=>{
+    const lab = inp.closest('label');
+    if(!lab) return;
+    const val = inp.value;
+    if(val === 'ตำแหน่งไม่ตรง') lab.lastChild.textContent = ' ' + t('store_report_type_location', 'ตำแหน่งไม่ตรง');
+    if(val === 'ปริ้น WI') lab.lastChild.textContent = ' ' + t('store_report_type_print', 'ปริ้น WI');
+    if(val === 'อื่นๆ') lab.lastChild.textContent = ' ' + t('store_report_type_other', 'อื่นๆ');
+  });
+}
+
+function setLang(code){
+  applyLang(code);
+}
+
+// ===================== CONFIG =====================
     const API_BASE = "https://script.google.com/macros/s/AKfycbwi367iEscZhY4E_o9TI8FeIRsTBVkN5yjedzMkmjOyH_xEgQp-2Lgw8bP13mDapBao9w/exec";
     const LIMIT = 200;
 
@@ -637,17 +732,17 @@
     function hideLoading(){ loading.style.display="none"; }
 
     function escapeHtml(s){
-      return String(s ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/\"/g,"&quot;")
-        .replace(/'/g,"&#39;");
-    }
+  return String(s ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
 
     function escapeRegExp(s){
-      return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    }
+  return String(s).replace(/[.*+?^${}()|[\]\]/g, "\$&");
+}
 
     function highlight(text, q){
       const t = String(text ?? "");
@@ -735,7 +830,7 @@
       const detail = reportDetail.value || "";
 
       if(!item && !detail){
-        alert("กรุณาระบุอย่างน้อยชื่อ Location/งาน หรือรายละเอียดปัญหา");
+        alert(t("store_err_need_info","กรุณาระบุอย่างน้อยชื่อ Location/งาน หรือรายละเอียดปัญหา"));
         return;
       }
 
@@ -762,7 +857,7 @@
         }
       }catch(err){
         hideLoading();
-        alert("เรียกหลังบ้านไม่สำเร็จ ❌\n" + err.message);
+        alert(t("store_backend_fail","เรียกหลังบ้านไม่สำเร็จ ❌") + "\n" + err.message);
       }
     }
 
@@ -777,7 +872,7 @@
         <div class="card">
           <div class="head">
             <div class="loc">${highlight(loc, q)}</div>
-            <div class="badge ${hasLayout ? 'ok' : 'ng'}">${hasLayout ? 'มีผัง' : 'ไม่มีผัง'}</div>
+            <div class="badge ${hasLayout ? 'ok' : 'ng'}">${hasLayout ? (STR.hasLayout||'มีผัง') : (STR.noLayout||'ไม่มีผัง')}</div>
           </div>
           <div class="field"><span class="label">ลูกค้า:</span> <b>${highlight(customer, q)}</b></div>
           <div class="field"><span class="label">งาน:</span> <b>${highlight(part, q)}</b></div>
@@ -805,7 +900,7 @@
       if(fetching) return;
       fetching = true;
       showLoading();
-      note.textContent = "กำลังโหลด...";
+      note.textContent = (STR.loading || "กำลังโหลด...");
       grid.innerHTML = "";
       count.textContent = "0";
 
@@ -837,7 +932,7 @@
         VIEW = ALL;
         render("");
       }catch(err){
-        note.textContent = "โหลดไม่สำเร็จ: " + err.message;
+        note.textContent = (STR.loadFail || "โหลดไม่สำเร็จ:") + " " + err.message;
         console.error(err);
       }finally{
         hideLoading();
@@ -855,7 +950,7 @@
       }
 
       showLoading();
-      note.textContent = "กำลังค้นหา...";
+      note.textContent = (STR.searching || "กำลังค้นหา...");
       grid.innerHTML = "";
       count.textContent = "0";
 
@@ -875,7 +970,7 @@
         VIEW = ALL;
         render(qv);
       }catch(err){
-        note.textContent = "ค้นหาไม่สำเร็จ: " + err.message;
+        note.textContent = (STR.searchFail || "ค้นหาไม่สำเร็จ:") + " " + err.message;
         console.error(err);
       }finally{
         hideLoading();
@@ -909,8 +1004,7 @@
     }
 
     // START
-    applyLangFromStorage();
-    loadAll();
+loadI18N().then(()=>{ applyLang(LANG); loadAll(); });
   </script>
 </body>
 </html>
