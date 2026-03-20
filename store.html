@@ -776,7 +776,7 @@
 
         while(!finished){
           const v = Date.now();
-          const url = `${API_BASE}?action=list&limit=${LIMIT}&offset=${offset}&v=${v}`;
+          const url = `${API_BASE}?action=store_list&limit=${LIMIT}&offset=${offset}&v=${v}`;
           const r = await jsonp(url);
           const items = (r && (r.items || r.results)) ? (r.items || r.results) : [];
 
@@ -806,44 +806,24 @@
       }
     }
 
-    async function doSearch(){
-      const qv = (qEl.value || "").trim();
+async function doSearch(){
+  const qv = (qEl.value || "").trim().toLowerCase();
 
-      // ถ้าช่องว่างแล้วกดค้นหา => แสดงทั้งหมด
-      if(!qv){
-        await loadAll();
-        return;
-      }
+  // ถ้าว่าง = แสดงทั้งหมด
+  if(!qv){
+    VIEW = ALL;
+    render("");
+    return;
+  }
 
-      showLoading();
-      note.textContent = (STR.searching || "กำลังค้นหา...");
-      note.dataset.locked = '1';
-      grid.innerHTML = "";
-      count.textContent = "0";
+  VIEW = ALL.filter(it =>
+    String(it.location_code || "").toLowerCase().includes(qv) ||
+    String(it.part_name || "").toLowerCase().includes(qv) ||
+    String(it.customer_code || "").toLowerCase().includes(qv)
+  );
 
-      try{
-        const v = Date.now();
-        const url = `${API_BASE}?action=search&q=${encodeURIComponent(qv)}&v=${v}`;
-        const r = await jsonp(url);
-        const items = (r && (r.items || r.results)) ? (r.items || r.results) : [];
-
-        ALL = items.map(x => ({
-          location_code: x.location_code || "",
-          customer_code: x.customer_code || "",
-          part_name: x.part_name || "",
-          layout_image_url: x.layout_image_url || ""
-        }));
-
-        VIEW = ALL;
-        render(qv);
-      }catch(err){
-        note.textContent = (STR.searchFail || "ค้นหาไม่สำเร็จ:") + " " + err.message;
-        console.error(err);
-      }finally{
-        hideLoading();
-        note.dataset.locked = '0';
-      }
-    }
+  render(qv);
+}
 
     // ===================== EVENTS =====================
     btnSearch.onclick = async () => {
