@@ -1,8 +1,11 @@
 {
   "name": "KAOSU Smart Operation",
   "short_name": "KAOSU",
+  "description": "Smart Operation System · Prachinburi Branch",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#020617",
   "theme_color": "#020617",
   "icons": []
