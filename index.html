@@ -1,155 +1,197 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KAOSU PACKING · Smart Operation</title>
-<style>
-manifest.json
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#020617">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="KAOSU">
-:root{
-  --bg1:#020617;
-  --bg2:#0f172a;
-  --text:#e5e7eb;
-  --muted:#94a3b8;
-  --glass:rgba(255,255,255,.08);
-  --border:rgba(255,255,255,.18);
-  --pack:#2563eb;
-  --store:#16a34a;
-  --issue:#e63946;
-  --header-shadow: radial-gradient(900px 500px at top, var(--bg2) 0%, transparent 60%);
-}
-body.light{
-  --bg1:#f5f7fa;
-  --bg2:#e2e8f0;
-  --text:#0f172a;
-  --muted:#64748b;
-  --glass:rgba(255,255,255,.92);
-  --border:rgba(0,0,0,.08);
-  --header-shadow:none;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  height:100vh;
-  font-family:system-ui,-apple-system,Segoe UI,Arial;
-  color:var(--text);
-  background:
-    var(--header-shadow),
-    linear-gradient(180deg,var(--bg1),var(--bg2));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:background .25s ease,color .25s ease;
-}
-.toggle-theme{
-  position:fixed;
-  top:16px;
-  right:16px;
-  padding:8px 14px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:var(--glass);
-  backdrop-filter:blur(10px);
-  cursor:pointer;
-  color:var(--text);
-  font-size:13px;
-  z-index:9999;
-}
-.card{
-  width:380px;
-  max-width:92%;
-  padding:34px 26px 30px;
-  border-radius:28px;
-  background:var(--glass);
-  backdrop-filter: blur(16px);
-  border:1px solid var(--border);
-  box-shadow:0 40px 90px rgba(0,0,0,.65);
-  text-align:center;
-}
-.logo{
-  width:92px;
-  margin-bottom:16px;
-}
-.brand{
-  font-size:22px;
-  font-weight:900;
-  letter-spacing:.6px;
-}
-.sub{
-  font-size:13px;
-  color:var(--muted);
-  margin-top:6px;
-  margin-bottom:30px;
-}
-.menu{display:flex;gap:14px;}
-.menu-btn{
-  flex:1;
-  height:68px;
-  border-radius:20px;
-  border:none;
-  cursor:pointer;
-  font-size:18px;
-  font-weight:800;
-  letter-spacing:.8px;
-  color:#fff;
-  box-shadow:0 14px 36px rgba(0,0,0,.55);
-}
-.menu-btn.pack{background:linear-gradient(135deg,#3b82f6,var(--pack));}
-.menu-btn.store{background:linear-gradient(135deg,#22c55e,var(--store));}
-.issue-wrapper{margin-top:16px;}
-.issue-btn{
-  width:100%;height:65px;border-radius:20px;border:none;cursor:pointer;
-  color:#fff;font-size:20px;font-weight:900;letter-spacing:.8px;
-  background:linear-gradient(135deg,#ff6b6b,var(--issue));
-  box-shadow:0 14px 36px rgba(0,0,0,.55);
-}
-.footer{
-  margin-top:26px;font-size:11px;color:var(--muted);
-}
-</style>
-</head>
-<body>
-<button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
-<div class="card">
-  <img src="assets/logo.png" class="logo" alt="Kaosu Packing">
-  <div class="brand">KAOSU PACKING</div>
-  <div class="sub">Sriracha Industry · Prachinburi Branch</div>
-  <div class="menu">
-    <button class="menu-btn pack" onclick="location.href='packing.html'">PACKING</button>
-    <button class="menu-btn store" onclick="location.href='store.html'">STORE</button>
-  </div>
-  <div class="issue-wrapper">
-    <button class="issue-btn" onclick="location.href='issue-center.html'">ISSUE CENTER</button>
-  </div>
-  <div class="footer">Smart Operation System · Prototype</div>
-</div>
-<script>
-(function(){
-  const t = localStorage.getItem("theme") || "dark";
-  if(t === "light") document.body.classList.add("light");
-})();
-function toggleTheme(){
-  if(document.body.classList.contains("light")){
-    document.body.classList.remove("light");
-    localStorage.setItem("theme","dark");
-  }else{
-    document.body.classList.add("light");
-    localStorage.setItem("theme","light");
-  }
-}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KAOSU PACKING · Smart Operation</title>
 
-</script>
-  
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
-</script>
+  <!-- ✅ PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#020617">
+
+  <!-- ✅ iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="KAOSU">
+
+  <!-- ✅ STYLE -->
+  <style>
+    :root{
+      --bg1:#020617;
+      --bg2:#0f172a;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --glass:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.18);
+      --pack:#2563eb;
+      --store:#16a34a;
+      --issue:#e63946;
+      --header-shadow: radial-gradient(900px 500px at top, var(--bg2) 0%, transparent 60%);
+    }
+
+    body.light{
+      --bg1:#f5f7fa;
+      --bg2:#e2e8f0;
+      --text:#0f172a;
+      --muted:#64748b;
+      --glass:rgba(255,255,255,.92);
+      --border:rgba(0,0,0,.08);
+      --header-shadow:none;
+    }
+
+    *{box-sizing:border-box;}
+
+    body{
+      margin:0;
+      height:100vh;
+      font-family:system-ui,-apple-system,Segoe UI,Arial;
+      color:var(--text);
+      background:
+        var(--header-shadow),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:background .25s ease,color .25s ease;
+    }
+
+    .toggle-theme{
+      position:fixed;
+      top:16px;
+      right:16px;
+      padding:8px 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:var(--glass);
+      backdrop-filter:blur(10px);
+      cursor:pointer;
+      color:var(--text);
+      font-size:13px;
+      z-index:9999;
+    }
+
+    .card{
+      width:380px;
+      max-width:92%;
+      padding:34px 26px 30px;
+      border-radius:28px;
+      background:var(--glass);
+      backdrop-filter: blur(16px);
+      border:1px solid var(--border);
+      box-shadow:0 40px 90px rgba(0,0,0,.65);
+      text-align:center;
+    }
+
+    .logo{
+      width:92px;
+      margin-bottom:16px;
+    }
+
+    .brand{
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:.6px;
+    }
+
+    .sub{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:6px;
+      margin-bottom:30px;
+    }
+
+    .menu{display:flex;gap:14px;}
+
+    .menu-btn{
+      flex:1;
+      height:68px;
+      border-radius:20px;
+      border:none;
+      cursor:pointer;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.8px;
+      color:#fff;
+      box-shadow:0 14px 36px rgba(0,0,0,.55);
+    }
+
+    .menu-btn.pack{
+      background:linear-gradient(135deg,#3b82f6,var(--pack));
+    }
+
+    .menu-btn.store{
+      background:linear-gradient(135deg,#22c55e,var(--store));
+    }
+
+    .issue-wrapper{margin-top:16px;}
+
+    .issue-btn{
+      width:100%;
+      height:65px;
+      border-radius:20px;
+      border:none;
+      cursor:pointer;
+      color:#fff;
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:.8px;
+      background:linear-gradient(135deg,#ff6b6b,var(--issue));
+      box-shadow:0 14px 36px rgba(0,0,0,.55);
+    }
+
+    .footer{
+      margin-top:26px;
+      font-size:11px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
+
+  <div class="card">
+    <img src="assets/logo.png" class="logo" alt="Kaosu Packing">
+    <div class="brand">KAOSU PACKING</div>
+    <div class="sub">Sriracha Industry · Prachinburi Branch</div>
+
+    <div class="menu">
+      <button class="menu-btn pack" onclick="location.href='packing.html'">PACKING</button>
+      <button class="menu-btn store" onclick="location.href='store.html'">STORE</button>
+    </div>
+
+    <div class="issue-wrapper">
+      <button class="issue-btn" onclick="location.href='issue-center.html'">ISSUE CENTER</button>
+    </div>
+
+    <div class="footer">Smart Operation System · Prototype</div>
+  </div>
+
+  <!-- ✅ THEME -->
+  <script>
+    (function(){
+      const t = localStorage.getItem("theme") || "dark";
+      if(t === "light") document.body.classList.add("light");
+    })();
+
+    function toggleTheme(){
+      if(document.body.classList.contains("light")){
+        document.body.classList.remove("light");
+        localStorage.setItem("theme","dark");
+      }else{
+        document.body.classList.add("light");
+        localStorage.setItem("theme","light");
+      }
+    }
+  </script>
+
+  <!-- ✅ SERVICE WORKER -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js");
+    }
+  </script>
 
 </body>
 </html>
