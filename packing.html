@@ -1,558 +1,633 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PACKING | KAOSU PACKING</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PACKING · KAOSU PACKING</title>
+  <style>
 
-<style>
-/* ===== THEME (Dark/Light Global) ===== */
-:root{
-  --bg1:#020617;
-  --bg2:#0f172a;
-  --glass:rgba(255,255,255,.08);
-  --border:rgba(255,255,255,.18);
-  --text:#e5e7eb;
-  --muted:#94a3b8;
-  --accent:#22c55e;
-  --accent2:#38bdf8;
-  --blue:#3b82f6;
-  --warn:#f59e0b;
-  --danger:#ef4444;
+    :root{
+      --bg1:#020617;
+      --bg2:#0f172a;
+      --glass:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.18);
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --accent:#22c55e;
+      --accent2:#38bdf8;
+      /* เงาวงด้านบน ใช้เฉพาะโหมดมืด */
+      --header-shadow: radial-gradient(900px 500px at top, #1e293b 0%, transparent 60%);
+    }
 
-  /* เงาวงด้านบน ใช้เฉพาะโหมดมืด */
-  --header-shadow: radial-gradient(900px 500px at top, #1e293b 0%, transparent 60%);
-}
+    /* Light mode */
+    body.light{
+      --bg1:#f5f7fa;
+      --bg2:#e2e8f0;
+      --glass:rgba(255,255,255,.96);
+      --border:rgba(15,23,42,.10);
+      --text:#0f172a;
+      --muted:#64748b;
+      --header-shadow:none;
+    }
 
-/* Light mode */
-body.light{
-  --bg1:#f5f7fa;
-  --bg2:#e2e8f0;
-  --glass:rgba(255,255,255,.96);
-  --border:rgba(15,23,42,.08);
-  --text:#0f172a;
-  --muted:#64748b;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:system-ui,-apple-system,Segoe UI,Arial;
+      color:var(--text);
+      background:
+        var(--header-shadow),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      transition:background .25s ease,color .25s ease;
+    }
 
-  /* ตัดเงาวงออกในโหมดสว่าง */
-  --header-shadow:none;
-}
+    /* ปุ่มสลับธีม */
+    .toggle-theme{
+      position:fixed;
+      top:16px;
+      right:16px;
+      z-index:2000;
+      padding:8px 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:var(--glass);
+      color:var(--text);
+      cursor:pointer;
+      backdrop-filter:blur(10px);
+      font-size:13px;
+    }
 
-*{box-sizing:border-box}
+    /* ปุ่มเลือกภาษา ข้างๆ ปุ่มธีม */
+    .lang-switch{
+      position:fixed;
+      top:16px;
+      right:120px;
+      z-index:2000;
+      padding:6px 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:var(--glass);
+      color:var(--text);
+      cursor:pointer;
+      font-size:12px;
+      backdrop-filter:blur(8px);
+    }
 
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Arial;
-  color:var(--text);
-  background:
-    var(--header-shadow),
-    linear-gradient(180deg,var(--bg1),var(--bg2));
-  transition:background .25s ease,color .25s ease;
-}
+    body.light .lang-switch{
+      background:rgba(255,255,255,.95);
+      border-color:rgba(15,23,42,.15);
+    }
 
-/* ปุ่มสลับธีมลอยมุมขวาบน */
-.toggle-theme{
-  position:fixed;
-  top:16px;
-  right:16px;
-  z-index:9999;
-  padding:8px 14px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:var(--glass);
-  color:var(--text);
-  cursor:pointer;
-  backdrop-filter:blur(8px);
-  font-size:13px;
-}
-.toggle-theme:hover{ filter:brightness(1.05); }
+    /* ===== TOP BAR ===== */
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      backdrop-filter: blur(14px);
+      background:rgba(2,6,23,.65);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    body.light .topbar{
+      background: rgba(255,255,255,0.72);
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+      backdrop-filter: blur(18px);
+    }
 
-/* Language switch (match STORE) */
-.lang-switch{
- position:fixed;
- top:16px;
- right:120px;
- z-index:9999;
- padding:6px 12px;
- border-radius:10px;
- border:1px solid var(--border);
- background:var(--glass);
- color:var(--text);
- cursor:pointer;
- font-size:12px;
- backdrop-filter:blur(8px);
- -webkit-appearance:none;
- appearance:none;
-}
-.lang-switch:focus{outline:none; box-shadow:0 0 0 3px rgba(56,189,248,.18)}
-body.light .lang-switch{
- background:rgba(255,255,255,.95);
- border-color:rgba(15,23,42,.15);
-}
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:14px 16px 12px;
+    }
 
-.wrap{max-width:1200px;margin:auto;padding:16px}
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
 
-/* ===== BACK BUTTON ===== */
-.back-fixed{
-  position:fixed;
-  top:16px;
-  left:16px;
-  z-index:9999;
-  padding:10px 14px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.10);
-  color:#fff;
-  cursor:pointer;
-  backdrop-filter:blur(8px);
-}
-.back-fixed:hover{ filter:brightness(1.06); }
+    /* Back */
+    .back-btn{
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      cursor:pointer;
+    }
+    .back-btn:hover{ filter:brightness(1.06); }
 
-/* ===== HEADER ===== */
-.header{display:flex;align-items:center;gap:12px;margin:6px 0 14px}
-.logo{
-  width:44px;height:44px;border-radius:12px;
-  background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.18);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
-  overflow:hidden;
-}
-.logo img{max-width:80%;max-height:80%}
-.title{font-size:18px;font-weight:900;letter-spacing:.3px}
-.subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+    body.light .back-btn{
+      background: rgba(255,255,255,0.55);
+      color: #0f172a;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
 
-/* ===== SEARCH ===== */
-.search-card{
-  background:var(--glass);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:14px;
-  margin-bottom:12px;
-  backdrop-filter: blur(14px);
-  box-shadow:0 18px 50px rgba(0,0,0,.35);
-}
-.row{display:flex;gap:8px;flex-wrap:wrap}
+    /* Brand */
+    .brand{
+      margin-left:auto;
+      text-align:right;
+    }
+    .brand .h1{
+      font-weight:900;
+      letter-spacing:.6px;
+      font-size:14px;
+    }
+    .brand .sub{
+      color:var(--muted);
+      font-size:11px;
+      margin-top:2px;
+    }
 
-/* input/button unified sizing */
-input,button{height:48px;border-radius:14px;padding:0 14px;font-size:15px}
-input{
-  flex:1;
-  min-width:260px; /* กันเบียดบนจอแคบ */
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.07);
-  color:#fff;
-  outline:none;
-  -webkit-appearance:none;
-  appearance:none;
-}
-input::placeholder{color:var(--muted)}
-input:focus{border-color:rgba(56,189,248,.45);box-shadow:0 0 0 3px rgba(56,189,248,.18)}
+    /* ===== SEARCH AREA ===== */
+    .search-area{
+      margin-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
 
-button.primary{
-  background:linear-gradient(135deg,#34d399,var(--accent));
-  color:#fff;border:none;cursor:pointer;
-  font-weight:900;letter-spacing:.2px;
-  box-shadow:0 14px 36px rgba(0,0,0,.35);
-  white-space:nowrap;
-}
-button.primary:hover{filter:brightness(1.06)}
+    /* Search row: input + button */
+    .search-row{
+      display:grid;
+      grid-template-columns: 1fr 160px;
+      gap:12px;
+      align-items:stretch;
+    }
 
-button.secondary{
-  background:rgba(96,165,250,.16);
-  color:#bfdbfe;
-  border:1px solid rgba(96,165,250,.25);
-  cursor:pointer;
-  font-weight:900;
-  white-space:nowrap;
-}
-button.secondary:hover{filter:brightness(1.06)}
+    .search-row input{
+      width:100%;
+      height:56px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--glass);
+      color:var(--text);
+      padding:0 18px;
+      font-size:16px;
+      -webkit-appearance:none;
+      appearance:none;
+      outline:none;
+    }
+    .search-row input::placeholder{ color:var(--muted); }
 
-button.ghost{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.18);
-  color:#fff;
-  cursor:pointer;
-  white-space:nowrap;
-}
-button.ghost:hover{filter:brightness(1.06)}
+    /* Buttons */
+    .btn{
+      height:56px;
+      min-height:56px;
+      padding:0 18px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      width:100%;
+      display:block;
+      text-align:center;
+      line-height:56px;
+      font-weight:900;
+      font-size:16px;
+      letter-spacing:.3px;
+      white-space:nowrap;
+      color:#fff;
+      box-shadow:0 14px 36px rgba(0,0,0,.35);
+      transition:transform .15s ease, filter .15s ease;
+    }
+    .btn:hover{ filter:brightness(1.06); }
+    .btn:active{ transform:scale(.98); }
+    .btn.search{ background:linear-gradient(135deg,#34d399,var(--accent)); }
+    .btn.issue-main{ background:linear-gradient(135deg,#f97373,#e11d48); }
 
-/* ปุ่มยาว “แจ้งปัญหา(งานไม่อยู่ในฐาน)” ให้ขึ้นบรรทัดใหม่บนคอม */
-#btnReportMain{ flex-basis:100%; }
+    body.light .search-row input{
+      background:#ffffff;
+      color:var(--text);
+      border-color:rgba(148,163,184,.7);
+    }
 
-/* ===== FILTER BAR ===== */
-.filter-bar{
-  display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center
-}
-.filter-bar button{
-  height:40px;padding:0 14px;border-radius:999px;font-size:14px;
-  border:1px solid rgba(255,255,255,.16);
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  cursor:pointer;
-  display:flex;align-items:center;gap:6px;
-  white-space:nowrap;
-}
+    /* Status */
+    .status{
+      margin-top:2px;
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    body.light .status{ color:#1e293b; }
+
+    /* Mobile toggle (arrow) */
+    .mobile-toggle{
+      display:none;
+      width:100%;
+      margin-top:10px;
+      height:38px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--glass);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.3px;
+      backdrop-filter:blur(10px);
+      box-shadow:0 10px 28px rgba(0,0,0,.28);
+    }
+    .mobile-toggle:hover{ filter:brightness(1.06); }
+
+    /* Desktop fine-tune */
+    @media (min-width: 900px){
+      .search-row{ grid-template-columns: 1fr 170px; }
+      .btn{ font-size:15px; }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px){
+      .search-row{ grid-template-columns: 1fr 96px; }
+      .search-row input{ font-size:17px; height:58px; }
+      .btn{ font-size:17px; height:58px; min-height:58px; line-height:58px; }
+      .mobile-toggle{ display:block; }
+
+      /* collapse behaviour */
+      body.mobile-collapsed #searchArea{ display:none; }
+    }
+
+    /* ===== GRID ===== */
+    .grid{
+      max-width:1200px;
+      margin:0 auto;
+      padding:16px 16px 34px;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap:16px;
+    }
+
+    /* ===== CARD ===== */
+    .card{
+      background:var(--glass);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 20px 55px rgba(0,0,0,.45);
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 26px 70px rgba(0,0,0,.55);
+    }
+    body.light .card{ box-shadow:0 12px 30px rgba(15,23,42,.12); }
+
+    .head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .loc{
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:.5px;
+      color:var(--accent);
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.08);
+      color:#fff;
+    }
+    .badge.ok{ color:#bbf7d0; border-color:rgba(34,197,94,.35); }
+    .badge.ng{ color:#fecaca; border-color:rgba(239,68,68,.35); }
+
+    body.light .badge{
+      background:rgba(59,130,246,.12);
+      border-color:rgba(37,99,235,.3);
+      color:#1e293b;
+    }
+    body.light .badge.ok{
+      background:rgba(34,197,94,.12);
+      border-color:rgba(22,163,74,.4);
+      color:#14532d;
+    }
+    body.light .badge.ng{
+      background:rgba(248,113,113,.12);
+      border-color:rgba(220,38,38,.4);
+      color:#7f1d1d;
+    }
+
+    .field{
+      margin:6px 0;
+      font-size:14px;
+      color:#dbeafe;
+    }
+    .field span.label{
+      color:var(--muted);
+      margin-right:6px;
+    }
+
+    /* ทำให้ช่อง “ลูกค้า:” และ “งาน:” ชัดขึ้นใน Light Mode */
+    body.light .field{ color:#0f172a; }
+    body.light .field span.label{ color:#334155; }
+
+    /* Layout image */
+    .thumb{
+      margin-top:12px;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.15);
+    }
+    .thumb img{
+      width:100%;
+      height:190px;
+      object-fit:cover;
+      display:block;
+      cursor:pointer;
+    }
+
+    /* Card actions */
+    .card-actions{
+      margin-top:10px;
+      display:flex;
+      justify-content:flex-end;
+    }
+    .card-actions .report-btn{
+      height:38px;
+      padding:0 16px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:800;
+      background:linear-gradient(135deg,#f97373,#e11d48);
+      color:#fff;
+      box-shadow:0 12px 30px rgba(0,0,0,.45);
+    }
+    .card-actions .report-btn:hover{ filter:brightness(1.06); }
+
+    /* Highlight */
+    mark{
+      background:rgba(56,189,248,.25);
+      color:#e0f2fe;
+      padding:0 3px;
+      border-radius:6px;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.78);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+    }
+    .modal img{
+      max-width:96vw;
+      max-height:92vh;
+      object-fit:contain;
+      border-radius:14px;
+      box-shadow:0 24px 70px rgba(0,0,0,.6);
+    }
+    .modal .close{
+      position:fixed;
+      top:18px;
+      right:18px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      cursor:pointer;
+    }
+    body.light .modal .close{
+      background:rgba(15,23,42,.8);
+      border-color:rgba(15,23,42,.7);
+    }
+
+    /* Loading overlay */
+    .loading{
+      position:fixed;
+      inset:0;
+      background:rgba(2,6,23,.70);
+      backdrop-filter:blur(8px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9000;
+    }
+    .loading .box{ text-align:center; }
+    .loading .logo{
+      width:92px;
+      filter: drop-shadow(0 0 18px rgba(56,189,248,.35));
+      animation:breath 2.2s ease-in-out infinite;
+    }
+    @keyframes breath{
+      0%,100%{ opacity:.55; transform:scale(1); }
+      50%{ opacity:1; transform:scale(1.03); }
+    }
+    .loading .txt{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* REPORT MODAL */
+    .report-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.35);
+      backdrop-filter:blur(8px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:40000;
+    }
+    .report-modal{
+      width:380px;
+      max-width:92vw;
+      background:rgba(255,255,255,.96);
+      border-radius:18px;
+      box-shadow:0 30px 80px rgba(0,0,0,.45);
+      overflow:hidden;
+    }
+    .report-header{
+      padding:14px 16px;
+      font-size:18px;
+      font-weight:900;
+      background:#0b1220;
+      color:#e5e7eb;
+      border-bottom:1px solid rgba(0,0,0,.25);
+    }
+    .report-body{
+      padding:14px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .report-body label{ font-size:13px; font-weight:800; color:#111827; }
+    .report-body input,.report-body textarea{
+      border:1px solid #e5e7eb;
+      border-radius:10px;
+      padding:9px 10px;
+      font-size:14px;
+      outline:none;
+    }
+    .report-body textarea{ min-height:80px; resize:none; }
+    .report-options{ display:flex; flex-direction:column; gap:6px; font-size:14px; color:#111827; }
+    .report-footer{
+      display:flex;
+      gap:10px;
+      padding:12px 16px;
+      border-top:1px solid #e5e7eb;
+    }
+    .report-footer button{ flex:1; height:40px; border-radius:10px; border:1px solid rgba(0,0,0,.08); cursor:pointer; }
+    .hide-location{ display:none!important; }
+    body.light .report-modal{ background:#ffffff; }
+  
+
+/* ===== PACKING FILTER BAR (match STORE pills) ===== */
+.filter-bar{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filter-bar button{height:40px;padding:0 14px;border-radius:999px;font-size:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .filter-bar button span{font-weight:900}
-.filter-bar button.active{
-  background:rgba(56,189,248,.18)!important;
-  border-color:rgba(56,189,248,.35)!important;
-}
+.filter-bar button.active{background:rgba(56,189,248,.18)!important;border-color:rgba(56,189,248,.35)!important}
+body.light .filter-bar button{background:rgba(15,23,42,.04);border-color:rgba(148,163,184,.4);color:var(--text)}
+body.light .filter-bar button.active{background:rgba(56,189,248,.18)!important;border-color:rgba(56,189,248,.55)!important;color:#0f172a}
 .small-note{font-size:12px;color:var(--muted);margin-left:auto}
 
-/* ===== GRID ===== */
-.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
-
-/* ===== CARD ===== */
-.item{
-  background:var(--glass);
-  border:1px solid var(--border);
-  border-radius:20px;
-  overflow:hidden;
-  cursor:pointer;
-  position:relative;
-  transition:transform .25s ease, box-shadow .25s ease;
-  backdrop-filter: blur(14px);
-}
-.item:hover{transform:translateY(-6px);box-shadow:0 22px 55px rgba(0,0,0,.45)}
-.item.active{border-color:rgba(56,189,248,.35);box-shadow:0 26px 65px rgba(56,189,248,.18)}
-
-/* item-body */
-.item-body{
-  display:flex;
-  gap:14px;
-  padding:16px;
-  align-items:flex-start;
-}
-
-/* Fade-in */
-.item{opacity:0;transform:translateY(10px);animation:fadeUp .28s ease-out forwards}
-@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-
-/* ===== INFO ===== */
-.info{flex:1}
-.badge{
-  display:inline-block;padding:3px 12px;border-radius:999px;font-size:12px;margin-right:6px;
-  background:rgba(96,165,250,.16);border:1px solid rgba(96,165,250,.25);color:#bfdbfe;
-}
-.badge.ok{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.35);color:#bbf7d0}
-.badge.warn{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35);color:#fecaca}
-.field{margin:6px 0}
-.missing{color:#fecaca;font-weight:700}
-
-/* ===== WI BAR ===== */
-.wi-bar{
-  display:flex;gap:10px;padding:12px;border-top:1px solid rgba(255,255,255,.10);
-  background:rgba(0,0,0,.12);
-}
-.wi-bar button{
-  flex:1;height:42px;border-radius:12px;border:none;font-size:14px;cursor:pointer;
-  font-weight:900;
-}
-.wi-bar button.on{background:linear-gradient(135deg,#34d399,var(--accent));color:#fff}
-.wi-bar button.on:hover{filter:brightness(1.06)}
-.wi-bar button.off{background:rgba(255,255,255,.10);color:var(--muted);cursor:not-allowed}
-
-/* ปุ่มแจ้งปัญหา */
-.wi-bar button.report-btn{
-  background:rgba(239,68,68,.12);
-  color:#fecaca;
-  border:1px solid rgba(239,68,68,.25);
-  cursor:pointer;
-}
-.wi-bar button.report-btn:hover{filter:brightness(1.08)}
-
-/* ===== ACTION PANEL (moved buttons to side) ===== */
-.action-panel{
- width:160px;
- min-width:160px;
- border:2px solid rgba(239,68,68,.35);
- border-radius:16px;
- padding:10px;
- background:rgba(239,68,68,.06);
- display:flex;
- flex-direction:column;
- gap:10px;
-}
-.action-panel button{
- width:100%;
- height:42px;
- border-radius:12px;
- border:none;
- font-size:14px;
- cursor:pointer;
- font-weight:900;
-}
+/* ===== PACKING CARD ACTIONS (4 buttons in red panel) ===== */
+.card-body{display:flex;gap:14px;align-items:flex-start}
+.action-panel{width:170px;min-width:170px;border:2px solid rgba(239,68,68,.35);border-radius:16px;padding:10px;background:rgba(239,68,68,.06);display:flex;flex-direction:column;gap:10px}
+.action-panel button{width:100%;height:42px;border-radius:12px;border:none;font-size:14px;cursor:pointer;font-weight:900}
 .action-panel button.on{background:linear-gradient(135deg,#34d399,var(--accent));color:#fff}
 .action-panel button.off{background:rgba(255,255,255,.10);color:var(--muted);cursor:not-allowed}
-.action-panel button.report-btn{
- background:rgba(239,68,68,.12);
- color:#fecaca;
- border:1px solid rgba(239,68,68,.25);
- cursor:pointer;
-}
-.action-panel button.report-btn:hover{filter:brightness(1.08)}
+.action-panel button.report-btn{background:linear-gradient(135deg,#f97373,#e11d48);color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.action-panel button.report-btn:hover{filter:brightness(1.06)}
 
-@media (max-width:640px){
-  .action-panel{
-    width:100%;
-    min-width:unset;
-    flex-direction:row;
-    flex-wrap:wrap;
-    justify-content:space-between;
-  }
-  .action-panel button{width:calc(50% - 6px);}
-}
+.badge.ok{color:#bbf7d0;border-color:rgba(34,197,94,.35)}
+.badge.ng{color:#fecaca;border-color:rgba(239,68,68,.35)}
+body.light .badge.ok{background:rgba(34,197,94,.12);border-color:rgba(22,163,74,.4);color:#14532d}
+body.light .badge.ng{background:rgba(248,113,113,.12);border-color:rgba(220,38,38,.4);color:#7f1d1d}
 
-/* ===== MODAL (ภาพ) ===== */
-.modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.78);
-  display:none;align-items:center;justify-content:center;z-index:9999;
-}
-.modal img{max-width:95vw;max-height:90vh;object-fit:contain}
+.missing{color:#fecaca;font-weight:800}
+body.light .missing{color:#b91c1c;font-weight:800}
 
-/* ===== LOADING OVERLAY (match STORE) ===== */
-.loading-overlay{
-  position:fixed;inset:0;background:rgba(2,6,23,.70);
-  backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;z-index:20000;
-}
-.loading-box{
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.18);
-  padding:26px 34px;border-radius:22px;text-align:center;
-  box-shadow:0 24px 60px rgba(0,0,0,.55);
-  min-width:220px;
-}
-.loading-logo{
-  width:76px;margin-bottom:12px;
-  filter: drop-shadow(0 0 18px rgba(56,189,248,.35));
-  animation:breath 2.2s ease-in-out infinite;
-}
-@keyframes breath{
-  0%,100%{opacity:.55;transform:scale(1)}
-  50%{opacity:1;transform:scale(1.03)}
-}
-.spinner{
-  width:38px;height:38px;border:4px solid rgba(255,255,255,.18);
-  border-top:4px solid var(--accent2);
-  border-radius:50%;margin:10px auto;animation:spin 1s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ===== REPORT MODAL ===== */
+@media (max-width:640px){.card-body{flex-direction:column}.action-panel{width:100%;min-width:unset;flex-direction:row;flex-wrap:wrap;justify-content:space-between}.action-panel button{width:calc(50% - 6px)}}
 
 /* Fix: report inputs readable (dark/light) */
-.report-body input,.report-body textarea{
-  background:#ffffff;
-  color:#111827;
-}
-.report-body input::placeholder,.report-body textarea::placeholder{color:#6b7280;}
-.report-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.35);
-  backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;z-index:40000;
-}
-.report-modal{
-  width:380px;max-width:92vw;background:rgba(255,255,255,.92);
-  border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden;
-}
-.report-header{
-  padding:14px 16px;font-size:18px;font-weight:900;
-  background:#0b1220;color:#e5e7eb;border-bottom:1px solid rgba(0,0,0,.25);
-}
-.report-body{
-  padding:14px 16px;display:flex;flex-direction:column;gap:10px;
-}
-.report-body label{font-size:13px;font-weight:800;color:#111827}
-.report-body input,.report-body textarea{
-  border:1px solid #e5e7eb;border-radius:10px;padding:9px 10px;font-size:14px;outline:none;
-}
-.report-body textarea{min-height:80px;resize:none}
-.report-options{display:flex;flex-direction:column;gap:6px;font-size:14px;color:#111827}
+.report-body input,.report-body textarea{background:#ffffff;color:#111827}
+.report-body input::placeholder,.report-body textarea::placeholder{color:#6b7280}
+
+/* Improve select rendering on mobile */
+.lang-switch{-webkit-appearance:none;appearance:none}
+.lang-switch option{color:#0f172a;background:#ffffff}
 
 /* Report option UI (more visible) */
-.report-options label{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  background:#ffffff;
-  cursor:pointer;
-}
-.report-options label.selected{
-  border-color:rgba(239,68,68,.55);
-  box-shadow:0 0 0 3px rgba(239,68,68,.12);
-}
-.report-options input[type="radio"]{width:18px;height:18px;accent-color:#ef4444;}
-.report-footer{
-  display:flex;gap:10px;padding:12px 16px;border-top:1px solid #e5e7eb;
-}
-.report-footer button{flex:1;height:40px;border-radius:10px}
+.report-options label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:12px;background:#ffffff;cursor:pointer}
+.report-options label.selected{border-color:rgba(239,68,68,.55);box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+.report-options input[type="radio"]{width:18px;height:18px;accent-color:#ef4444}
 
-/* ซ่อน location ใน report modal */
-.hide-location{display:none !important;}
-
-/* ===== Light mode overrides ===== */
-body.light input{
-  background:#ffffff;
-  color:var(--text);
-  border:1px solid rgba(148,163,184,.7);
-}
-body.light input::placeholder{
-  color:var(--muted);
-}
-body.light .search-card{
-  box-shadow:0 8px 24px rgba(15,23,42,.12);
-}
-body.light .item{
-  box-shadow:0 8px 24px rgba(15,23,42,.12);
-}
-body.light .filter-bar button{
-  background:rgba(15,23,42,.04);
-  border-color:rgba(148,163,184,.4);
-  color:var(--text);
-}
-body.light .filter-bar button.active{
-  background:rgba(56,189,248,.18)!important;
-  border-color:rgba(56,189,248,.55)!important;
-  color:#0f172a;
-}
-body.light button.ghost{
-  background:rgba(15,23,42,.04);
-  border-color:rgba(148,163,184,.4);
-  color:var(--text);
-}
-body.light .wi-bar{
-  background:rgba(148,163,184,.18);
-  border-top:1px solid rgba(148,163,184,.5);
-}
-body.light .badge{
-  background:rgba(59,130,246,.12);
-  border-color:rgba(37,99,235,.35);
-  color:#1e293b;
-}
-body.light .badge.ok{
-  background:rgba(34,197,94,.14);
-  border-color:rgba(21,128,61,.45);
-  color:#14532d;
-}
-body.light .badge.warn{
-body.light .missing{color:#b91c1c;font-weight:800;}
-
-  background:rgba(245,158,11,.16);
-  border-color:rgba(217,119,6,.5);
-  color:#92400e;
-}
-
-/* ===== MOBILE ===== */
-@media (max-width:640px){
-  .grid{grid-template-columns:1fr}
-  .item-body{flex-direction:column}
-  .wi-bar{flex-direction:column}
-  .small-note{margin-left:0;width:100%}
-  #btnReportMain{ flex-basis:100%; }
-}
 </style>
 </head>
-
 <body>
+  <button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
+  <select id="langSwitcher" class="lang-switch" onchange="setLang(this.value)">
+    <option value="th">🇹🇭 TH</option>
+    <option value="mm">🇲🇲 MM</option>
+    <option value="cn">🇹🇼 繁體</option>
+  </select>
 
-<button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
-<select id="langSwitcher" class="lang-switch" onchange="setLang(this.value)">
-  <option value="th">🇹🇭 TH</option>
-  <option value="mm">🇲🇲 MM</option>
-  <option value="cn">🇹🇼 繁體</option>
-</select>
-<button id="btnBack" class="back-fixed" onclick="location.href='index.html'">⬅ กลับเมนู</button>
-
-<div class="wrap">
-
-  <div class="header">
-    <div class="logo">
-      <img src="assets/logo.png" alt="Company Logo">
-    </div>
-    <div>
-      <div id="pageTitle" class="title">PACKING</div>
-      <div id="pageSubtitle" class="subtitle">KAOSU PACKING · Smart Operation</div>
-    </div>
-  </div>
-
-  <div class="search-card">
-    <div class="row">
-      <input id="q" placeholder="ค้นหางาน / ลูกค้า / แพ็ค / สติ๊กเกอร์">
-      <button class="primary" id="btnSearch">ค้นหา</button>
-      <button class="secondary" id="btnShowAll">แสดงทั้งหมด</button>
-      <button class="ghost" id="btnReportMain">🚨 แจ้งปัญหา (งานไม่อยู่ในฐาน)</button>
-    </div>
-  </div>
-
-  <div class="filter-bar">
-    <button id="btnAll" class="active">ทั้งหมด (<span id="sumAll">0</span>)</button>
-    <button id="btnOK">✅ WI ครบ (<span id="sumOK">0</span>)</button>
-    <button id="btnNG">⚠️ WI ยังไม่ครบ (<span id="sumNG">0</span>)</button>
-    <button id="btnReload">🔄 Reload</button>
-    <div class="small-note" id="loadedNote">กำลังโหลด...</div>
-  </div>
-
-  <div id="list" class="grid"></div>
-
-</div>
-
-<!-- MODAL ภาพ -->
-<div id="modal" class="modal" onclick="this.style.display='none'">
-  <img id="modalImg" alt="พรีวิว">
-</div>
-
-<!-- LOADING -->
-<div id="loading" class="loading-overlay">
-  <div class="loading-box">
-    <img src="assets/logo.png" class="loading-logo" alt="logo">
-    <div class="spinner"></div>
-  </div>
-</div>
-
-<!-- REPORT ISSUE MODAL -->
-<div id="reportOverlay" class="report-overlay" onclick="closeReportModal()">
-  <div class="report-modal" onclick="event.stopPropagation()">
-    <div id="reportHeader" class="report-header">🚨 แจ้งปัญหา</div>
-
-    <div class="report-body">
-      <label id="lblReportItem">ชื่องาน / ITEM</label>
-      <input id="reportItem" placeholder="ชื่อ ITEM (ไม่บังคับ)">
-
-      <div class="hide-location">
-        <label>Location</label>
-        <input id="reportLocation" placeholder="Location (ไม่บังคับ)">
+  <div class="topbar">
+    <div class="wrap">
+      <div class="row">
+        <button id="btnBack" class="back-btn" onclick="location.href='index.html'">⬅ กลับเมนู</button>
+        <div class="brand">
+          <div id="brandMain" class="h1">KAOSU PACKING</div>
+          <div id="brandSub" class="sub">KAOSU PACKING · Smart Operation</div>
+        </div>
       </div>
 
-      <label id="lblReportType">รายละเอียดปัญหา</label>
-      <div class="report-options">
-        <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> <span id="optPos">ตำแหน่งไม่ตรง</span></label>
-        <label><input type="radio" name="reportType" value="ปริ้น WI"> <span id="optPrint">ปริ้น WI</span></label>
-        <label><input type="radio" name="reportType" value="อื่นๆ"> <span id="optOther">อื่นๆ</span></label>
-      </div>
+      <!-- SEARCH AREA (collapsible on mobile) -->
+      <div id="searchArea" class="search-area">
+        <div class="search-row">
+          <input id="q" type="search" placeholder="ค้นหางาน / ลูกค้า / แพ็ค / สติ๊กเกอร์">
+          <button class="btn search" id="btnSearch">ค้นหา</button>
+        </div>
 
-      <textarea id="reportDetail" placeholder="รายละเอียดเพิ่มเติม (ถ้ามี)"></textarea>
-    </div>
+        <button class="btn issue-main" id="btnReportMain">🚨 แจ้งปัญหา (งานไม่อยู่ในฐาน)</button>
 
-    <div class="report-footer">
-      <button id="btnReportCancel" class="secondary" onclick="closeReportModal()">ยกเลิก</button>
-      <button id="btnReportSubmit" class="primary" onclick="submitReport()">ส่งแจ้งปัญหา</button>
-    </div>
-  </div>
+        <div class="status">
+          <div id="note">พร้อมใช้งาน</div>
+          <div>ผลลัพธ์: <b id="count">0</b> รายการ</div>
+        </div>
+      <div class="filter-bar" id="filterBar">
+  <button id="btnAll" class="active">ทั้งหมด (<span id="sumAll">0</span>)</button>
+  <button id="btnOK">✅ WI ครบ (<span id="sumOK">0</span>)</button>
+  <button id="btnNG">⚠️ WI ยังไม่ครบ (<span id="sumNG">0</span>)</button>
+  <button id="btnReload">🔄 Reload</button>
+  <div class="small-note" id="loadedNote">กำลังโหลด...</div>
+</div>
 </div>
 
-<script>
-// ===== THEME (Global) =====
+      <!-- Mobile collapse/expand arrow (only mobile) -->
+      <button id="toggleSearchMobile" class="mobile-toggle" type="button" aria-expanded="true">⌃</button>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="modal" id="modal" onclick="closeModal()">
+    <button class="close" onclick="closeModal(); event.stopPropagation();">✕ ปิด</button>
+    <img id="modalImg" alt="พรีวิว">
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="box">
+      <img class="logo" src="assets/logo.png" alt="Kaosu Logo">
+      <div id="loadingTxt" class="txt">กำลังโหลด...</div>
+    </div>
+  </div>
+
+  <!-- REPORT ISSUE MODAL -->
+  <div class="report-overlay" id="reportOverlay" onclick="closeReportModal()">
+    <div class="report-modal" onclick="event.stopPropagation()">
+      <div id="reportHeader" class="report-header">🚨 แจ้งปัญหา</div>
+      <div class="report-body">
+        <label id="lblReportItem">ชื่องาน / ITEM</label>
+        <input id="reportItem" placeholder="ชื่อ ITEM (ไม่บังคับ)">
+
+        <div class="hide-location">
+          <label>Location</label>
+          <input id="reportLocation" placeholder="Location (ถ้ามี)">
+        </div>
+
+        <label id="lblReportType">รายละเอียดปัญหา</label>
+        <div class="report-options">
+          <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> <span id="optPos">ตำแหน่งไม่ตรง</span></label>
+          <label><input type="radio" name="reportType" value="ปริ้น WI"> <span id="optPrint">ปริ้น WI</span></label>
+          <label><input type="radio" name="reportType" value="อื่นๆ"> <span id="optOther">อื่นๆ</span></label>
+        </div>
+
+        <label>รายละเอียดเพิ่มเติม (ถ้ามี)</label>
+        <textarea id="reportDetail" placeholder="รายละเอียดเพิ่มเติม (ถ้ามี)"></textarea>
+      </div>
+      <div class="report-footer">
+        <button id="btnReportCancel" type="button" onclick="closeReportModal()">ยกเลิก</button>
+        <button id="btnReportSubmit" type="button" onclick="submitReport()">ส่งแจ้งปัญหา</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// ===== THEME GLOBAL (from STORE) =====
 (function(){
-  const t = localStorage.getItem("theme") || "dark";
-  if(t === "light"){
-    document.body.classList.add("light");
-  }
+  const theme = localStorage.getItem("theme") || "dark";
+  if(theme === "light") document.body.classList.add("light");
 })();
-
 function toggleTheme(){
   if(document.body.classList.contains("light")){
     document.body.classList.remove("light");
@@ -563,8 +638,7 @@ function toggleTheme(){
   }
 }
 
-
-// ===== LANGUAGE GLOBAL (match STORE) =====
+// ===== LANGUAGE GLOBAL + i18n (languages.json) =====
 function applyLangFromStorage(){
   const lang = localStorage.getItem("lang") || "th";
   const sel = document.getElementById("langSwitcher");
@@ -573,9 +647,8 @@ function applyLangFromStorage(){
 function setLang(code){
   localStorage.setItem("lang", code);
   applyTranslations();
+  applyFilter();
 }
-
-// ===== i18n (languages.json) =====
 let LANG_DATA = null;
 async function loadLangData(){
   if(LANG_DATA) return LANG_DATA;
@@ -599,34 +672,32 @@ async function applyTranslations(){
   await loadLangData();
   const back=document.getElementById('btnBack');
   if(back) back.textContent = t('back_menu', back.textContent);
-  const title=document.getElementById('pageTitle');
-  if(title) title.textContent = t('menu_packing', title.textContent);
-  const sub=document.getElementById('pageSubtitle');
-  if(sub) sub.textContent = t('brand_sub_issue', sub.textContent);
+  const brandMain=document.getElementById('brandMain');
+  if(brandMain) brandMain.textContent = t('brand_main', brandMain.textContent);
+  const brandSub=document.getElementById('brandSub');
+  if(brandSub) brandSub.textContent = t('brand_sub_issue', brandSub.textContent);
 
   const q=document.getElementById('q');
   if(q) q.placeholder = t('packing_search_placeholder', q.placeholder);
   const btnSearch=document.getElementById('btnSearch');
   if(btnSearch) btnSearch.textContent = t('packing_search', btnSearch.textContent);
-  const btnShowAll=document.getElementById('btnShowAll');
-  if(btnShowAll) btnShowAll.textContent = t('packing_show_all', btnShowAll.textContent);
   const btnReportMain=document.getElementById('btnReportMain');
   if(btnReportMain) btnReportMain.textContent = t('packing_report_main', btnReportMain.textContent);
 
-  // Filter bar labels (keep counts)
   const btnAll=document.getElementById('btnAll');
-  if(btnAll) btnAll.childNodes[0].textContent = t('packing_all', 'ทั้งหมด') + ' (';
+  if(btnAll) btnAll.childNodes[0].textContent = t('packing_all','ทั้งหมด') + ' (';
   const btnOK=document.getElementById('btnOK');
-  if(btnOK) btnOK.childNodes[0].textContent = '✅ ' + t('packing_wi_ok', 'WI ครบ') + ' (';
+  if(btnOK) btnOK.childNodes[0].textContent = '✅ ' + t('packing_wi_ok','WI ครบ') + ' (';
   const btnNG=document.getElementById('btnNG');
-  if(btnNG) btnNG.childNodes[0].textContent = '⚠️ ' + t('packing_wi_ng', 'WI ยังไม่ครบ') + ' (';
+  if(btnNG) btnNG.childNodes[0].textContent = '⚠️ ' + t('packing_wi_ng','WI ยังไม่ครบ') + ' (';
   const btnReload=document.getElementById('btnReload');
   if(btnReload) btnReload.textContent = '🔄 ' + t('packing_reload','Reload');
 
-  const loadedNote=document.getElementById('loadedNote');
-  if(loadedNote && loadedNote.textContent.trim()==='กำลังโหลด...') loadedNote.textContent = t('packing_loading', loadedNote.textContent);
+  const loaded=document.getElementById('loadedNote');
+  if(loaded && loaded.textContent.trim()==='กำลังโหลด...') loaded.textContent = t('packing_loading', loaded.textContent);
+  const loadingTxt=document.getElementById('loadingTxt');
+  if(loadingTxt) loadingTxt.textContent = t('packing_loading', loadingTxt.textContent);
 
-  // Report modal
   const rh=document.getElementById('reportHeader');
   if(rh) rh.textContent = t('packing_report', rh.textContent);
   const lblItem=document.getElementById('lblReportItem');
@@ -649,194 +720,157 @@ async function applyTranslations(){
   if(btnSubmit) btnSubmit.textContent = t('packing_submit', btnSubmit.textContent);
 }
 
-// ===== CONFIG =====
+// ===================== CONFIG =====================
 const API_BASE = "https://script.google.com/macros/s/AKfycbwi367iEscZhY4E_o9TI8FeIRsTBVkN5yjedzMkmjOyH_xEgQp-2Lgw8bP13mDapBao9w/exec";
 const LIMIT = 200;
 
-// ===== ELEMENTS =====
-const list = document.getElementById("list");
-const loadedNote = document.getElementById("loadedNote");
-const loading = document.getElementById("loading");
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modalImg");
+// ===================== ELEMENTS =====================
+const grid = document.getElementById('grid');
+const note = document.getElementById('note');
+const count = document.getElementById('count');
+const qEl = document.getElementById('q');
+const loading = document.getElementById('loading');
+const modal = document.getElementById('modal');
+const modalImg = document.getElementById('modalImg');
+const btnSearch = document.getElementById('btnSearch');
+const btnReportMain = document.getElementById('btnReportMain');
+const reportOverlay = document.getElementById('reportOverlay');
+const reportItem = document.getElementById('reportItem');
+const reportLocation = document.getElementById('reportLocation');
+const reportDetail = document.getElementById('reportDetail');
+const toggleBtn = document.getElementById('toggleSearchMobile');
 
-const sumAll = document.getElementById("sumAll");
-const sumOK = document.getElementById("sumOK");
-const sumNG = document.getElementById("sumNG");
+const sumAll = document.getElementById('sumAll');
+const sumOK  = document.getElementById('sumOK');
+const sumNG  = document.getElementById('sumNG');
+const loadedNote = document.getElementById('loadedNote');
+const btnAll = document.getElementById('btnAll');
+const btnOK  = document.getElementById('btnOK');
+const btnNG  = document.getElementById('btnNG');
+const btnReload = document.getElementById('btnReload');
 
-const qEl = document.getElementById("q");
-const btnSearch = document.getElementById("btnSearch");
-const btnShowAll = document.getElementById("btnShowAll");
-const btnReload = document.getElementById("btnReload");
-const btnAll = document.getElementById("btnAll");
-const btnOK = document.getElementById("btnOK");
-const btnNG = document.getElementById("btnNG");
-const btnReportMain = document.getElementById("btnReportMain");
-
-const reportOverlay = document.getElementById("reportOverlay");
-const reportItem = document.getElementById("reportItem");
-const reportLocation = document.getElementById("reportLocation");
-const reportDetail = document.getElementById("reportDetail");
-
-// ===== STATE =====
+// ===================== STATE =====================
 let ALL_ITEMS = [];
 let VIEW_ITEMS = [];
-let FILTER_MODE = "all";
-let offset = 0;
-let finished = false;
+let FILTER_MODE = 'all';
 let fetching = false;
+let CURRENT_REPORT = null;
 
-const okVal = v => {
-  const t = String(v ?? "").trim();
-  return t !== "" && t !== "#N/A";
-};
-const hasWI = it => okVal(it.wi_front_url) || okVal(it.wi_back_url) || okVal(it.label_image_url);
+// ===================== HELPERS =====================
+const ok = v => { const s=String(v??'').trim(); return s!=='' && s!=='#N/A'; };
+const hasWI = it => ok(it.wi_front_url) && ok(it.wi_back_url) && ok(it.label_image_url);
+function showLoading(){ loading.style.display='flex'; }
+function hideLoading(){ loading.style.display='none'; }
 
-// JSONP
+// ===================== JSONP =====================
 function jsonp(url){
   return new Promise((resolve,reject)=>{
-    const cb = "cb_" + Math.random().toString(36).slice(2);
-    const s  = document.createElement("script");
-
-    const timer = setTimeout(()=>{
-      cleanup();
-      reject(new Error("JSONP timeout"));
-    }, 15000);
-
-    function cleanup(){
-      clearTimeout(timer);
-      try { delete window[cb]; } catch(e) {}
-      try { s.remove(); } catch(e) {}
-    }
-
-    window[cb] = (d) => { cleanup(); resolve(d); };
-    s.onerror = () => { cleanup(); reject(new Error("JSONP failed")); };
-
-    s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
+    const cb='cb_'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script');
+    const timer=setTimeout(()=>{cleanup();reject(new Error('JSONP timeout'));},15000);
+    function cleanup(){clearTimeout(timer);try{delete window[cb];}catch(e){};try{s.remove();}catch(e){};}
+    window[cb]=(d)=>{cleanup();resolve(d);};
+    s.onerror=()=>{cleanup();reject(new Error('JSONP failed'));};
+    s.src=url+(url.includes('?')?'&':'?')+'callback='+cb;
     document.body.appendChild(s);
   });
 }
 
-function showLoading(){ loading.style.display="flex"; }
-function hideLoading(){ loading.style.display="none"; }
+// ===================== MODAL =====================
+function openModal(src){ modalImg.src=String(src||''); modal.style.display='flex'; }
+function closeModal(){ modal.style.display='none'; modalImg.src=''; }
 
-function openModal(src){
-  modalImg.src = String(src || "");
-  modal.style.display = "flex";
+// ===================== REPORT MODAL =====================
+function syncReportOptionUI(){
+  document.querySelectorAll('.report-options label').forEach(l=>{
+    const inp=l.querySelector('input[name="reportType"]');
+    l.classList.toggle('selected', !!inp && inp.checked);
+  });
 }
+document.addEventListener('change',(e)=>{ if(e.target && e.target.matches('input[name="reportType"]')) syncReportOptionUI(); });
 
-// ===== REPORT MODAL LOGIC =====
-let CURRENT_REPORT = null;
-
-function openReportModal(itemEncoded){
-  const it = JSON.parse(decodeURIComponent(itemEncoded));
-  CURRENT_REPORT = it;
-
-  reportItem.value = it.part_name || "";
-  reportLocation.value = ""; // ไม่ใช้ location ใน PACKING
+function openReportModal(payloadEncoded){
+  try{ const it=JSON.parse(decodeURIComponent(payloadEncoded)); CURRENT_REPORT=it; reportItem.value=it.part_name||''; reportLocation.value=''; }
+  catch(e){ CURRENT_REPORT=null; reportItem.value=''; reportLocation.value=''; }
   document.querySelectorAll('input[name="reportType"]').forEach(r=>r.checked=false);
-  reportDetail.value = "";
-  reportOverlay.style.display = "flex";
+  syncReportOptionUI();
+  reportDetail.value='';
+  reportOverlay.style.display='flex';
 }
-
 function openReportModalManual(){
-  CURRENT_REPORT = null;
-  reportItem.value = qEl.value.trim() || "";
-  reportLocation.value = "";
+  CURRENT_REPORT=null;
+  reportItem.value=(qEl.value||'').trim();
+  reportLocation.value='';
   document.querySelectorAll('input[name="reportType"]').forEach(r=>r.checked=false);
-  reportDetail.value = "";
-  reportOverlay.style.display = "flex";
+  syncReportOptionUI();
+  reportDetail.value='';
+  reportOverlay.style.display='flex';
 }
-
-function closeReportModal(){
-  reportOverlay.style.display = "none";
-  CURRENT_REPORT = null;
-}
+function closeReportModal(){ reportOverlay.style.display='none'; CURRENT_REPORT=null; }
 
 async function submitReport(){
-  const type = document.querySelector('input[name="reportType"]:checked')?.value || "";
-  const item = reportItem.value || (CURRENT_REPORT?.part_name || "");
-  const location = reportLocation.value || ""; // ส่งว่าง
-  const detail = reportDetail.value || "";
-
-  if(!type && !detail){
-    alert(t('packing_err_select',"กรุณาเลือกประเภทปัญหาหรือใส่รายละเอียดอย่างน้อย 1 อย่าง"));
-    return;
-  }
-
-  const page = "Packing";
-  const url =
-    API_BASE +
-    "?action=report" +
-    "&item=" + encodeURIComponent(item) +
-    "&location=" + encodeURIComponent(location) +
-    "&type=" + encodeURIComponent(type) +
-    "&detail=" + encodeURIComponent(detail) +
-    "&page=" + encodeURIComponent(page);
-
+  const type=document.querySelector('input[name="reportType"]:checked')?.value||'';
+  const item=reportItem.value || (CURRENT_REPORT?.part_name||'');
+  const detail=reportDetail.value||'';
+  if(!type && !detail){ alert(t('packing_err_select','กรุณาเลือกประเภทปัญหาหรือใส่รายละเอียดอย่างน้อย 1 อย่าง')); return; }
+  const url = API_BASE + '?action=report'
+    + '&item=' + encodeURIComponent(item)
+    + '&location=' + encodeURIComponent('')
+    + '&type=' + encodeURIComponent(type)
+    + '&detail=' + encodeURIComponent(detail)
+    + '&page=' + encodeURIComponent('Packing');
   try{
     showLoading();
     const res = await jsonp(url);
     hideLoading();
     closeReportModal();
-
-    if(res && res.ok === true && res.saved === true){
-      alert(t('packing_send_success',"ส่งแจ้งปัญหาเรียบร้อย ✅") + (res.lineSent ? "\n"+t('packing_line_sent',"LINE ส่งแล้ว ✅") : "\n"+t('packing_line_not_sent',"LINE ยังไม่ส่ง ⚠️")));
+    if(res && res.ok===true && res.saved===true){
+      alert(t('packing_send_success','ส่งแจ้งปัญหาเรียบร้อย ✅') + (res.lineSent ? ('
+'+t('packing_line_sent','LINE ส่งแล้ว ✅')) : ('
+'+t('packing_line_not_sent','LINE ยังไม่ส่ง ⚠️'))));
     }else{
-      alert(t('packing_send_fail',"ส่งไม่สำเร็จ ❌")+"\n"+JSON.stringify(res));
+      alert(t('packing_send_fail','ส่งไม่สำเร็จ ❌') + '
+' + JSON.stringify(res));
     }
   }catch(err){
     hideLoading();
-    alert(t('packing_backend_fail',"เรียกหลังบ้านไม่สำเร็จ ❌")+"\n"+err.message);
+    alert(t('packing_backend_fail','เรียกหลังบ้านไม่สำเร็จ ❌') + '
+' + err.message);
   }
 }
 
-
-// Report option selected highlight
-function syncReportOptionUI(){
-  document.querySelectorAll('.report-options label').forEach(l=>{
-    const inp = l.querySelector('input[name="reportType"]');
-    l.classList.toggle('selected', !!inp && inp.checked);
-  });
-}
-document.querySelectorAll('input[name="reportType"]').forEach(inp=>{
-  inp.addEventListener('change', syncReportOptionUI);
-});
-// ===== UI RENDER =====
+// ===================== UI =====================
 function card(it){
+  const customer=it.customer_code||'';
+  const part=it.part_name||'';
+  const badgeText=hasWI(it) ? t('packing_data_ok','ข้อมูลพร้อม') : t('packing_data_ng','ยังไม่ครบ WI');
+  const badgeCls=hasWI(it) ? 'ok' : 'ng';
   return `
-  <div class="item" onclick="setActive(this)">
-    <div class="item-body">
-      <div class="info">
-        <div class="field">
-          <span class="badge ${hasWI(it)?'ok':'warn'}">
-            ${hasWI(it)?'ข้อมูลพร้อม':'ยังไม่ครบ WI'}
-          </span>
-        </div>
-
-        <div class="field">ลูกค้า: <b>${it.customer_code || ""}</b></div>
-        <div class="field">งาน: <b>${it.part_name || ""}</b></div>
-
-        <div class="field">แพ็ค: ${okVal(it.packing_type)?it.packing_type:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
-        <div class="field">สติ๊กเกอร์: ${okVal(it.label_color)?it.label_color:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
-      </div>
+  <div class="card">
+    <div class="head">
+      <div class="loc">${part}</div>
+      <div class="badge ${badgeCls}">${badgeText}</div>
     </div>
-
-    <div class="wi-bar" onclick="event.stopPropagation()">
-      <button class="${okVal(it.wi_front_url)?'on':'off'}" ${okVal(it.wi_front_url)?`onclick="openModal('${it.wi_front_url}')"`:"disabled"}>WI หน้า</button>
-      <button class="${okVal(it.wi_back_url)?'on':'off'}" ${okVal(it.wi_back_url)?`onclick="openModal('${it.wi_back_url}')"`:"disabled"}>WI หลัง</button>
-      <button class="${okVal(it.label_image_url)?'on':'off'}" ${okVal(it.label_image_url)?`onclick="openModal('${it.label_image_url}')"`:"disabled"}>สติ๊กเกอร์</button>
-
-      <button class="report-btn" onclick="event.stopPropagation(); openReportModal('${encodeURIComponent(JSON.stringify(it))}')">
-        🚨 แจ้งปัญหา
-      </button>
+    <div class="card-body">
+      <div style="flex:1">
+        <div class="field"><span class="label">${t('packing_customer','ลูกค้า:')}</span> <b>${customer}</b></div>
+        <div class="field"><span class="label">${t('packing_pack','แพ็ค:')}</span> ${ok(it.packing_type)?it.packing_type:`<span class="missing">${t('packing_pack_empty','ยังไม่ได้ใส่')}</span>`}</div>
+        <div class="field"><span class="label">${t('packing_sticker','สติ๊กเกอร์:')}</span> ${ok(it.label_color)?it.label_color:`<span class="missing">${t('packing_pack_empty','ยังไม่ได้ใส่')}</span>`}</div>
+      </div>
+      <div class="action-panel" onclick="event.stopPropagation()">
+        <button class="${ok(it.wi_front_url)?'on':'off'}" ${ok(it.wi_front_url)?`onclick="openModal('${it.wi_front_url}')"`:"disabled"}>${t('packing_btn_wi_front','WI หน้า')}</button>
+        <button class="${ok(it.wi_back_url)?'on':'off'}" ${ok(it.wi_back_url)?`onclick="openModal('${it.wi_back_url}')"`:"disabled"}>${t('packing_btn_wi_back','WI หลัง')}</button>
+        <button class="${ok(it.label_image_url)?'on':'off'}" ${ok(it.label_image_url)?`onclick="openModal('${it.label_image_url}')"`:"disabled"}>${t('packing_btn_sticker','สติ๊กเกอร์')}</button>
+        <button class="report-btn" onclick="openReportModal('${encodeURIComponent(JSON.stringify({part_name: it.part_name||'', customer_code: it.customer_code||''}))}')">${t('packing_report','🚨 แจ้งปัญหา')}</button>
+      </div>
     </div>
   </div>`;
 }
 
-function setActive(el){
-  document.querySelectorAll(".item").forEach(i=>i.classList.remove("active"));
-  el.classList.add("active");
+function render(){
+  grid.innerHTML='';
+  VIEW_ITEMS.forEach(it=>grid.insertAdjacentHTML('beforeend', card(it)));
+  count.textContent = VIEW_ITEMS.length;
 }
 
 function updateCounts(){
@@ -846,105 +880,87 @@ function updateCounts(){
 }
 
 function applyFilter(){
-  btnAll.classList.remove("active");
-  btnOK.classList.remove("active");
-  btnNG.classList.remove("active");
-
-  let items = ALL_ITEMS;
-
-  if(FILTER_MODE==="ok"){
-    items = ALL_ITEMS.filter(hasWI);
-    btnOK.classList.add("active");
-  }else if(FILTER_MODE==="ng"){
-    items = ALL_ITEMS.filter(i=>!hasWI(i));
-    btnNG.classList.add("active");
-  }else{
-    btnAll.classList.add("active");
-  }
-
-  VIEW_ITEMS = items;
-  list.innerHTML = "";
-  VIEW_ITEMS.forEach(it=>list.insertAdjacentHTML("beforeend", card(it)));
-  loadedNote.textContent = `แสดง ${VIEW_ITEMS.length} รายการ (จากทั้งหมด ${ALL_ITEMS.length})`;
+  btnAll.classList.remove('active');
+  btnOK.classList.remove('active');
+  btnNG.classList.remove('active');
+  if(FILTER_MODE==='ok'){ btnOK.classList.add('active'); VIEW_ITEMS = ALL_ITEMS.filter(hasWI); }
+  else if(FILTER_MODE==='ng'){ btnNG.classList.add('active'); VIEW_ITEMS = ALL_ITEMS.filter(i=>!hasWI(i)); }
+  else { btnAll.classList.add('active'); VIEW_ITEMS = ALL_ITEMS; }
+  render();
+  loadedNote.textContent = `${t('packing_show_all','แสดงทั้งหมด')}: ${VIEW_ITEMS.length} / ${ALL_ITEMS.length}`;
 }
 
-async function loadAllPages(){
+async function loadAll(){
   if(fetching) return;
-  fetching = true;
-
-  offset = 0;
-  finished = false;
-  ALL_ITEMS = [];
-  list.innerHTML = "";
-  loadedNote.textContent = "กำลังโหลด...";
-  updateCounts();
-  applyFilter();
+  fetching=true;
   showLoading();
-
+  note.textContent = t('packing_loading','กำลังโหลด...');
   try{
+    let offset=0, finished=false, all=[];
     while(!finished){
-      const r = await jsonp(API_BASE + `?action=list&limit=${LIMIT}&offset=${offset}`);
-      const items = r.items || r.results || [];
-      ALL_ITEMS = ALL_ITEMS.concat(items);
+      const v=Date.now();
+      const url = `${API_BASE}?action=list&limit=${LIMIT}&offset=${offset}&v=${v}`;
+      const r = await jsonp(url);
+      const items = (r && (r.items || r.results)) ? (r.items || r.results) : [];
+      all = all.concat(items);
       offset += items.length;
-
-      if(items.length < LIMIT) finished = true;
-      await new Promise(res=>setTimeout(res, 60));
+      if(items.length < LIMIT) finished=true;
+      await new Promise(res=>setTimeout(res,40));
     }
-
+    ALL_ITEMS = all;
     updateCounts();
+    FILTER_MODE='all';
     applyFilter();
   }finally{
     hideLoading();
-    fetching = false;
+    fetching=false;
   }
 }
 
 async function doSearch(){
-  const q = qEl.value.trim();
-  if(!q) return loadAllPages();
-
+  const qv=(qEl.value||'').trim();
+  if(!qv){ await loadAll(); return; }
   showLoading();
+  note.textContent = t('store_searching','กำลังค้นหา...');
   try{
-    const r = await jsonp(API_BASE + "?action=search&q=" + encodeURIComponent(q));
-    ALL_ITEMS = r.results || r.items || [];
-
-    FILTER_MODE = "all";
+    const v=Date.now();
+    const url = `${API_BASE}?action=search&q=${encodeURIComponent(qv)}&v=${v}`;
+    const r = await jsonp(url);
+    const items = (r && (r.items || r.results)) ? (r.items || r.results) : [];
+    ALL_ITEMS = items;
     updateCounts();
+    FILTER_MODE='all';
     applyFilter();
-
-    if(ALL_ITEMS.length === 0){
-      loadedNote.textContent = t('packing_no_data_click',"ไม่พบข้อมูล — กด 🚨 แจ้งปัญหา (งานไม่อยู่ในฐาน)");
-    }
+    if(ALL_ITEMS.length===0){ loadedNote.textContent = t('packing_no_data_click','ไม่พบข้อมูล — กด 🚨 แจ้งปัญหา (งานไม่อยู่ในฐาน)'); }
   }finally{
     hideLoading();
   }
 }
 
-function showAll(){
-  qEl.value = "";
-  FILTER_MODE="all";
-  return loadAllPages();
+// EVENTS
+btnSearch.onclick = ()=>doSearch();
+btnReportMain.onclick = ()=>openReportModalManual();
+qEl.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); doSearch(); } });
+btnAll.onclick = ()=>{ FILTER_MODE='all'; applyFilter(); };
+btnOK.onclick  = ()=>{ FILTER_MODE='ok'; applyFilter(); };
+btnNG.onclick  = ()=>{ FILTER_MODE='ng'; applyFilter(); };
+btnReload.onclick = ()=>loadAll();
+
+// Mobile collapse/expand
+if(toggleBtn){
+  toggleBtn.onclick = ()=>{
+    document.body.classList.toggle('mobile-collapsed');
+    const collapsed=document.body.classList.contains('mobile-collapsed');
+    toggleBtn.textContent = collapsed ? '⌄' : '⌃';
+    toggleBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  };
 }
 
-function reloadData(){ return loadAllPages(); }
-
-// EVENTS
-btnSearch.onclick = doSearch;
-btnShowAll.onclick = showAll;
-btnReload.onclick = reloadData;
-
-btnAll.onclick = ()=>{ FILTER_MODE="all"; applyFilter(); };
-btnOK.onclick = ()=>{ FILTER_MODE="ok"; applyFilter(); };
-btnNG.onclick = ()=>{ FILTER_MODE="ng"; applyFilter(); };
-
-btnReportMain.onclick = openReportModalManual;
-
-qEl.addEventListener("keydown",(e)=>{ if(e.key==="Enter") doSearch(); });
-
 // START
-loadAllPages();
-</script>
+applyLangFromStorage();
+applyTranslations();
+loadAll();
 
+</script>
 </body>
 </html>
