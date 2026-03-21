@@ -80,7 +80,10 @@ body{
  cursor:pointer;
  font-size:12px;
  backdrop-filter:blur(8px);
+ -webkit-appearance:none;
+ appearance:none;
 }
+.lang-switch:focus{outline:none; box-shadow:0 0 0 3px rgba(56,189,248,.18)}
 body.light .lang-switch{
  background:rgba(255,255,255,.95);
  border-color:rgba(15,23,42,.15);
@@ -297,9 +300,7 @@ button.ghost:hover{filter:brightness(1.06)}
     flex-wrap:wrap;
     justify-content:space-between;
   }
-  .action-panel button{
-    width:calc(50% - 6px);
-  }
+  .action-panel button{width:calc(50% - 6px);}
 }
 
 /* ===== MODAL (ภาพ) ===== */
@@ -339,6 +340,13 @@ button.ghost:hover{filter:brightness(1.06)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ===== REPORT MODAL ===== */
+
+/* Fix: report inputs readable (dark/light) */
+.report-body input,.report-body textarea{
+  background:#ffffff;
+  color:#111827;
+}
+.report-body input::placeholder,.report-body textarea::placeholder{color:#6b7280;}
 .report-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.35);
   backdrop-filter:blur(8px);
@@ -361,6 +369,23 @@ button.ghost:hover{filter:brightness(1.06)}
 }
 .report-body textarea{min-height:80px;resize:none}
 .report-options{display:flex;flex-direction:column;gap:6px;font-size:14px;color:#111827}
+
+/* Report option UI (more visible) */
+.report-options label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  background:#ffffff;
+  cursor:pointer;
+}
+.report-options label.selected{
+  border-color:rgba(239,68,68,.55);
+  box-shadow:0 0 0 3px rgba(239,68,68,.12);
+}
+.report-options input[type="radio"]{width:18px;height:18px;accent-color:#ef4444;}
 .report-footer{
   display:flex;gap:10px;padding:12px 16px;border-top:1px solid #e5e7eb;
 }
@@ -414,6 +439,8 @@ body.light .badge.ok{
   color:#14532d;
 }
 body.light .badge.warn{
+body.light .missing{color:#b91c1c;font-weight:800;}
+
   background:rgba(245,158,11,.16);
   border-color:rgba(217,119,6,.5);
   color:#92400e;
@@ -438,7 +465,7 @@ body.light .badge.warn{
   <option value="mm">🇲🇲 MM</option>
   <option value="cn">🇹🇼 繁體</option>
 </select>
-<button class="back-fixed" onclick="location.href='index.html'">⬅ กลับเมนู</button>
+<button id="btnBack" class="back-fixed" onclick="location.href='index.html'">⬅ กลับเมนู</button>
 
 <div class="wrap">
 
@@ -447,8 +474,8 @@ body.light .badge.warn{
       <img src="assets/logo.png" alt="Company Logo">
     </div>
     <div>
-      <div class="title">PACKING</div>
-      <div class="subtitle">KAOSU PACKING · Smart Operation</div>
+      <div id="pageTitle" class="title">PACKING</div>
+      <div id="pageSubtitle" class="subtitle">KAOSU PACKING · Smart Operation</div>
     </div>
   </div>
 
@@ -489,10 +516,10 @@ body.light .badge.warn{
 <!-- REPORT ISSUE MODAL -->
 <div id="reportOverlay" class="report-overlay" onclick="closeReportModal()">
   <div class="report-modal" onclick="event.stopPropagation()">
-    <div class="report-header">🚨 แจ้งปัญหา</div>
+    <div id="reportHeader" class="report-header">🚨 แจ้งปัญหา</div>
 
     <div class="report-body">
-      <label>ชื่องาน / ITEM</label>
+      <label id="lblReportItem">ชื่องาน / ITEM</label>
       <input id="reportItem" placeholder="ชื่อ ITEM (ไม่บังคับ)">
 
       <div class="hide-location">
@@ -500,19 +527,19 @@ body.light .badge.warn{
         <input id="reportLocation" placeholder="Location (ไม่บังคับ)">
       </div>
 
-      <label>รายละเอียดปัญหา</label>
+      <label id="lblReportType">รายละเอียดปัญหา</label>
       <div class="report-options">
-        <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> ตำแหน่งไม่ตรง</label>
-        <label><input type="radio" name="reportType" value="ปริ้น WI"> ปริ้น WI</label>
-        <label><input type="radio" name="reportType" value="อื่นๆ"> อื่นๆ</label>
+        <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> <span id="optPos">ตำแหน่งไม่ตรง</span></label>
+        <label><input type="radio" name="reportType" value="ปริ้น WI"> <span id="optPrint">ปริ้น WI</span></label>
+        <label><input type="radio" name="reportType" value="อื่นๆ"> <span id="optOther">อื่นๆ</span></label>
       </div>
 
       <textarea id="reportDetail" placeholder="รายละเอียดเพิ่มเติม (ถ้ามี)"></textarea>
     </div>
 
     <div class="report-footer">
-      <button class="secondary" onclick="closeReportModal()">ยกเลิก</button>
-      <button class="primary" onclick="submitReport()">ส่งแจ้งปัญหา</button>
+      <button id="btnReportCancel" class="secondary" onclick="closeReportModal()">ยกเลิก</button>
+      <button id="btnReportSubmit" class="primary" onclick="submitReport()">ส่งแจ้งปัญหา</button>
     </div>
   </div>
 </div>
@@ -534,6 +561,92 @@ function toggleTheme(){
     document.body.classList.add("light");
     localStorage.setItem("theme","light");
   }
+}
+
+
+// ===== LANGUAGE GLOBAL (match STORE) =====
+function applyLangFromStorage(){
+  const lang = localStorage.getItem("lang") || "th";
+  const sel = document.getElementById("langSwitcher");
+  if(sel) sel.value = lang;
+}
+function setLang(code){
+  localStorage.setItem("lang", code);
+  applyTranslations();
+}
+
+// ===== i18n (languages.json) =====
+let LANG_DATA = null;
+async function loadLangData(){
+  if(LANG_DATA) return LANG_DATA;
+  try{
+    const res = await fetch('languages.json', { cache: 'no-store' });
+    LANG_DATA = await res.json();
+  }catch(e){
+    LANG_DATA = null;
+  }
+  return LANG_DATA;
+}
+function getLang(){
+  return localStorage.getItem('lang') || 'th';
+}
+function t(key, fallback=''){
+  if(!LANG_DATA) return fallback;
+  const lang = getLang();
+  return (LANG_DATA[lang] && LANG_DATA[lang][key]) || (LANG_DATA.th && LANG_DATA.th[key]) || fallback;
+}
+async function applyTranslations(){
+  await loadLangData();
+  const back=document.getElementById('btnBack');
+  if(back) back.textContent = t('back_menu', back.textContent);
+  const title=document.getElementById('pageTitle');
+  if(title) title.textContent = t('menu_packing', title.textContent);
+  const sub=document.getElementById('pageSubtitle');
+  if(sub) sub.textContent = t('brand_sub_issue', sub.textContent);
+
+  const q=document.getElementById('q');
+  if(q) q.placeholder = t('packing_search_placeholder', q.placeholder);
+  const btnSearch=document.getElementById('btnSearch');
+  if(btnSearch) btnSearch.textContent = t('packing_search', btnSearch.textContent);
+  const btnShowAll=document.getElementById('btnShowAll');
+  if(btnShowAll) btnShowAll.textContent = t('packing_show_all', btnShowAll.textContent);
+  const btnReportMain=document.getElementById('btnReportMain');
+  if(btnReportMain) btnReportMain.textContent = t('packing_report_main', btnReportMain.textContent);
+
+  // Filter bar labels (keep counts)
+  const btnAll=document.getElementById('btnAll');
+  if(btnAll) btnAll.childNodes[0].textContent = t('packing_all', 'ทั้งหมด') + ' (';
+  const btnOK=document.getElementById('btnOK');
+  if(btnOK) btnOK.childNodes[0].textContent = '✅ ' + t('packing_wi_ok', 'WI ครบ') + ' (';
+  const btnNG=document.getElementById('btnNG');
+  if(btnNG) btnNG.childNodes[0].textContent = '⚠️ ' + t('packing_wi_ng', 'WI ยังไม่ครบ') + ' (';
+  const btnReload=document.getElementById('btnReload');
+  if(btnReload) btnReload.textContent = '🔄 ' + t('packing_reload','Reload');
+
+  const loadedNote=document.getElementById('loadedNote');
+  if(loadedNote && loadedNote.textContent.trim()==='กำลังโหลด...') loadedNote.textContent = t('packing_loading', loadedNote.textContent);
+
+  // Report modal
+  const rh=document.getElementById('reportHeader');
+  if(rh) rh.textContent = t('packing_report', rh.textContent);
+  const lblItem=document.getElementById('lblReportItem');
+  if(lblItem) lblItem.textContent = t('packing_report_item', lblItem.textContent);
+  const ri=document.getElementById('reportItem');
+  if(ri) ri.placeholder = t('packing_report_item_ph', ri.placeholder);
+  const lblType=document.getElementById('lblReportType');
+  if(lblType) lblType.textContent = t('packing_report_type', lblType.textContent);
+  const optPos=document.getElementById('optPos');
+  if(optPos) optPos.textContent = t('packing_report_type_pos', optPos.textContent);
+  const optPrint=document.getElementById('optPrint');
+  if(optPrint) optPrint.textContent = t('packing_report_type_wi', optPrint.textContent);
+  const optOther=document.getElementById('optOther');
+  if(optOther) optOther.textContent = t('packing_report_type_other', optOther.textContent);
+  const rd=document.getElementById('reportDetail');
+  if(rd) rd.placeholder = t('packing_report_more', rd.placeholder);
+  const btnCancel=document.getElementById('btnReportCancel');
+  if(btnCancel) btnCancel.textContent = t('packing_cancel', btnCancel.textContent);
+  const btnSubmit=document.getElementById('btnReportSubmit');
+  if(btnSubmit) btnSubmit.textContent = t('packing_submit', btnSubmit.textContent);
 }
 
 // ===== CONFIG =====
@@ -647,7 +760,7 @@ async function submitReport(){
   const detail = reportDetail.value || "";
 
   if(!type && !detail){
-    alert("กรุณาเลือกประเภทปัญหาหรือใส่รายละเอียดอย่างน้อย 1 อย่าง");
+    alert(t('packing_err_select',"กรุณาเลือกประเภทปัญหาหรือใส่รายละเอียดอย่างน้อย 1 อย่าง"));
     return;
   }
 
@@ -668,13 +781,13 @@ async function submitReport(){
     closeReportModal();
 
     if(res && res.ok === true && res.saved === true){
-      alert("ส่งแจ้งปัญหาเรียบร้อย ✅" + (res.lineSent ? "\nLINE ส่งแล้ว ✅" : "\nLINE ยังไม่ส่ง ⚠️"));
+      alert(t('packing_send_success',"ส่งแจ้งปัญหาเรียบร้อย ✅") + (res.lineSent ? "\n"+t('packing_line_sent',"LINE ส่งแล้ว ✅") : "\n"+t('packing_line_not_sent',"LINE ยังไม่ส่ง ⚠️")));
     }else{
-      alert("ส่งไม่สำเร็จ ❌\n" + JSON.stringify(res));
+      alert(t('packing_send_fail',"ส่งไม่สำเร็จ ❌")+"\n"+JSON.stringify(res));
     }
   }catch(err){
     hideLoading();
-    alert("เรียกหลังบ้านไม่สำเร็จ ❌\n" + err.message);
+    alert(t('packing_backend_fail',"เรียกหลังบ้านไม่สำเร็จ ❌")+"\n"+err.message);
   }
 }
 
@@ -689,32 +802,36 @@ function syncReportOptionUI(){
 document.querySelectorAll('input[name="reportType"]').forEach(inp=>{
   inp.addEventListener('change', syncReportOptionUI);
 });
-
 // ===== UI RENDER =====
 function card(it){
   return `
- <div class="item" onclick="setActive(this)">
- <div class="item-body">
- <div class="info">
- <div class="field">
- <span class="badge ${hasWI(it)?'ok':'warn'}">
- ${hasWI(it)?'ข้อมูลพร้อม':'ยังไม่ครบ WI'}
- </span>
- </div>
- <div class="field">ลูกค้า: <b>${it.customer_code || ""}</b></div>
- <div class="field">งาน: <b>${it.part_name || ""}</b></div>
- <div class="field">แพ็ค: ${okVal(it.packing_type)?it.packing_type:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
- <div class="field">สติ๊กเกอร์: ${okVal(it.label_color)?it.label_color:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
- </div>
+  <div class="item" onclick="setActive(this)">
+    <div class="item-body">
+      <div class="info">
+        <div class="field">
+          <span class="badge ${hasWI(it)?'ok':'warn'}">
+            ${hasWI(it)?'ข้อมูลพร้อม':'ยังไม่ครบ WI'}
+          </span>
+        </div>
 
- <div class="action-panel" onclick="event.stopPropagation()">
- <button class="${okVal(it.wi_front_url)?'on':'off'}" ${okVal(it.wi_front_url)?`onclick="openModal('${it.wi_front_url}')"`:"disabled"}>WI หน้า</button>
- <button class="${okVal(it.wi_back_url)?'on':'off'}" ${okVal(it.wi_back_url)?`onclick="openModal('${it.wi_back_url}')"`:"disabled"}>WI หลัง</button>
- <button class="${okVal(it.label_image_url)?'on':'off'}" ${okVal(it.label_image_url)?`onclick="openModal('${it.label_image_url}')"`:"disabled"}>สติ๊กเกอร์</button>
- <button class="report-btn" onclick="openReportModal('${encodeURIComponent(JSON.stringify({part_name: it.part_name || "", customer_code: it.customer_code || ""}))}')">🚨 แจ้งปัญหา</button>
- </div>
- </div>
- </div>`;
+        <div class="field">ลูกค้า: <b>${it.customer_code || ""}</b></div>
+        <div class="field">งาน: <b>${it.part_name || ""}</b></div>
+
+        <div class="field">แพ็ค: ${okVal(it.packing_type)?it.packing_type:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
+        <div class="field">สติ๊กเกอร์: ${okVal(it.label_color)?it.label_color:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
+      </div>
+    </div>
+
+    <div class="wi-bar" onclick="event.stopPropagation()">
+      <button class="${okVal(it.wi_front_url)?'on':'off'}" ${okVal(it.wi_front_url)?`onclick="openModal('${it.wi_front_url}')"`:"disabled"}>WI หน้า</button>
+      <button class="${okVal(it.wi_back_url)?'on':'off'}" ${okVal(it.wi_back_url)?`onclick="openModal('${it.wi_back_url}')"`:"disabled"}>WI หลัง</button>
+      <button class="${okVal(it.label_image_url)?'on':'off'}" ${okVal(it.label_image_url)?`onclick="openModal('${it.label_image_url}')"`:"disabled"}>สติ๊กเกอร์</button>
+
+      <button class="report-btn" onclick="event.stopPropagation(); openReportModal('${encodeURIComponent(JSON.stringify(it))}')">
+        🚨 แจ้งปัญหา
+      </button>
+    </div>
+  </div>`;
 }
 
 function setActive(el){
@@ -797,7 +914,7 @@ async function doSearch(){
     applyFilter();
 
     if(ALL_ITEMS.length === 0){
-      loadedNote.textContent = "ไม่พบข้อมูล — กด 🚨 แจ้งปัญหา (งานไม่อยู่ในฐาน)";
+      loadedNote.textContent = t('packing_no_data_click',"ไม่พบข้อมูล — กด 🚨 แจ้งปัญหา (งานไม่อยู่ในฐาน)");
     }
   }finally{
     hideLoading();
