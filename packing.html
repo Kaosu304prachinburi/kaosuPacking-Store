@@ -66,31 +66,6 @@ body{
 }
 .toggle-theme:hover{ filter:brightness(1.05); }
 
-/* Language switch (match STORE) */
-.lang-switch{
-  position:fixed;
-  top:16px;
-  right:120px;
-  z-index:9999;
-  padding:6px 12px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:var(--glass);
-  color:var(--text);
-  cursor:pointer;
-  font-size:12px;
-  backdrop-filter:blur(8px);
-  -webkit-appearance:none;
-  appearance:none;
-}
-.lang-switch:focus{outline:none; box-shadow:0 0 0 3px rgba(56,189,248,.18)}
-body.light .lang-switch{
-  background:rgba(255,255,255,.95);
-  border-color:rgba(15,23,42,.15);
-}
-/* Mobile select render fix */
-.lang-switch option{ color:#0f172a; background:#ffffff; }
-
 .wrap{max-width:1200px;margin:auto;padding:16px}
 
 /* ===== BACK BUTTON ===== */
@@ -300,13 +275,6 @@ button.ghost:hover{filter:brightness(1.06)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ===== REPORT MODAL ===== */
-
-/* Fix: report inputs readable (dark/light) */
-.report-body input,.report-body textarea{
-  background:#ffffff;
-  color:#111827;
-}
-.report-body input::placeholder,.report-body textarea::placeholder{color:#6b7280;}
 .report-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.35);
   backdrop-filter:blur(8px);
@@ -401,11 +369,6 @@ body.light .badge.warn{
 <body>
 
 <button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
-<select id="langSwitcher" class="lang-switch" onchange="setLang(this.value)">
-  <option value="th">🇹🇭 TH</option>
-  <option value="mm">🇲🇲 MM</option>
-  <option value="cn">🇹🇼 繁體</option>
-</select>
 <button class="back-fixed" onclick="location.href='index.html'">⬅ กลับเมนู</button>
 
 <div class="wrap">
@@ -502,64 +465,10 @@ function toggleTheme(){
     document.body.classList.add("light");
     localStorage.setItem("theme","light");
   }
-
-// ===== LANGUAGE (store-like) =====
-function applyLangFromStorage(){
-  const lang = localStorage.getItem('lang') || 'th';
-  const sel = document.getElementById('langSwitcher');
-  if(sel) sel.value = lang;
-}
-function setLang(code){
-  localStorage.setItem('lang', code);
-  // Optional: try apply translation if languages.json exists
-  applyTranslations();
-}
-
-// ===== i18n (optional, safe fallback) =====
-let LANG_DATA = null;
-async function loadLangData(){
-  if(LANG_DATA) return LANG_DATA;
-  try{
-    const res = await fetch('languages.json', { cache:'no-store' });
-    LANG_DATA = await res.json();
-  }catch(e){
-    LANG_DATA = null;
-  }
-  return LANG_DATA;
-}
-function t(key, fallback){
-  if(!LANG_DATA) return fallback;
-  const lang = localStorage.getItem('lang') || 'th';
-  return (LANG_DATA[lang] && LANG_DATA[lang][key]) || (LANG_DATA.th && LANG_DATA.th[key]) || fallback;
-}
-async function applyTranslations(){
-  await loadLangData();
-  // Only change static labels; if file not found, nothing breaks.
-  const q = document.getElementById('q');
-  if(q) q.placeholder = t('packing_search_placeholder', q.placeholder);
-  const btnSearch = document.getElementById('btnSearch');
-  if(btnSearch) btnSearch.textContent = t('packing_search', btnSearch.textContent);
-  const btnShowAll = document.getElementById('btnShowAll');
-  if(btnShowAll) btnShowAll.textContent = t('packing_show_all', btnShowAll.textContent);
-  const btnReportMain = document.getElementById('btnReportMain');
-  if(btnReportMain) btnReportMain.textContent = t('packing_report_main', btnReportMain.textContent);
-
-  const btnAll = document.getElementById('btnAll');
-  if(btnAll) btnAll.childNodes[0].textContent = t('packing_all', 'ทั้งหมด') + ' (';
-  const btnOK = document.getElementById('btnOK');
-  if(btnOK) btnOK.childNodes[0].textContent = '✅ ' + t('packing_wi_ok', 'WI ครบ') + ' (';
-  const btnNG = document.getElementById('btnNG');
-  if(btnNG) btnNG.childNodes[0].textContent = '⚠️ ' + t('packing_wi_ng', 'WI ยังไม่ครบ') + ' (';
-  const btnReload = document.getElementById('btnReload');
-  if(btnReload) btnReload.textContent = '🔄 ' + t('packing_reload','Reload');
-
-  const reportHeader = document.querySelector('.report-header');
-  if(reportHeader) reportHeader.textContent = t('packing_report', reportHeader.textContent);
-}
 }
 
 // ===== CONFIG =====
-const API_BASE = "https://script.google.com/macros/s/AKfycbwwdXaN3StBAT8QXRbFqjIL0Wff7Z1VwnfS7SN-OivzN2x2qiXDDlBaWP9rOD5xG4Kh/exec";
+const API_BASE = "https://script.google.com/macros/s/AKfycbwi367iEscZhY4E_o9TI8FeIRsTBVkN5yjedzMkmjOyH_xEgQp-2Lgw8bP13mDapBao9w/exec";
 const LIMIT = 200;
 
 // ===== ELEMENTS =====
@@ -673,7 +582,7 @@ async function submitReport(){
     return;
   }
 
-  const page = "Packing";
+  const page = "web";
   const url =
     API_BASE +
     "?action=report" +
@@ -841,8 +750,6 @@ btnReportMain.onclick = openReportModalManual;
 qEl.addEventListener("keydown",(e)=>{ if(e.key==="Enter") doSearch(); });
 
 // START
-applyLangFromStorage();
-applyTranslations();
 loadAllPages();
 </script>
 
