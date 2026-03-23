@@ -430,8 +430,20 @@ body.light .mobile-topbar .back-btn{background: rgba(255,255,255,0.55);color:#0f
 .report-body input::placeholder,.report-body textarea::placeholder{color:#6b7280;}
 .report-footer button{border:1px solid rgba(0,0,0,.08);}
 
-/* Small round radio dots (match STORE) */
-.report-options input[type="radio"]{width:14px;height:14px;accent-color:#0b1220;}
+/* FIX-2: force radio to be dot like STORE */
+.report-options input[type="radio"]{
+  appearance:auto !important;
+  -webkit-appearance:radio !important;
+
+  width:14px !important;
+  height:14px !important;
+
+  padding:0 !important;
+  margin:0 !important;
+
+  border-radius:50% !important;
+  accent-color:#0b1220;
+}
 
 /* Buttons visibility improvements */
 #btnReportMain{background:linear-gradient(135deg,#f97373,#e11d48) !important;color:#fff !important;border:none !important;}
@@ -449,6 +461,13 @@ body.light .wi-bar button.report-btn{background:linear-gradient(135deg,#f97373,#
 /* Warn badge stronger */
 .badge.warn{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35);color:#fecaca;}
 body.light .missing{color:#b91c1c;font-weight:800;}
+/* FIX-1: back button visible in light mode (desktop) */
+body.light .back-fixed{
+  background: rgba(255,255,255,0.85);
+  color:#0f172a;
+  border:1px solid rgba(0,0,0,0.15);
+}
+
 
 </style>
 </head>
