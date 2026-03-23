@@ -465,7 +465,7 @@ body.light .missing{color:#b91c1c;font-weight:800;}
 <div class="mobile-topbar">
   <div class="inner">
     <button class="back-btn" type="button" onclick="location.href='index.html'">⬅ กลับเมนู</button>
-    <button id="kebabBtn" class="kebab-btn" type="button" onclick="openSettings()">⋯</button>
+   <button id="kebabBtn" class="kebab-btn" type="button">⋯</button>
     <div class="brand">
       <div class="h1">KAOSU PACKING</div>
       <div class="sub">KAOSU PACKING · Smart Operation</div>
@@ -555,7 +555,7 @@ body.light .missing{color:#b91c1c;font-weight:800;}
 
 
 <!-- SETTINGS MODAL (mobile ⋯) -->
-<div id="settingsOverlay" class="settings-overlay" onclick="closeSettings()">
+<div id="settingsOverlay" class="settings-overlay">
   <div class="settings-modal" onclick="event.stopPropagation()">
     <div class="settings-header">⚙️ ตั้งค่า</div>
     <div class="settings-body">
@@ -915,6 +915,16 @@ btnReportMain.onclick = openReportModalManual;
 
 qEl.addEventListener("keydown",(e)=>{ if(e.key==="Enter") doSearch(); });
 
+  // === STORE-style overlay close ===
+document.getElementById('settingsOverlay')
+  ?.addEventListener('click', (e) => {
+    if (e.target.id === 'settingsOverlay') {
+      closeSettings();
+    }
+  });
+// === STORE-style binding for mobile ⋯ ===
+document.getElementById('kebabBtn')
+  ?.addEventListener('click', openSettings);
 // START
 applyLangFromStorage();
 loadAllPages();
