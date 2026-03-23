@@ -365,85 +365,54 @@ body.light .badge.warn{
 }
 
 
-/* ================= ONLY-3-POINTS PATCH =================
-   (1) Light mode back button visibility
-   (2) Report radio as small dot (not long bar)
-   (3) Mobile 3-dots settings menu (theme/lang)
-   ======================================================= */
-
-/* (1) Back button visible in Light Mode (desktop) */
-body.light .back-fixed{
-  background: rgba(255,255,255,0.55) !important;
-  color:#0f172a !important;
-  border:1px solid rgba(0,0,0,0.15) !important;
-}
-
-/* (2) Report radio must be small dot (override global input styles) */
-.report-options label{display:flex;align-items:center;gap:10px;}
-.report-options input[type="radio"]{
-  appearance:auto !important;
-  -webkit-appearance:radio !important;
-  width:14px !important;
-  height:14px !important;
-  min-width:14px !important;
-  padding:0 !important;
-  margin:0 !important;
-  border-radius:50% !important;
-  flex:0 0 auto !important;
-  box-shadow:none !important;
-  accent-color:#0b1220;
-}
-
-/* (3) Mobile 3-dots button */
-.kebab-btn{
-  position:fixed;
-  top:16px;
-  right:16px;
-  z-index:12000;
-  width:40px;
-  height:40px;
-  border-radius:12px;
+/* ===== Language switch (match STORE) ===== */
+.lang-switch{
+  position:fixed; top:16px; right:120px; z-index:9999;
+  padding:6px 12px; border-radius:10px;
   border:1px solid var(--border);
-  background:var(--glass);
-  color:var(--text);
-  cursor:pointer;
-  backdrop-filter:blur(10px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
-  line-height:1;
+  background:var(--glass); color:var(--text);
+  cursor:pointer; font-size:12px;
+  backdrop-filter:blur(8px);
+  -webkit-appearance:none; appearance:none;
 }
-@media (max-width:640px){
-  .toggle-theme{display:none;} /* hide floating theme button on mobile, use ⋯ instead */
+body.light .lang-switch{ background:rgba(255,255,255,.95); border-color:rgba(15,23,42,.15); }
+.lang-switch option{ color:#0f172a; background:#ffffff; }
+
+/* ===== Mobile header (STORE-like) ===== */
+.mobile-topbar{display:none; position:sticky; top:0; z-index:12000;
+  backdrop-filter: blur(14px);
+  background:rgba(2,6,23,.65);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+body.light .mobile-topbar{
+  background: rgba(255,255,255,0.72);
+  border-bottom: 1px solid rgba(0,0,0,0.12);
+  backdrop-filter: blur(18px);
+}
+.mobile-topbar .inner{max-width:1200px;margin:0 auto;padding:10px 12px;display:flex;align-items:center;gap:10px;}
+.mobile-topbar .back-btn{padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.10);color:#fff;cursor:pointer;}
+body.light .mobile-topbar .back-btn{background: rgba(255,255,255,0.55);color:#0f172a;border:1px solid rgba(0,0,0,0.15);}
+.mobile-topbar .brand{margin-left:auto;text-align:right;}
+.mobile-topbar .brand .h1{font-weight:900;letter-spacing:.6px;font-size:14px;}
+.mobile-topbar .brand .sub{color:var(--muted);font-size:11px;margin-top:2px;}
+
+.kebab-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--glass);color:var(--text);
+  cursor:pointer;backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;font-size:18px;line-height:1;}
+.kebab-btn:hover{filter:brightness(1.06)}
+
+@media (max-width:480px){
+  .toggle-theme{display:none;}
+  .lang-switch{display:none;}
+  .back-fixed{display:none;}
+  .header{display:none;}
+  .mobile-topbar{display:block;}
   .kebab-btn{display:flex;}
 }
 
 /* Settings modal */
-.settings-overlay{
-  position:fixed; inset:0;
-  background:rgba(0,0,0,.35);
-  backdrop-filter:blur(8px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:45000;
-}
-.settings-modal{
-  width:380px; max-width:92vw;
-  background:rgba(255,255,255,.96);
-  border-radius:18px;
-  box-shadow:0 30px 80px rgba(0,0,0,.45);
-  overflow:hidden;
-}
-.settings-header{
-  padding:14px 16px;
-  font-size:18px;
-  font-weight:900;
-  background:#0b1220;
-  color:#e5e7eb;
-  border-bottom:1px solid rgba(0,0,0,.25);
-}
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:45000;}
+.settings-modal{width:380px;max-width:92vw;background:rgba(255,255,255,.96);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden;}
+.settings-header{padding:14px 16px;font-size:18px;font-weight:900;background:#0b1220;color:#e5e7eb;border-bottom:1px solid rgba(0,0,0,.25);}
 .settings-body{padding:14px 16px;display:flex;flex-direction:column;gap:12px;color:#111827;}
 .settings-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .settings-row .lbl{font-weight:900;font-size:13px;color:#111827;}
@@ -455,13 +424,55 @@ body.light .back-fixed{
 .settings-footer{padding:12px 16px;border-top:1px solid #e5e7eb;}
 .settings-footer button{width:100%;height:40px;border-radius:10px;border:1px solid rgba(0,0,0,.10);cursor:pointer;font-weight:900;}
 
+/* Report modal readability */
+.report-modal{background:rgba(255,255,255,.96);}
+.report-body input,.report-body textarea{background:#ffffff;color:#111827;}
+.report-body input::placeholder,.report-body textarea::placeholder{color:#6b7280;}
+.report-footer button{border:1px solid rgba(0,0,0,.08);}
+
+/* Small round radio dots (match STORE) */
+.report-options input[type="radio"]{width:14px;height:14px;accent-color:#0b1220;}
+
+/* Buttons visibility improvements */
+#btnReportMain{background:linear-gradient(135deg,#f97373,#e11d48) !important;color:#fff !important;border:none !important;}
+#btnShowAll{background:linear-gradient(135deg, rgba(59,130,246,.95), rgba(37,99,235,.95));color:#fff;border:none;}
+
+/* 4 action buttons in 2x2 grid */
+.wi-bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;border-top:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.12);}
+.wi-bar button{width:100%;height:44px;}
+
+/* Light mode: make WI/Sticker buttons stand out */
+body.light .wi-bar button.off{background:rgba(15,23,42,.06);color:#0f172a;border:1px solid rgba(15,23,42,.12);}
+body.light .wi-bar button.on{box-shadow:0 10px 24px rgba(21,128,61,.18);}
+body.light .wi-bar button.report-btn{background:linear-gradient(135deg,#f97373,#e11d48);color:#fff;border:none;}
+
+/* Warn badge stronger */
+.badge.warn{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35);color:#fecaca;}
+body.light .missing{color:#b91c1c;font-weight:800;}
+
 </style>
 </head>
 
 <body>
 
 <button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
-<button id="kebabBtn" class="kebab-btn" type="button">⋯</button>
+<select id="langSwitcher" class="lang-switch" onchange="setLang(this.value)">
+  <option value="th">🇹🇭 TH</option>
+  <option value="mm">🇲🇲 MM</option>
+  <option value="cn">🇹🇼 繁體</option>
+</select>
+
+<div class="mobile-topbar">
+  <div class="inner">
+    <button class="back-btn" type="button" onclick="location.href='index.html'">⬅ กลับเมนู</button>
+    <button id="kebabBtn" class="kebab-btn" type="button" onclick="openSettings()">⋯</button>
+    <div class="brand">
+      <div class="h1">KAOSU PACKING</div>
+      <div class="sub">KAOSU PACKING · Smart Operation</div>
+    </div>
+  </div>
+</div>
+
 <button class="back-fixed" onclick="location.href='index.html'">⬅ กลับเมนู</button>
 
 <div class="wrap">
@@ -544,20 +555,20 @@ body.light .back-fixed{
 
 
 <!-- SETTINGS MODAL (mobile ⋯) -->
-<div id="settingsOverlay" class="settings-overlay" aria-hidden="true">
+<div id="settingsOverlay" class="settings-overlay" onclick="closeSettings()">
   <div class="settings-modal" onclick="event.stopPropagation()">
     <div class="settings-header">⚙️ ตั้งค่า</div>
     <div class="settings-body">
       <div class="settings-row">
         <div class="lbl">🌙 ธีม:</div>
         <div class="settings-actions">
-          <button class="dark" type="button" id="btnThemeDark">มืด</button>
-          <button class="light" type="button" id="btnThemeLight">สว่าง</button>
+          <button class="dark" type="button" onclick="setTheme('dark')">มืด</button>
+          <button class="light" type="button" onclick="setTheme('light')">สว่าง</button>
         </div>
       </div>
       <div class="settings-row">
         <div class="lbl">🌐 ภาษา:</div>
-        <select id="settingsLangSelect">
+        <select id="settingsLangSelect" onchange="setLang(this.value)">
           <option value="th">🇹🇭 TH</option>
           <option value="mm">🇲🇲 MM</option>
           <option value="cn">🇹🇼 繁體</option>
@@ -565,12 +576,12 @@ body.light .back-fixed{
       </div>
     </div>
     <div class="settings-footer">
-      <button type="button" id="btnSettingsClose">ปิด</button>
+      <button type="button" onclick="closeSettings()">ปิด</button>
     </div>
   </div>
 </div>
 
-
+<script>
 // ===== THEME (Global) =====
 (function(){
   const t = localStorage.getItem("theme") || "dark";
@@ -589,24 +600,28 @@ function toggleTheme(){
   }
 
 
-// ================= ONLY-3-POINTS SETTINGS (mobile ⋯) =================
-function _applyLangFromStorageSettings(){
+// ===== LANGUAGE (match STORE: save selection) =====
+function applyLangFromStorage(){
   const lang = localStorage.getItem('lang') || 'th';
-  const sel = document.getElementById('settingsLangSelect');
+  const sel = document.getElementById('langSwitcher');
   if(sel) sel.value = lang;
+  const sel2 = document.getElementById('settingsLangSelect');
+  if(sel2) sel2.value = lang;
 }
-function _setLangSettings(code){
+function setLang(code){
   localStorage.setItem('lang', code);
-  _applyLangFromStorageSettings();
+  applyLangFromStorage();
 }
+
+// ===== SETTINGS (mobile ⋯) =====
 function openSettings(){
-  _applyLangFromStorageSettings();
+  applyLangFromStorage();
   const el = document.getElementById('settingsOverlay');
-  if(el){ el.style.display='flex'; el.setAttribute('aria-hidden','false'); }
+  if(el) el.style.display='flex';
 }
 function closeSettings(){
   const el = document.getElementById('settingsOverlay');
-  if(el){ el.style.display='none'; el.setAttribute('aria-hidden','true'); }
+  if(el) el.style.display='none';
 }
 function setTheme(mode){
   if(mode==='light'){
@@ -617,28 +632,6 @@ function setTheme(mode){
     localStorage.setItem('theme','dark');
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const kb = document.getElementById('kebabBtn');
-  if(kb) kb.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); openSettings(); });
-
-  const ov = document.getElementById('settingsOverlay');
-  if(ov) ov.addEventListener('click', (e)=>{ if(e.target === ov) closeSettings(); });
-
-  const closeBtn = document.getElementById('btnSettingsClose');
-  if(closeBtn) closeBtn.addEventListener('click', (e)=>{ e.preventDefault(); closeSettings(); });
-
-  const darkBtn = document.getElementById('btnThemeDark');
-  if(darkBtn) darkBtn.addEventListener('click', ()=>setTheme('dark'));
-
-  const lightBtn = document.getElementById('btnThemeLight');
-  if(lightBtn) lightBtn.addEventListener('click', ()=>setTheme('light'));
-
-  const langSel = document.getElementById('settingsLangSelect');
-  if(langSel) langSel.addEventListener('change', ()=>_setLangSettings(langSel.value));
-
-  _applyLangFromStorageSettings();
-});
 }
 
 // ===== CONFIG =====
@@ -756,7 +749,7 @@ async function submitReport(){
     return;
   }
 
-  const page = "web";
+  const page = "Packing";
   const url =
     API_BASE +
     "?action=report" +
@@ -924,6 +917,7 @@ btnReportMain.onclick = openReportModalManual;
 qEl.addEventListener("keydown",(e)=>{ if(e.key==="Enter") doSearch(); });
 
 // START
+applyLangFromStorage();
 loadAllPages();
 </script>
 
