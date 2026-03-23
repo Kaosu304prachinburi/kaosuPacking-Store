@@ -363,12 +363,188 @@ body.light .badge.warn{
   .small-note{margin-left:0;width:100%}
   #btnReportMain{ flex-basis:100%; }
 }
+
+
+/* ===== Language switch (match STORE) ===== */
+.lang-switch{
+  position:fixed;
+  top:16px;
+  right:120px;
+  z-index:9999;
+  padding:6px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--glass);
+  color:var(--text);
+  cursor:pointer;
+  font-size:12px;
+  backdrop-filter:blur(8px);
+  -webkit-appearance:none;
+  appearance:none;
+}
+body.light .lang-switch{
+  background:rgba(255,255,255,.95);
+  border-color:rgba(15,23,42,.15);
+}
+.lang-switch:focus{outline:none; box-shadow:0 0 0 3px rgba(56,189,248,.18)}
+.lang-switch option{ color:#0f172a; background:#ffffff; }
+
+/* ===== 3-dots Settings button (mobile) ===== */
+.kebab-btn{
+  position:fixed;
+  top:16px;
+  right:16px;
+  z-index:10000;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--glass);
+  color:var(--text);
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  line-height:1;
+}
+.kebab-btn:hover{filter:brightness(1.06)}
+
+@media (max-width: 480px){
+  .toggle-theme{display:none;}
+  .lang-switch{display:none;}
+  .kebab-btn{display:flex;}
+}
+
+/* ===== Settings modal ===== */
+.settings-overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.35);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:45000;
+}
+.settings-modal{
+  width:380px; max-width:92vw;
+  background:rgba(255,255,255,.96);
+  border-radius:18px;
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+  overflow:hidden;
+}
+.settings-header{
+  padding:14px 16px;
+  font-size:18px;
+  font-weight:900;
+  background:#0b1220;
+  color:#e5e7eb;
+  border-bottom:1px solid rgba(0,0,0,.25);
+}
+.settings-body{
+  padding:14px 16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  color:#111827;
+}
+.settings-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.settings-row .lbl{font-weight:900; font-size:13px; color:#111827;}
+.settings-actions{display:flex; gap:10px;}
+.settings-actions button{
+  flex:1;
+  height:40px;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,.10);
+  cursor:pointer;
+  font-weight:900;
+}
+.settings-actions .dark{background:#0b1220; color:#e5e7eb;}
+.settings-actions .light{background:#ffffff; color:#0f172a;}
+.settings-body select{
+  height:40px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  padding:0 10px;
+  font-size:14px;
+}
+.settings-footer{padding:12px 16px; border-top:1px solid #e5e7eb;}
+.settings-footer button{
+  width:100%;
+  height:40px;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,.10);
+  cursor:pointer;
+  font-weight:900;
+}
+
+/* ===== Action panel (move 4 buttons to side; mobile 2x2) ===== */
+.action-panel{
+  width:170px;
+  min-width:170px;
+  border:2px solid rgba(239,68,68,.35);
+  border-radius:16px;
+  padding:10px;
+  background:rgba(239,68,68,.06);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.action-panel button{
+  width:100%;
+  height:42px;
+  border-radius:12px;
+  border:none;
+  font-size:14px;
+  cursor:pointer;
+  font-weight:900;
+}
+.action-panel button.on{background:linear-gradient(135deg,#34d399,var(--accent));color:#fff}
+.action-panel button.off{background:rgba(255,255,255,.10);color:var(--muted);cursor:not-allowed}
+.action-panel button.report-btn{
+  background:linear-gradient(135deg,#f97373,#e11d48);
+  color:#fff;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+}
+.action-panel button.report-btn:hover{filter:brightness(1.06)}
+
+@media (max-width:640px){
+  .action-panel{
+    width:100%;
+    min-width:unset;
+    flex-direction:row;
+    flex-wrap:wrap;
+    justify-content:space-between;
+  }
+  .action-panel button{width:calc(50% - 6px);}  
+}
+
+/* Improve warn badge visibility */
+.badge.warn{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35);color:#fecaca}
+body.light .missing{color:#b91c1c;font-weight:800;}
+
+/* Fix: report inputs readable (dark/light) */
+.report-body input,.report-body textarea{background:#ffffff;color:#111827;}
+.report-body input::placeholder,.report-body textarea::placeholder{color:#6b7280;}
+
 </style>
 </head>
 
 <body>
 
 <button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
+<select id="langSwitcher" class="lang-switch" onchange="setLang(this.value)">
+  <option value="th">🇹🇭 TH</option>
+  <option value="mm">🇲🇲 MM</option>
+  <option value="cn">🇹🇼 繁體</option>
+</select>
+<button id="kebabBtn" class="kebab-btn" onclick="openSettings()">⋯</button>
 <button class="back-fixed" onclick="location.href='index.html'">⬅ กลับเมนู</button>
 
 <div class="wrap">
@@ -448,6 +624,34 @@ body.light .badge.warn{
   </div>
 </div>
 
+
+<!-- SETTINGS MODAL (mobile 3-dots) -->
+<div id="settingsOverlay" class="settings-overlay" onclick="closeSettings()">
+  <div class="settings-modal" onclick="event.stopPropagation()">
+    <div class="settings-header" id="settingsTitle">⚙️ ตั้งค่า</div>
+    <div class="settings-body">
+      <div class="settings-row">
+        <div class="lbl" id="settingsThemeLbl">🌙 ธีม:</div>
+        <div class="settings-actions">
+          <button class="dark" type="button" onclick="setTheme('dark')" id="btnThemeDark">มืด</button>
+          <button class="light" type="button" onclick="setTheme('light')" id="btnThemeLight">สว่าง</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="lbl" id="settingsLangLbl">🌐 ภาษา:</div>
+        <select id="settingsLangSelect" onchange="setLang(this.value)">
+          <option value="th">🇹🇭 TH</option>
+          <option value="mm">🇲🇲 MM</option>
+          <option value="cn">🇹🇼 繁體</option>
+        </select>
+      </div>
+    </div>
+    <div class="settings-footer">
+      <button type="button" onclick="closeSettings()" id="btnSettingsClose">ปิด</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ===== THEME (Global) =====
 (function(){
@@ -465,10 +669,96 @@ function toggleTheme(){
     document.body.classList.add("light");
     localStorage.setItem("theme","light");
   }
+
+
+// ===== LANGUAGE (match STORE) =====
+function applyLangFromStorage(){
+  const lang = localStorage.getItem('lang') || 'th';
+  const sel = document.getElementById('langSwitcher');
+  if(sel) sel.value = lang;
+  const sel2 = document.getElementById('settingsLangSelect');
+  if(sel2) sel2.value = lang;
+}
+function setLang(code){
+  localStorage.setItem('lang', code);
+  applyLangFromStorage();
+  applyTranslations();
+}
+
+// ===== SETTINGS (3 dots) =====
+function openSettings(){
+  applyLangFromStorage();
+  const el = document.getElementById('settingsOverlay');
+  if(el) el.style.display = 'flex';
+}
+function closeSettings(){
+  const el = document.getElementById('settingsOverlay');
+  if(el) el.style.display = 'none';
+}
+function setTheme(mode){
+  if(mode==='light'){
+    document.body.classList.add('light');
+    localStorage.setItem('theme','light');
+  }else{
+    document.body.classList.remove('light');
+    localStorage.setItem('theme','dark');
+  }
+}
+
+// ===== i18n (optional, safe) =====
+let LANG_DATA = null;
+async function loadLangData(){
+  if(LANG_DATA) return LANG_DATA;
+  try{
+    const res = await fetch('languages.json', { cache:'no-store' });
+    LANG_DATA = await res.json();
+  }catch(e){
+    LANG_DATA = null;
+  }
+  return LANG_DATA;
+}
+function t(key, fallback){
+  if(!LANG_DATA) return fallback;
+  const lang = localStorage.getItem('lang') || 'th';
+  return (LANG_DATA[lang] && LANG_DATA[lang][key]) || (LANG_DATA.th && LANG_DATA.th[key]) || fallback;
+}
+async function applyTranslations(){
+  await loadLangData();
+  const q = document.getElementById('q');
+  if(q) q.placeholder = t('packing_search_placeholder', q.placeholder);
+  const b1 = document.getElementById('btnSearch');
+  if(b1) b1.textContent = t('packing_search', b1.textContent);
+  const b2 = document.getElementById('btnShowAll');
+  if(b2) b2.textContent = t('packing_show_all', b2.textContent);
+  const b3 = document.getElementById('btnReportMain');
+  if(b3) b3.textContent = t('packing_report_main', b3.textContent);
+
+  const allBtn = document.getElementById('btnAll');
+  if(allBtn) allBtn.childNodes[0].textContent = t('packing_all','ทั้งหมด') + ' (';
+  const okBtn = document.getElementById('btnOK');
+  if(okBtn) okBtn.childNodes[0].textContent = '✅ ' + t('packing_wi_ok','WI ครบ') + ' (';
+  const ngBtn = document.getElementById('btnNG');
+  if(ngBtn) ngBtn.childNodes[0].textContent = '⚠️ ' + t('packing_wi_ng','WI ยังไม่ครบ') + ' (';
+  const rBtn = document.getElementById('btnReload');
+  if(rBtn) rBtn.textContent = '🔄 ' + t('packing_reload','Reload');
+
+  const st = document.getElementById('settingsTitle');
+  if(st) st.textContent = t('settings_title', st.textContent);
+  const thLbl = document.getElementById('settingsThemeLbl');
+  if(thLbl) thLbl.textContent = t('settings_theme', thLbl.textContent);
+  const td = document.getElementById('btnThemeDark');
+  if(td) td.textContent = t('settings_theme_dark', td.textContent);
+  const tl = document.getElementById('btnThemeLight');
+  if(tl) tl.textContent = t('settings_theme_light', tl.textContent);
+  const lgLbl = document.getElementById('settingsLangLbl');
+  if(lgLbl) lgLbl.textContent = t('settings_language', lgLbl.textContent);
+  const close = document.getElementById('btnSettingsClose');
+  if(close) close.textContent = t('settings_close', close.textContent);
+}
 }
 
 // ===== CONFIG =====
-const API_BASE = "https://script.google.com/macros/s/AKfycbwwdXaN3StBAT8QXRbFqjIL0Wff7Z1VwnfS7SN-OivzN2x2qiXDDlBaWP9rOD5xG4Kh/exec";
+const API_BASE = "https://script.google.com/macros/s/AKfycbwi367iEscZhY4E_o9TI8FeIRsTBVkN5yjedzMkmjOyH_xEgQp-2Lgw8bP13mDapBao9w/exec";
 const LIMIT = 200;
 
 // ===== ELEMENTS =====
@@ -582,7 +872,7 @@ async function submitReport(){
     return;
   }
 
-  const page = "web";
+  const page = "Packing";
   const url =
     API_BASE +
     "?action=report" +
@@ -615,31 +905,22 @@ function card(it){
   <div class="item" onclick="setActive(this)">
     <div class="item-body">
       <div class="info">
-        <div class="field">
-          <span class="badge ${hasWI(it)?'ok':'warn'}">
-            ${hasWI(it)?'ข้อมูลพร้อม':'ยังไม่ครบ WI'}
-          </span>
-        </div>
-
-        <div class="field">ลูกค้า: <b>${it.customer_code || ""}</b></div>
-        <div class="field">งาน: <b>${it.part_name || ""}</b></div>
-
+        <div class="field"><span class="badge ${hasWI(it)?'ok':'warn'}">${hasWI(it)?'ข้อมูลพร้อม':'ยังไม่ครบ WI'}</span></div>
+        <div class="field">ลูกค้า: <b>${it.customer_code || ''}</b></div>
+        <div class="field">งาน: <b>${it.part_name || ''}</b></div>
         <div class="field">แพ็ค: ${okVal(it.packing_type)?it.packing_type:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
         <div class="field">สติ๊กเกอร์: ${okVal(it.label_color)?it.label_color:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
       </div>
-    </div>
-
-    <div class="wi-bar" onclick="event.stopPropagation()">
-      <button class="${okVal(it.wi_front_url)?'on':'off'}" ${okVal(it.wi_front_url)?`onclick="openModal('${it.wi_front_url}')"`:"disabled"}>WI หน้า</button>
-      <button class="${okVal(it.wi_back_url)?'on':'off'}" ${okVal(it.wi_back_url)?`onclick="openModal('${it.wi_back_url}')"`:"disabled"}>WI หลัง</button>
-      <button class="${okVal(it.label_image_url)?'on':'off'}" ${okVal(it.label_image_url)?`onclick="openModal('${it.label_image_url}')"`:"disabled"}>สติ๊กเกอร์</button>
-
-      <button class="report-btn" onclick="event.stopPropagation(); openReportModal('${encodeURIComponent(JSON.stringify(it))}')">
-        🚨 แจ้งปัญหา
-      </button>
+      <div class="action-panel" onclick="event.stopPropagation()">
+        <button class="${okVal(it.wi_front_url)?'on':'off'}" ${okVal(it.wi_front_url)?`onclick=\"openModal('${it.wi_front_url}')\"`:"disabled"}>WI หน้า</button>
+        <button class="${okVal(it.wi_back_url)?'on':'off'}" ${okVal(it.wi_back_url)?`onclick=\"openModal('${it.wi_back_url}')\"`:"disabled"}>WI หลัง</button>
+        <button class="${okVal(it.label_image_url)?'on':'off'}" ${okVal(it.label_image_url)?`onclick=\"openModal('${it.label_image_url}')\"`:"disabled"}>สติ๊กเกอร์</button>
+        <button class="report-btn" onclick="openReportModal('${encodeURIComponent(JSON.stringify({part_name: it.part_name || ''}))}')">🚨 แจ้งปัญหา</button>
+      </div>
     </div>
   </div>`;
 }
+
 
 function setActive(el){
   document.querySelectorAll(".item").forEach(i=>i.classList.remove("active"));
