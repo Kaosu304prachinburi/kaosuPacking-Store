@@ -508,6 +508,8 @@ body.light .back-fixed{
 
 <body>
 
+<body>
+
 <button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
 <select id="langSwitcher" class="lang-switch" onchange="setLang(this.value)">
   <option value="th">🇹🇭 TH</option>
@@ -517,16 +519,16 @@ body.light .back-fixed{
 
 <div class="mobile-topbar">
   <div class="inner">
-    <button class="back-btn" type="button" onclick="location.href='index.html'">⬅ กลับเมนู</button>
+    <button class="back-btn" type="button" onclick="location.href='index.html'"><span id="t_back_mobile">⬅ กลับเมนู</span></button>
    <button id="kebabBtn" class="kebab-btn" type="button">⋯</button>
     <div class="brand">
-      <div class="h1">KAOSU PACKING</div>
-      <div class="sub">KAOSU PACKING · Smart Operation</div>
+      <div class="h1" id="t_brand_h1">KAOSU PACKING</div>
+      <div class="sub" id="t_brand_sub">Smart Operation</div>
     </div>
   </div>
 </div>
 
-<button class="back-fixed" onclick="location.href='index.html'">⬅ กลับเมนู</button>
+<button class="back-fixed" onclick="location.href='index.html'"><span id="t_back_fixed">⬅ กลับเมนู</span></button>
 
 <div class="wrap">
 
@@ -535,8 +537,8 @@ body.light .back-fixed{
       <img src="assets/logo.png" alt="Company Logo">
     </div>
     <div>
-      <div class="title">PACKING</div>
-      <div class="subtitle">KAOSU PACKING · Smart Operation</div>
+      <div class="title" id="t_packing_title">PACKING</div>
+      <div class="subtitle" id="t_packing_sub">KAOSU PACKING · Smart Operation</div>
     </div>
   </div>
 
@@ -561,12 +563,10 @@ body.light .back-fixed{
 
 </div>
 
-<!-- MODAL ภาพ -->
 <div id="modal" class="modal" onclick="this.style.display='none'">
   <img id="modalImg" alt="พรีวิว">
 </div>
 
-<!-- LOADING -->
 <div id="loading" class="loading-overlay">
   <div class="loading-box">
     <img src="assets/logo.png" class="loading-logo" alt="logo">
@@ -574,54 +574,50 @@ body.light .back-fixed{
   </div>
 </div>
 
-<!-- REPORT ISSUE MODAL -->
 <div id="reportOverlay" class="report-overlay" onclick="closeReportModal()">
   <div class="report-modal" onclick="event.stopPropagation()">
-    <div class="report-header">🚨 แจ้งปัญหา</div>
+    <div class="report-header" id="t_report_header">🚨 แจ้งปัญหา</div>
 
     <div class="report-body">
-      <label>Location / งาน</label>
+      <label id="t_report_item_lbl">Location / งาน</label>
       <input id="reportItem" placeholder="เช่น A1-01 / Part Name">
 
       <div class="hide-location">
-        <label>Location</label>
+        <label id="t_report_loc_lbl">Location</label>
         <input id="reportLocation" placeholder="Location (ถ้ามี)">
       </div>
 
-      <label>ประเภทปัญหา</label>
+      <label id="t_report_type_lbl">ประเภทปัญหา</label>
       <div class="report-options">
-        <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> ตำแหน่งไม่ตรง</label>
-        <label><input type="radio" name="reportType" value="ปริ้น WI"> ปริ้น WI</label>
-        <label><input type="radio" name="reportType" value="อื่นๆ"> อื่นๆ</label>
+        <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> <span id="t_type_pos">ตำแหน่งไม่ตรง</span></label>
+        <label><input type="radio" name="reportType" value="ปริ้น WI"> <span id="t_type_wi">ปริ้น WI</span></label>
+        <label><input type="radio" name="reportType" value="อื่นๆ"> <span id="t_type_other">อื่นๆ</span></label>
       </div>
 
-      <label>รายละเอียดเพิ่มเติม</label>
-      <textarea id="reportDetail" placeholder="รายละเอียดปัญหา เช่น ผังไม่ตรงของจริง, ผังไม่ชัด, ฯลฯ"></textarea>
+      <label id="t_report_more_lbl">รายละเอียดเพิ่มเติม</label>
+      <textarea id="reportDetail" placeholder="รายละเอียดปัญหา"></textarea>
     </div>
 
     <div class="report-footer">
-      <button type="button" onclick="closeReportModal()">ยกเลิก</button>
-      <button type="button" onclick="submitReport()">ส่งแจ้งปัญหา</button>
+      <button type="button" id="btnReportCancel" onclick="closeReportModal()">ยกเลิก</button>
+      <button type="button" id="btnReportSubmit" onclick="submitReport()">ส่งแจ้งปัญหา</button>
     </div>
   </div>
 </div>
 
-
-
-<!-- SETTINGS MODAL (mobile ⋯) -->
 <div id="settingsOverlay" class="settings-overlay">
   <div class="settings-modal" onclick="event.stopPropagation()">
-    <div class="settings-header">⚙️ ตั้งค่า</div>
+    <div class="settings-header" id="t_settings_title">⚙️ ตั้งค่า</div>
     <div class="settings-body">
       <div class="settings-row">
-        <div class="lbl">🌙 ธีม:</div>
+        <div class="lbl" id="t_settings_theme">🌙 ธีม:</div>
         <div class="settings-actions">
-          <button class="dark" type="button" onclick="setTheme('dark')">มืด</button>
-          <button class="light" type="button" onclick="setTheme('light')">สว่าง</button>
+          <button class="dark" type="button" onclick="setTheme('dark')">Dark</button>
+          <button class="light" type="button" onclick="setTheme('light')">Light</button>
         </div>
       </div>
       <div class="settings-row">
-        <div class="lbl">🌐 ภาษา:</div>
+        <div class="lbl" id="t_settings_lang">🌐 ภาษา:</div>
         <select id="settingsLangSelect" onchange="setLang(this.value)">
           <option value="th">🇹🇭 TH</option>
           <option value="mm">🇲🇲 MM</option>
@@ -630,7 +626,7 @@ body.light .back-fixed{
       </div>
     </div>
     <div class="settings-footer">
-      <button type="button" onclick="closeSettings()">ปิด</button>
+      <button type="button" id="t_settings_close" onclick="closeSettings()">ปิด</button>
     </div>
   </div>
 </div>
@@ -639,9 +635,7 @@ body.light .back-fixed{
 // ===== THEME (Global) =====
 (function(){
   const t = localStorage.getItem("theme") || "dark";
-  if(t === "light"){
-    document.body.classList.add("light");
-  }
+  if(t === "light"){ document.body.classList.add("light"); }
 })();
 
 function toggleTheme(){
@@ -652,24 +646,112 @@ function toggleTheme(){
     document.body.classList.add("light");
     localStorage.setItem("theme","light");
   }
-} // ✅ ต้องมีบรรทัดนี้
-
-// ===== LANGUAGE (match STORE: save selection) =====
-function applyLangFromStorage(){
-  const lang = localStorage.getItem('lang') || 'th';
-  const sel = document.getElementById('langSwitcher');
-  if(sel) sel.value = lang;
-  const sel2 = document.getElementById('settingsLangSelect');
-  if(sel2) sel2.value = lang;
 }
+
+// ===== I18N (ระบบแปลภาษา) =====
+let I18N = null;
+let LANG = localStorage.getItem("lang") || "th";
+const STR = {}; 
+
+async function loadI18N(){
+  try{
+    const res = await fetch('languages.json', { cache: 'no-store' });
+    I18N = await res.json();
+  }catch(err){
+    console.warn('โหลด languages.json ไม่สำเร็จ', err);
+    I18N = {};
+  }
+  return I18N;
+}
+
+function t(key, fallback=''){
+  const pack = (I18N && I18N[LANG]) ? I18N[LANG] : null;
+  return (pack && pack[key] !== undefined) ? String(pack[key]) : fallback;
+}
+
+function applyLang(code){
+  LANG = code || localStorage.getItem('lang') || 'th';
+  localStorage.setItem('lang', LANG);
+
+  const sel = document.getElementById('langSwitcher');
+  const sel2 = document.getElementById('settingsLangSelect');
+  if(sel) sel.value = LANG;
+  if(sel2) sel2.value = LANG;
+
+  // ฟังก์ชันช่วยเซ็ตข้อความ
+  const setText = (id, key, fb) => { const el = document.getElementById(id); if(el) el.textContent = t(key, fb); };
+
+  setText('t_packing_title', 'packing_title', 'PACKING');
+  setText('t_packing_sub', 'packing_sub', 'KAOSU PACKING · Smart Operation');
+  setText('t_back_fixed', 'back_menu_main', '⬅ กลับเมนู');
+  setText('t_back_mobile', 'back_menu_main', '⬅ กลับเมนู');
+  setText('t_brand_h1', 'brand_main', 'KAOSU PACKING');
+  setText('t_brand_sub', 'packing_sub', 'Smart Operation');
+
+  const q = document.getElementById('q');
+  if(q) q.placeholder = t('packing_search_ph', 'ค้นหางาน / ลูกค้า / แพ็ค / สติ๊กเกอร์');
+
+  setText('btnSearch', 'packing_search', 'ค้นหา');
+  setText('btnShowAll', 'packing_show_all', 'แสดงทั้งหมด');
+  setText('btnReportMain', 'packing_report_main', '🚨 แจ้งปัญหา (งานไม่อยู่ในฐาน)');
+
+  // อัปเดตปุ่ม Filter (คงตัวเลขเอาไว้)
+  const sumAll = document.getElementById('sumAll')?.textContent || '0';
+  const sumOK = document.getElementById('sumOK')?.textContent || '0';
+  const sumNG = document.getElementById('sumNG')?.textContent || '0';
+  
+  const btnAllEl = document.getElementById('btnAll');
+  if(btnAllEl) btnAllEl.innerHTML = `${t('packing_all', 'ทั้งหมด')} (<span id="sumAll">${sumAll}</span>)`;
+  const btnOKEl = document.getElementById('btnOK');
+  if(btnOKEl) btnOKEl.innerHTML = `${t('packing_filter_ok', '✅ WI ครบ')} (<span id="sumOK">${sumOK}</span>)`;
+  const btnNGEl = document.getElementById('btnNG');
+  if(btnNGEl) btnNGEl.innerHTML = `${t('packing_filter_ng', '⚠️ WI ยังไม่ครบ')} (<span id="sumNG">${sumNG}</span>)`;
+  setText('btnReload', 'packing_reload', '🔄 Reload');
+
+  // ดึงข้อความมาเก็บไว้ในตัวแปรสำหรับใช้วาดการ์ด (Card)
+  STR.customer = t('packing_customer', 'ลูกค้า:');
+  STR.job = t('packing_job', 'งาน:');
+  STR.pack = t('packing_pack', 'แพ็ค:');
+  STR.sticker = t('packing_sticker', 'สติ๊กเกอร์:');
+  STR.missing = t('packing_missing', 'ยังไม่ได้ใส่');
+  STR.wiFront = t('packing_btn_wi_front', 'WI หน้า');
+  STR.wiBack = t('packing_btn_wi_back', 'WI หลัง');
+  STR.btnSticker = t('packing_btn_sticker', 'สติ๊กเกอร์');
+  STR.reportBtn = t('packing_report', '🚨 แจ้งปัญหา');
+  STR.badgeOK = t('packing_badge_ok', 'ข้อมูลพร้อม');
+  STR.badgeNG = t('packing_badge_ng', 'ยังไม่ครบ WI');
+
+  // Modal Report
+  setText('t_report_header', 'packing_report', '🚨 แจ้งปัญหา');
+  setText('t_report_item_lbl', 'packing_report_item', 'Location / งาน');
+  setText('t_report_loc_lbl', 'packing_report_location', 'Location');
+  setText('t_report_type_lbl', 'packing_report_type', 'ประเภทปัญหา');
+  setText('t_report_more_lbl', 'packing_report_more', 'รายละเอียดเพิ่มเติม');
+  setText('t_type_pos', 'packing_report_type_pos', 'ตำแหน่งไม่ตรง');
+  setText('t_type_wi', 'packing_report_type_wi', 'ปริ้น WI');
+  setText('t_type_other', 'packing_report_type_other', 'อื่นๆ');
+  setText('btnReportCancel', 'packing_cancel', 'ยกเลิก');
+  setText('btnReportSubmit', 'packing_submit', 'ส่งแจ้งปัญหา');
+  
+  const ri = document.getElementById('reportItem');
+  if(ri) ri.placeholder = t('packing_report_item_ph', '');
+  const rd = document.getElementById('reportDetail');
+  if(rd) rd.placeholder = t('packing_report_more', '');
+
+  // Modal Settings
+  setText('t_settings_title', 'settings_title', '⚙️ ตั้งค่า');
+  setText('t_settings_theme', 'settings_theme', '🌙 ธีม:');
+  setText('t_settings_lang', 'settings_language', '🌐 ภาษา:');
+  setText('t_settings_close', 'settings_close', 'ปิด');
+}
+
 function setLang(code){
-  localStorage.setItem('lang', code);
-  applyLangFromStorage();
+  applyLang(code);
+  applyFilter(); // รีเฟรชข้อมูลในการ์ดให้เป็นภาษาใหม่
 }
 
 // ===== SETTINGS (mobile ⋯) =====
 function openSettings(){
-  applyLangFromStorage();
   const el = document.getElementById('settingsOverlay');
   if(el) el.style.display='flex';
 }
@@ -771,7 +853,7 @@ function openReportModal(itemEncoded){
   CURRENT_REPORT = it;
 
   reportItem.value = it.part_name || "";
-  reportLocation.value = ""; // ไม่ใช้ location ใน PACKING
+  reportLocation.value = ""; 
   document.querySelectorAll('input[name="reportType"]').forEach(r=>r.checked=false);
   reportDetail.value = "";
   reportOverlay.style.display = "flex";
@@ -794,11 +876,11 @@ function closeReportModal(){
 async function submitReport(){
   const type = document.querySelector('input[name="reportType"]:checked')?.value || "";
   const item = reportItem.value || (CURRENT_REPORT?.part_name || "");
-  const location = reportLocation.value || ""; // ส่งว่าง
+  const location = reportLocation.value || "";
   const detail = reportDetail.value || "";
 
   if(!type && !detail){
-    alert("กรุณาเลือกประเภทปัญหาหรือใส่รายละเอียดอย่างน้อย 1 อย่าง");
+    alert(t('packing_err_select', "กรุณาเลือกประเภทปัญหาหรือใส่รายละเอียดอย่างน้อย 1 อย่าง"));
     return;
   }
 
@@ -819,13 +901,13 @@ async function submitReport(){
     closeReportModal();
 
     if(res && res.ok === true && res.saved === true){
-      alert("ส่งแจ้งปัญหาเรียบร้อย ✅" + (res.lineSent ? "\nLINE ส่งแล้ว ✅" : "\nLINE ยังไม่ส่ง ⚠️"));
+      alert(t('packing_send_success', "ส่งแจ้งปัญหาเรียบร้อย ✅") + (res.lineSent ? "\n" + t('packing_line_sent', "LINE ส่งแล้ว ✅") : "\n" + t('packing_line_not_sent', "LINE ยังไม่ส่ง ⚠️")));
     }else{
-      alert("ส่งไม่สำเร็จ ❌\n" + JSON.stringify(res));
+      alert(t('packing_send_fail', "ส่งไม่สำเร็จ ❌") + "\n" + JSON.stringify(res));
     }
   }catch(err){
     hideLoading();
-    alert("เรียกหลังบ้านไม่สำเร็จ ❌\n" + err.message);
+    alert(t('packing_backend_fail', "เรียกหลังบ้านไม่สำเร็จ ❌") + "\n" + err.message);
   }
 }
 
@@ -837,25 +919,25 @@ function card(it){
       <div class="info">
         <div class="field">
           <span class="badge ${hasWI(it)?'ok':'warn'}">
-            ${hasWI(it)?'ข้อมูลพร้อม':'ยังไม่ครบ WI'}
+            ${hasWI(it) ? STR.badgeOK : STR.badgeNG}
           </span>
         </div>
 
-        <div class="field">ลูกค้า: <b>${it.customer_code || ""}</b></div>
-        <div class="field">งาน: <b>${it.part_name || ""}</b></div>
+        <div class="field">${STR.customer} <b>${it.customer_code || ""}</b></div>
+        <div class="field">${STR.job} <b>${it.part_name || ""}</b></div>
 
-        <div class="field">แพ็ค: ${okVal(it.packing_type)?it.packing_type:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
-        <div class="field">สติ๊กเกอร์: ${okVal(it.label_color)?it.label_color:`<span class="missing">ยังไม่ได้ใส่</span>`}</div>
+        <div class="field">${STR.pack} ${okVal(it.packing_type)?it.packing_type:`<span class="missing">${STR.missing}</span>`}</div>
+        <div class="field">${STR.sticker} ${okVal(it.label_color)?it.label_color:`<span class="missing">${STR.missing}</span>`}</div>
       </div>
     </div>
 
     <div class="wi-bar" onclick="event.stopPropagation()">
-      <button class="${okVal(it.wi_front_url)?'on':'off'}" ${okVal(it.wi_front_url)?`onclick="openModal('${it.wi_front_url}')"`:"disabled"}>WI หน้า</button>
-      <button class="${okVal(it.wi_back_url)?'on':'off'}" ${okVal(it.wi_back_url)?`onclick="openModal('${it.wi_back_url}')"`:"disabled"}>WI หลัง</button>
-      <button class="${okVal(it.label_image_url)?'on':'off'}" ${okVal(it.label_image_url)?`onclick="openModal('${it.label_image_url}')"`:"disabled"}>สติ๊กเกอร์</button>
+      <button class="${okVal(it.wi_front_url)?'on':'off'}" ${okVal(it.wi_front_url)?`onclick="openModal('${it.wi_front_url}')"`:"disabled"}>${STR.wiFront}</button>
+      <button class="${okVal(it.wi_back_url)?'on':'off'}" ${okVal(it.wi_back_url)?`onclick="openModal('${it.wi_back_url}')"`:"disabled"}>${STR.wiBack}</button>
+      <button class="${okVal(it.label_image_url)?'on':'off'}" ${okVal(it.label_image_url)?`onclick="openModal('${it.label_image_url}')"`:"disabled"}>${STR.btnSticker}</button>
 
       <button class="report-btn" onclick="event.stopPropagation(); openReportModal('${encodeURIComponent(JSON.stringify(it))}')">
-        🚨 แจ้งปัญหา
+        ${STR.reportBtn}
       </button>
     </div>
   </div>`;
@@ -867,9 +949,9 @@ function setActive(el){
 }
 
 function updateCounts(){
-  sumAll.textContent = ALL_ITEMS.length;
-  sumOK.textContent = ALL_ITEMS.filter(hasWI).length;
-  sumNG.textContent = ALL_ITEMS.filter(i=>!hasWI(i)).length;
+  document.getElementById("sumAll").textContent = ALL_ITEMS.length;
+  document.getElementById("sumOK").textContent = ALL_ITEMS.filter(hasWI).length;
+  document.getElementById("sumNG").textContent = ALL_ITEMS.filter(i=>!hasWI(i)).length;
 }
 
 function applyFilter(){
@@ -892,7 +974,7 @@ function applyFilter(){
   VIEW_ITEMS = items;
   list.innerHTML = "";
   VIEW_ITEMS.forEach(it=>list.insertAdjacentHTML("beforeend", card(it)));
-  loadedNote.textContent = `แสดง ${VIEW_ITEMS.length} รายการ (จากทั้งหมด ${ALL_ITEMS.length})`;
+  loadedNote.textContent = `${t('store_show_all', 'แสดงทั้งหมด')} ${VIEW_ITEMS.length} ${t('store_items', 'รายการ')}`;
 }
 
 async function loadAllPages(){
@@ -903,7 +985,7 @@ async function loadAllPages(){
   finished = false;
   ALL_ITEMS = [];
   list.innerHTML = "";
-  loadedNote.textContent = "กำลังโหลด...";
+  loadedNote.textContent = t('packing_loading', "กำลังโหลด...");
   updateCounts();
   applyFilter();
   showLoading();
@@ -941,7 +1023,7 @@ async function doSearch(){
     applyFilter();
 
     if(ALL_ITEMS.length === 0){
-      loadedNote.textContent = "ไม่พบข้อมูล — กด 🚨 แจ้งปัญหา (งานไม่อยู่ในฐาน)";
+      loadedNote.textContent = t('packing_no_data_click', "ไม่พบข้อมูล — กด 🚨 แจ้งปัญหา");
     }
   }finally{
     hideLoading();
@@ -969,19 +1051,16 @@ btnReportMain.onclick = openReportModalManual;
 
 qEl.addEventListener("keydown",(e)=>{ if(e.key==="Enter") doSearch(); });
 
-  // === STORE-style overlay close ===
-document.getElementById('settingsOverlay')
-  ?.addEventListener('click', (e) => {
-    if (e.target.id === 'settingsOverlay') {
-      closeSettings();
-    }
-  });
-// === STORE-style binding for mobile ⋯ ===
-document.getElementById('kebabBtn')
-  ?.addEventListener('click', openSettings);
-// START
-applyLangFromStorage();
-loadAllPages();
+document.getElementById('settingsOverlay')?.addEventListener('click', (e) => {
+  if (e.target.id === 'settingsOverlay') closeSettings();
+});
+document.getElementById('kebabBtn')?.addEventListener('click', openSettings);
+
+// START (โหลดไฟล์ JSON ก่อน แล้วค่อยดึงข้อมูลจาก Sheet)
+loadI18N().then(() => {
+  applyLang(LANG);
+  loadAllPages();
+});
 </script>
 
 </body>
