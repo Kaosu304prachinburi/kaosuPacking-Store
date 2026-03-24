@@ -480,6 +480,28 @@ body.light .back-fixed{
   border:1px solid rgba(0,0,0,0.15);
 }
 
+/* ===== แก้ไขปุ่มวงกลม (Radio) ในหน้าแจ้งปัญหา ===== */
+.report-options input[type="radio"] {
+  -webkit-appearance: radio !important;
+  appearance: auto !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: auto !important; /* ยกเลิกความกว้าง 260px ของช่องค้นหา */
+  flex: none !important; /* ยกเลิก flex */
+  margin: 0 8px 0 0 !important;
+  padding: 0 !important;
+  accent-color: #0b1220 !important; /* สีดำเวลาถูกคลิกเลือก */
+  cursor: pointer;
+}
+
+/* จัดให้อยู่บรรทัดเดียวกันสวยๆ */
+.report-options label {
+  display: flex !important;
+  align-items: center !important;
+  font-weight: 500 !important;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
 
 </style>
 </head>
