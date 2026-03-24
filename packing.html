@@ -300,8 +300,20 @@ button.ghost:hover{filter:brightness(1.06)}
 .report-footer{
   display:flex;gap:10px;padding:12px 16px;border-top:1px solid #e5e7eb;
 }
-.report-footer button{flex:1;height:40px;border-radius:10px}
-
+.report-footer button {
+  flex: 1;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, .08);
+  background: #ffffff;
+  color: #111827;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+}
+.report-footer button:hover {
+  background: #f3f4f6;
+}
 /* ซ่อน location ใน report modal */
 .hide-location{display:none !important;}
 
@@ -546,27 +558,28 @@ body.light .back-fixed{
     <div class="report-header">🚨 แจ้งปัญหา</div>
 
     <div class="report-body">
-      <label>ชื่องาน / ITEM</label>
-      <input id="reportItem" placeholder="ชื่อ ITEM (ไม่บังคับ)">
+      <label>Location / งาน</label>
+      <input id="reportItem" placeholder="เช่น A1-01 / Part Name">
 
       <div class="hide-location">
         <label>Location</label>
-        <input id="reportLocation" placeholder="Location (ไม่บังคับ)">
+        <input id="reportLocation" placeholder="Location (ถ้ามี)">
       </div>
 
-      <label>รายละเอียดปัญหา</label>
+      <label>ประเภทปัญหา</label>
       <div class="report-options">
         <label><input type="radio" name="reportType" value="ตำแหน่งไม่ตรง"> ตำแหน่งไม่ตรง</label>
         <label><input type="radio" name="reportType" value="ปริ้น WI"> ปริ้น WI</label>
         <label><input type="radio" name="reportType" value="อื่นๆ"> อื่นๆ</label>
       </div>
 
-      <textarea id="reportDetail" placeholder="รายละเอียดเพิ่มเติม (ถ้ามี)"></textarea>
+      <label>รายละเอียดเพิ่มเติม</label>
+      <textarea id="reportDetail" placeholder="รายละเอียดปัญหา เช่น ผังไม่ตรงของจริง, ผังไม่ชัด, ฯลฯ"></textarea>
     </div>
 
     <div class="report-footer">
-      <button class="secondary" onclick="closeReportModal()">ยกเลิก</button>
-      <button class="primary" onclick="submitReport()">ส่งแจ้งปัญหา</button>
+      <button type="button" onclick="closeReportModal()">ยกเลิก</button>
+      <button type="button" onclick="submitReport()">ส่งแจ้งปัญหา</button>
     </div>
   </div>
 </div>
