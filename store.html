@@ -164,11 +164,11 @@
     .thumb{ margin-top:12px; border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.15); }
     .thumb img{ width:100%; height:190px; object-fit:cover; display:block; cursor:pointer; }
 
-    .card-actions{ margin-top:10px; display:flex; justify-content:flex-end; }
-    .card-actions .report-btn{ height:38px; padding:0 16px; border-radius:999px; border:none; cursor:pointer;
+    .card-s{ margin-top:10px; display:flex; justify-content:flex-end; }
+    .card-s .report-btn{ height:38px; padding:0 16px; border-radius:999px; border:none; cursor:pointer;
       font-size:13px; font-weight:800; background:linear-gradient(135deg,#f97373,#e11d48);
       color:#fff; box-shadow:0 12px 30px rgba(0,0,0,.45); }
-    .card-actions .report-btn:hover{ filter:brightness(1.06); }
+    .card-s .report-btn:hover{ filter:brightness(1.06); }
 
     mark{ background:rgba(56,189,248,.25); color:#e0f2fe; padding:0 3px; border-radius:6px; }
 
@@ -520,7 +520,7 @@
     }
 
     // ===================== CONFIG =====================
-    const API_BASE = "https://script.google.com/macros/s/AKfycbwkiyh0k1mcBzYEU5yXkwlqg9qYE3a0jqJ_Tmv3TgxlRGFOntIQdyq57WIbZgIKuQo2SQ/exec";
+    const API_BASE = "https://script.google.com/macros/s/AKfycbzSzxRuxAmk71LGupfSHCL781C4tzAyFUXWrlEU5rl9X3i1xqXJRZ99fA5JBBUDc6Dqzw/exec";
     const LIMIT = 200;
 
     // ===================== ELEMENTS =====================
@@ -688,7 +688,7 @@
       const page = "Store";
       const url =
         API_BASE +
-        "?action=report" +
+        "?=report" +
         "&item=" + encodeURIComponent(item) +
         "&location=" + encodeURIComponent(location) +
         "&type=" + encodeURIComponent(type) +
@@ -732,7 +732,7 @@
               <img src="${it.layout_image_url}" alt="layout" onclick="openModal('${it.layout_image_url}')">
             </div>
           ` : ''}
-          <div class="card-actions">
+          <div class="card-s">
             <button class="report-btn" onclick="openReportModal('${encodeURIComponent(JSON.stringify(it))}')">${escapeHtml(STR.reportBtn||'🚨 แจ้งปัญหา')}</button>
           </div>
         </div>
