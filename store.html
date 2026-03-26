@@ -830,7 +830,24 @@
         note.dataset.locked = '0';
       }
     }
+async function doSearch(){
+      const qv = (qEl.value || "").trim().toLowerCase();
 
+      // ถ้าว่าง = แสดงทั้งหมด
+      if(!qv){
+        VIEW = ALL;
+        render("");
+        return;
+      }
+
+      VIEW = ALL.filter(it =>
+        String(it.location_code || "").toLowerCase().includes(qv) ||
+        String(it.part_name || "").toLowerCase().includes(qv) ||
+        String(it.customer_code || "").toLowerCase().includes(qv)
+      );
+
+      render(qv);
+    }
     // ===================== EVENTS =====================
     btnSearch.onclick = async () => {
       await doSearch();
