@@ -678,22 +678,22 @@
 
     async function submitReport(){
       const type = document.querySelector('input[name="reportType"]:checked')?.value || "";
-      const item = reportItem.value || "";
-      const location = reportLocation.value || "";
-      const detail = reportDetail.value || "";
+      const item = (reportItem.value || "").trim();
+      const location = (reportLocation.value || "").trim();
+      const detail = (reportDetail.value || "").trim();
 
       if(!item && !detail){
-        alert(t('store_err_need_info', 'กรุณาระบุอย่างน้อยชื่อ Location/งาน หรือรายละเอียดปัญหา'));
+        alert("กรุณาระบุอย่างน้อยชื่อ Location/งาน หรือรายละเอียดปัญหา");
         return;
       }
 
       const page = "Store";
-    const url =
-        API_BASE +
-        "?action=report" + // แก้ไขบรรทัดนี้ให้มีคำว่า action=
+      // ✅ แก้ไขตรงนี้: ตรวจสอบพารามิเตอร์ action ให้ถูกต้อง
+      const url = API_BASE + 
+        "?action=report" + 
         "&item=" + encodeURIComponent(item) +
         "&location=" + encodeURIComponent(location) +
-        "&type=" + encodeURIComponent(type) +
+        "&type=" + encodeURIComponent(type) + 
         "&detail=" + encodeURIComponent(detail) +
         "&page=" + encodeURIComponent(page);
 
@@ -701,16 +701,17 @@
         showLoading();
         const res = await jsonp(url);
         hideLoading();
-        closeReportModal();
-
-        if(res && res.ok === true && res.saved === true){
-          alert(t('store_send_success','ส่งแจ้งปัญหาเรียบร้อย ✅') + (res.lineSent ? "\n" + t('store_line_sent','LINE ส่งแล้ว ✅') : "\n" + t('store_line_not_sent','LINE ยังไม่ส่ง ⚠️')));
+        
+        if(res && res.ok === true){
+          alert("ส่งแจ้งปัญหาเรียบร้อย ✅");
+          closeReportModal(); // ปิดหน้าต่างและหายเบลอ
         }else{
-          alert(t('store_send_fail','ส่งไม่สำเร็จ ❌') + "\n" + JSON.stringify(res));
+          alert("ส่งไม่สำเร็จ ❌: " + (res.msg || "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์"));
         }
       }catch(err){
         hideLoading();
-        alert(t('store_backend_fail','เรียกหลังบ้านไม่สำเร็จ ❌') + "\n" + err.message);
+        alert("เรียกหลังบ้านไม่สำเร็จ ❌: " + err.message);
+        console.error(err);
       }
     }
 
