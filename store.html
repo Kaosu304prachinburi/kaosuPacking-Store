@@ -676,7 +676,7 @@
       CURRENT_REPORT = null;
     }
 
-    async function submitReport(){
+   async function submitReport(){
       const type = document.querySelector('input[name="reportType"]:checked')?.value || "";
       const item = (reportItem.value || "").trim();
       const location = (reportLocation.value || "").trim();
@@ -688,7 +688,6 @@
       }
 
       const page = "Store";
-      // ✅ แก้ไขตรงนี้: ตรวจสอบพารามิเตอร์ action ให้ถูกต้อง
       const url = API_BASE + 
         "?action=report" + 
         "&item=" + encodeURIComponent(item) +
@@ -698,23 +697,21 @@
         "&page=" + encodeURIComponent(page);
 
       try{
-        showLoading();
-        const res = await jsonp(url);
-        hideLoading();
+        showLoading(); // สั่งเบลอหน้าจอและโชว์ "กำลังโหลด..."
+        const res = await jsonp(url); // วิ่งไปคุยกับหลังบ้าน
         
         if(res && res.ok === true){
+          closeReportModal(); // ปิดหน้าต่างฟอร์ม
           alert("ส่งแจ้งปัญหาเรียบร้อย ✅");
-          closeReportModal(); // ปิดหน้าต่างและหายเบลอ
         }else{
-          alert("ส่งไม่สำเร็จ ❌: " + (res.msg || "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์"));
+          alert("ส่งไม่สำเร็จ ❌: " + (res.msg || "เซิร์ฟเวอร์ไม่ตอบสนอง"));
         }
       }catch(err){
-        hideLoading();
-        alert("เรียกหลังบ้านไม่สำเร็จ ❌: " + err.message);
-        console.error(err);
+        alert("ติดต่อหลังบ้านไม่สำเร็จ ❌ (อาจลืมกด Deploy เวอร์ชันใหม่ หรือชีทมีปัญหา)\n" + err.message);
+      }finally{
+        hideLoading(); // ⚡️ สำคัญมาก: บังคับลบความเบลอทิ้งทุกกรณี (แก้ปัญหาจอเบลอค้าง!)
       }
     }
-
     // ===================== UI =====================
     function card(it, q){
       const loc = it.location_code || "-";
