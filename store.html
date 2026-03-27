@@ -279,11 +279,13 @@
 
         <button class="btn issue-main" id="btnReportMain">🚨 แจ้งปัญหา (งานนอกฐาน)</button>
 
-        <div class="status">
+      <div class="status">
           <div id="note">พร้อมใช้งาน</div>
-          <div><span id="t_result">ผลลัพธ์:</span> <b id="count">0</b> <span id="t_items">รายการ</span></div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button onclick="forceRefresh()" style="background:var(--glass); border:1px solid var(--border); border-radius:8px; color:var(--text); cursor:pointer; font-size:11px; padding:4px 10px; backdrop-filter:blur(5px);">🔄 อัปเดตข้อมูล</button>
+            <div><span id="t_result">ผลลัพธ์:</span> <b id="count">0</b> <span id="t_items">รายการ</span></div>
+          </div>
         </div>
-      </div>
 
       <button id="toggleSearchMobile" class="mobile-toggle" type="button" aria-expanded="true">⌃</button>
     </div>
@@ -686,9 +688,9 @@
       }
 
       const page = "Store";
-      const url =
+    const url =
         API_BASE +
-        "?=report" +
+        "?action=report" + // แก้ไขบรรทัดนี้ให้มีคำว่า action=
         "&item=" + encodeURIComponent(item) +
         "&location=" + encodeURIComponent(location) +
         "&type=" + encodeURIComponent(type) +
@@ -847,6 +849,20 @@ async function doSearch(){
       );
 
       render(qv);
+    }
+    // ✅ ฟังก์ชันสำหรับล้างแคชและโหลดข้อมูลใหม่ทันที
+    function forceRefresh() {
+      if(confirm("ต้องการอัปเดตข้อมูลล่าสุดจากเซิร์ฟเวอร์ใช่หรือไม่?")) {
+        localStorage.removeItem("STORE_CACHE"); // ล้างความจำเก่า
+        ALL = [];
+        VIEW = [];
+        grid.innerHTML = "";
+        count.textContent = "0";
+        currentQuery = "";
+        qEl.value = ""; 
+        fetching = false; 
+        loadAll(); // เริ่มโหลดใหม่แบบ Force Load
+      }
     }
     // ===================== EVENTS =====================
     btnSearch.onclick = async () => {
