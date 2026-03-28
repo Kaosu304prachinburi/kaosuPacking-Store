@@ -768,12 +768,16 @@
 
       if(actionType === 'IN') {
          header.textContent = "📥 รับของเข้า: " + (it.location_code || "");
-         detailLabel.textContent = "จำนวน (พาเลท/กล่อง)";
-         detailInput.placeholder = "เช่น 2 พาเลท, 5 กล่อง";
+         // 🟢 แก้คำตรง 2 บรรทัดนี้ครับ
+         detailLabel.textContent = "จำนวน (ถุง/Rack)"; 
+         detailInput.placeholder = "เช่น 2 ถุง, 5 Rack";
+
       } else if(actionType === 'OUT') {
          header.textContent = "📤 เบิกของออก: " + (it.location_code || "");
-         detailLabel.textContent = "เบิกออกกี่พาเลท? (หรือพิมพ์ 'ออกหมด')";
-         detailInput.placeholder = "เช่น 1 พาเลท, ออกหมด";
+         // 🟢 แก้คำตรงปุ่มเบิกออก ให้สอดคล้องกันด้วยครับ
+         detailLabel.textContent = "เบิกออกกี่ถุง/Rack? (หรือพิมพ์ 'ออกหมด')";
+         detailInput.placeholder = "เช่น 1 ถุง, ออกหมด";
+
       } else if(actionType === 'MOVE') {
          header.textContent = "📦 ฝาก/ย้าย: " + (it.part_name || "");
          detailLabel.textContent = "นำไปฝากไว้ที่ Location ไหน?";
