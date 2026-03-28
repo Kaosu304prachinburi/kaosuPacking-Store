@@ -105,6 +105,16 @@
     .btn:active{ transform:scale(.98); }
     .btn.search{ background:linear-gradient(135deg,#34d399,var(--accent)); }
     .btn.issue-main{ background:linear-gradient(135deg,#f97373,#e11d48); }
+    /* จัดเลย์เอาต์ให้แบ่งครึ่ง 50/50 */
+    .top-action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .btn.btn-new-job { background: linear-gradient(135deg, #60a5fa, #2563eb); }
+    @media (max-width: 480px){
+      .top-action-row .btn { font-size: 15px; padding: 0 10px; }
+    }
 
     body.light .search-row input{ background:#ffffff; color:var(--text); border-color:rgba(148,163,184,.7); }
 
@@ -250,6 +260,15 @@
       .sheet-overlay{ transition:none; }
       .sheet{ transition:none; }
     }
+    /* ===== ปุ่ม 4 สีของการ์ด ===== */
+    .card-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(255,255,255,.15); }
+    body.light .card-btn-grid { border-top-color: rgba(15,23,42,.1); }
+    .action-btn { height: 44px; border-radius: 12px; border: none; font-weight: 800; font-size: 14px; color: #fff; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,.25); transition: filter 0.15s, transform 0.1s; }
+    .action-btn:active { transform: scale(0.96); }
+    .btn-in { background: linear-gradient(135deg, #34d399, #10b981); }
+    .btn-out { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+    .btn-move { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+    .btn-alert { background: linear-gradient(135deg, #f87171, #ef4444); }
   </style>
 </head>
 <body>
@@ -277,7 +296,10 @@
           <button class="btn search" id="btnSearch">ค้นหา</button>
         </div>
 
-        <button class="btn issue-main" id="btnReportMain">🚨 แจ้งปัญหา (งานนอกฐาน)</button>
+       <div class="top-action-row">
+          <button class="btn btn-new-job" id="btnNewJob">➕ รับงานใหม่</button>
+          <button class="btn issue-main" id="btnReportMain">🚨 ปัญหานอกฐาน</button>
+        </div>
 
         <div class="status">
           <div id="note">พร้อมใช้งาน</div>
@@ -329,6 +351,27 @@
       <div class="report-footer">
         <button type="button" id="btnReportCancel" onclick="closeReportModal()">ยกเลิก</button>
         <button type="button" id="btnReportSubmit" onclick="submitReport()">ส่งแจ้งปัญหา</button>
+      </div>
+    </div>
+  </div>
+  <div class="report-overlay" id="movementOverlay" onclick="closeMovementModal()">
+    <div class="report-modal" onclick="event.stopPropagation()">
+      <div class="report-header" id="moveHeader" style="background:#0f172a;">📥 รับของเข้า</div>
+      <div class="report-body">
+        
+        <label>รหัสพนักงาน <span style="color:red">*</span></label>
+        <input id="moveReporter" placeholder="ระบุรหัสพนักงาน (บังคับกรอก)">
+
+        <label id="moveDetailLabel">จำนวน (พาเลท/กล่อง)</label>
+        <input id="moveDetail" placeholder="เช่น 2 พาเลท, 5 กล่อง">
+        
+        <input type="hidden" id="moveActionType">
+        <input type="hidden" id="moveItemData">
+
+      </div>
+      <div class="report-footer">
+        <button type="button" onclick="closeMovementModal()">ยกเลิก</button>
+        <button type="button" style="background:var(--accent); color:#fff; border:none;" onclick="submitMovement()">บันทึกข้อมูล</button>
       </div>
     </div>
   </div>
@@ -521,7 +564,7 @@
     }
 
     // ===================== CONFIG =====================
-    const API_BASE = "https://script.google.com/macros/s/AKfycbzW0vNDZnrIcLbWw7PPtRFLCWNBLOdc7iPk8hjjZ3Q9MyGC-EUiRr5_vV18dYnAEtoMsA/exec";
+    const API_BASE = "https://script.google.com/macros/s/AKfycbw2nJfMNwghYjW4rPn-N9ZTmy3apzMRGy06IsCfQzaC8R3DIN4wH9qIJ7J672rQCfafag/exec";
     const LIMIT = 200;
 
     // ===================== ELEMENTS =====================
@@ -711,12 +754,97 @@
         hideLoading(); // ⚡️ สำคัญมาก: บังคับลบความเบลอทิ้งทุกกรณี (แก้ปัญหาจอเบลอค้าง!)
       }
     }
+    // ================= MOVEMENT LOGIC =================
+    function openMovementModal(actionType, itemEncoded) {
+      const it = JSON.parse(decodeURIComponent(itemEncoded));
+      document.getElementById('moveReporter').value = "";
+      document.getElementById('moveDetail').value = "";
+      document.getElementById('moveItemData').value = itemEncoded;
+      document.getElementById('moveActionType').value = actionType;
+      
+      const header = document.getElementById('moveHeader');
+      const detailLabel = document.getElementById('moveDetailLabel');
+      const detailInput = document.getElementById('moveDetail');
+
+      if(actionType === 'IN') {
+         header.textContent = "📥 รับของเข้า: " + (it.location_code || "");
+         detailLabel.textContent = "จำนวน (พาเลท/กล่อง)";
+         detailInput.placeholder = "เช่น 2 พาเลท, 5 กล่อง";
+      } else if(actionType === 'OUT') {
+         header.textContent = "📤 เบิกของออก: " + (it.location_code || "");
+         detailLabel.textContent = "เบิกออกกี่พาเลท? (หรือพิมพ์ 'ออกหมด')";
+         detailInput.placeholder = "เช่น 1 พาเลท, ออกหมด";
+      } else if(actionType === 'MOVE') {
+         header.textContent = "📦 ฝาก/ย้าย: " + (it.part_name || "");
+         detailLabel.textContent = "นำไปฝากไว้ที่ Location ไหน?";
+         detailInput.placeholder = "เช่น A2-05";
+      }
+      
+      document.getElementById('movementOverlay').style.display = "flex";
+    }
+
+    function closeMovementModal() {
+      document.getElementById('movementOverlay').style.display = "none";
+    }
+
+    async function submitMovement() {
+      const reporter = document.getElementById('moveReporter').value.trim();
+      const detail = document.getElementById('moveDetail').value.trim();
+      const actionType = document.getElementById('moveActionType').value;
+      const itemEncoded = document.getElementById('moveItemData').value;
+
+      if(!reporter) {
+        alert("กรุณาระบุรหัสพนักงานก่อนครับ 🛑");
+        return;
+      }
+      
+      let item = "";
+      let location = "";
+      try {
+        const it = JSON.parse(decodeURIComponent(itemEncoded));
+        item = it.part_name || "";
+        location = it.location_code || "";
+      } catch(e) {}
+
+      const url = API_BASE + "?action=movement&reporter=" + encodeURIComponent(reporter) + "&type=" + encodeURIComponent(actionType) + "&item=" + encodeURIComponent(item) + "&location=" + encodeURIComponent(location) + "&detail=" + encodeURIComponent(detail);
+
+      try {
+        showLoading();
+        const res = await jsonp(url);
+        hideLoading();
+
+        if(res && res.ok === true && res.saved === true) {
+          closeMovementModal();
+          alert("บันทึกข้อมูล " + actionType + " เรียบร้อยแล้ว! ✅");
+        } else {
+          alert("บันทึกไม่สำเร็จ ❌\n" + (res.error || "เกิดข้อผิดพลาด"));
+        }
+      } catch(err) {
+        hideLoading();
+        alert("ติดต่อหลังบ้านไม่สำเร็จ ❌\n" + err.message);
+      }
+    }
+
+    // ฟังก์ชันเปิดแจ้งปัญหาสำหรับงานนอกฐาน
+    const btnNewJob = document.getElementById("btnNewJob");
+    if(btnNewJob){
+      btnNewJob.onclick = () => {
+         // จำลองส่งข้อมูลเหมือน action=movement แต่ให้ type=NEW_JOB
+         openMovementModal('NEW_JOB', encodeURIComponent(JSON.stringify({ part_name: "งานใหม่ (นอกระบบ)", location_code: "" })));
+         // แอบเปลี่ยนข้อความ Header นิดหน่อย
+         document.getElementById('moveHeader').textContent = "➕ รับงานใหม่ (ไม่มีในระบบ)";
+         document.getElementById('moveDetailLabel').textContent = "ชื่องาน และ Location ที่เก็บ";
+         document.getElementById('moveDetail').placeholder = "เช่น งาน Part A เก็บที่ช่อง C1";
+      };
+    }
     // ===================== UI =====================
-    function card(it, q){
+   function card(it, q){
       const loc = it.location_code || "-";
       const customer = it.customer_code || "";
       const part = it.part_name || "";
       const hasLayout = ok(it.layout_image_url);
+
+      const itemData = encodeURIComponent(JSON.stringify(it));
 
       return `
         <div class="card">
@@ -731,8 +859,11 @@
               <img src="${it.layout_image_url}" alt="layout" onclick="openModal('${it.layout_image_url}')">
             </div>
           ` : ''}
-          <div class="card-s">
-            <button class="report-btn" onclick="openReportModal('${encodeURIComponent(JSON.stringify(it))}')">${escapeHtml(STR.reportBtn||'🚨 แจ้งปัญหา')}</button>
+          <div class="card-btn-grid">
+            <button class="action-btn btn-in" onclick="openMovementModal('IN', '${itemData}')">📥 รับเข้า</button>
+            <button class="action-btn btn-out" onclick="openMovementModal('OUT', '${itemData}')">📤 เบิกออก</button>
+            <button class="action-btn btn-move" onclick="openMovementModal('MOVE', '${itemData}')">📦 ฝาก/ย้าย</button>
+            <button class="action-btn btn-alert" onclick="openReportModal('${itemData}')">🚨 ปัญหา</button>
           </div>
         </div>
       `;
