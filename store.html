@@ -330,7 +330,7 @@
     <div class="report-modal" onclick="event.stopPropagation()">
       <div class="report-header" id="t_report_header">🚨 แจ้งปัญหา</div>
       <div class="report-body">
-        <label>รหัสพนักงาน / ผู้แจ้ง <span style="color:red">*</span></label>
+        <label id="t_report_reporter_lbl">รหัสพนักงาน / ผู้แจ้ง <span style="color:red">*</span></label>
         <input id="reportReporter" placeholder="ระบุรหัสพนักงาน (บังคับกรอก)">
         <label id="t_report_item_lbl">Location / งาน</label>
         <input id="reportItem" placeholder="เช่น A1-01 / Part Name">
@@ -361,7 +361,7 @@
       <div class="report-header" id="moveHeader" style="background:#0f172a;">📥 รับของเข้า</div>
       <div class="report-body">
         
-        <label>รหัสพนักงาน <span style="color:red">*</span></label>
+        <label id="moveReporterLabel">รหัสพนักงาน <span style="color:red">*</span></label>
         <input id="moveReporter" placeholder="ระบุรหัสพนักงาน (บังคับกรอก)">
 
         <label id="moveDetailLabel">จำนวน (พาเลท/กล่อง)</label>
@@ -554,6 +554,24 @@
       const sl = document.getElementById('t_settings_lang');
       if(sl) sl.textContent = t('settings_language', sl.textContent);
 
+      // 🆕 แปลภาษาปุ่มด้านบน
+      const bNew = document.getElementById('btnNewJob');
+      if(bNew) bNew.textContent = t('store_btn_new_job', '➕ รับงานใหม่');
+      const brM = document.getElementById('btnReportMain');
+      if(brM) brM.textContent = t('store_btn_issue_main', '🚨 ปัญหานอกฐาน');
+
+      // 🆕 แปลภาษาช่องกรอกผู้แจ้ง (หน้าต่างแจ้งปัญหา)
+      const rRepLbl = document.getElementById('t_report_reporter_lbl');
+      if(rRepLbl) rRepLbl.innerHTML = t('store_move_reporter', 'รหัสพนักงาน') + ' <span style="color:red">*</span>';
+      const rRepInp = document.getElementById('reportReporter');
+      if(rRepInp) rRepInp.placeholder = t('store_move_reporter_ph', 'ระบุรหัสพนักงาน (บังคับกรอก)');
+
+      // 🆕 แปลภาษาช่องกรอกผู้แจ้ง (หน้าต่าง Movement)
+      const mRepLbl = document.getElementById('moveReporterLabel');
+      if(mRepLbl) mRepLbl.innerHTML = t('store_move_reporter', 'รหัสพนักงาน') + ' <span style="color:red">*</span>';
+      const mRepInp = document.getElementById('moveReporter');
+      if(mRepInp) mRepInp.placeholder = t('store_move_reporter_ph', 'ระบุรหัสพนักงาน (บังคับกรอก)');
+      
       // update switch state after language set
       const sw = document.getElementById('themeSwitch');
       if(sw) sw.checked = document.body.classList.contains('light');
@@ -788,22 +806,23 @@
       const detailLabel = document.getElementById('moveDetailLabel');
       const detailInput = document.getElementById('moveDetail');
 
+      // 🆕 ดึงคำแปลภาษามาใช้ในหน้าต่าง Popup
       if(actionType === 'IN') {
-         header.textContent = "📥 รับของเข้า: " + (it.location_code || "");
-         // 🟢 แก้คำตรง 2 บรรทัดนี้ครับ
-         detailLabel.textContent = "จำนวน (ถุง/Rack)"; 
-         detailInput.placeholder = "เช่น 2 ถุง, 5 Rack";
-
+         header.textContent = t('store_move_title_in', "📥 รับของเข้า:") + " " + (it.location_code || "");
+         detailLabel.textContent = t('store_move_qty_in', "จำนวน (ถุง/Rack)");
+         detailInput.placeholder = t('store_move_qty_in_ph', "เช่น 2 ถุง, 5 Rack");
       } else if(actionType === 'OUT') {
-         header.textContent = "📤 เบิกของออก: " + (it.location_code || "");
-         // 🟢 แก้คำตรงปุ่มเบิกออก ให้สอดคล้องกันด้วยครับ
-         detailLabel.textContent = "เบิกออกกี่ถุง/Rack? (หรือพิมพ์ 'ออกหมด')";
-         detailInput.placeholder = "เช่น 1 ถุง, ออกหมด";
-
+         header.textContent = t('store_move_title_out', "📤 เบิกของออก:") + " " + (it.location_code || "");
+         detailLabel.textContent = t('store_move_qty_out', "เบิกออกกี่ถุง/Rack? (หรือพิมพ์ 'ออกหมด')");
+         detailInput.placeholder = t('store_move_qty_out_ph', "เช่น 1 ถุง, ออกหมด");
       } else if(actionType === 'MOVE') {
-         header.textContent = "📦 ฝาก/ย้าย: " + (it.part_name || "");
-         detailLabel.textContent = "นำไปฝากไว้ที่ Location ไหน?";
-         detailInput.placeholder = "เช่น A2-05";
+         header.textContent = t('store_move_title_move', "📦 ฝาก/ย้าย:") + " " + (it.part_name || "");
+         detailLabel.textContent = t('store_move_loc', "นำไปฝากไว้ที่ Location ไหน?");
+         detailInput.placeholder = t('store_move_loc_ph', "เช่น A2-05");
+      } else if(actionType === 'NEW_JOB') {
+         header.textContent = t('store_move_title_new', "➕ รับงานใหม่ (ไม่มีในระบบ)");
+         detailLabel.textContent = t('store_move_new_detail', "ชื่องาน และ Location ที่เก็บ");
+         detailInput.placeholder = t('store_move_new_detail_ph', "เช่น งาน Part A เก็บที่ช่อง C1");
       }
       
       document.getElementById('movementOverlay').style.display = "flex";
@@ -872,6 +891,12 @@
 
       const itemData = encodeURIComponent(JSON.stringify(it));
 
+      // 🆕 ดึงคำแปลภาษามาใช้กับปุ่ม
+      const txtIn = t('store_btn_in', '📥 รับเข้า');
+      const txtOut = t('store_btn_out', '📤 เบิกออก');
+      const txtMove = t('store_btn_move', '📦 ฝาก/ย้าย');
+      const txtAlert = t('store_btn_alert', '🚨 ปัญหา');
+
       return `
         <div class="card">
           <div class="head">
@@ -886,15 +911,14 @@
             </div>
           ` : ''}
           <div class="card-btn-grid">
-            <button class="action-btn btn-in" onclick="openMovementModal('IN', '${itemData}')">📥 รับเข้า</button>
-            <button class="action-btn btn-out" onclick="openMovementModal('OUT', '${itemData}')">📤 เบิกออก</button>
-            <button class="action-btn btn-move" onclick="openMovementModal('MOVE', '${itemData}')">📦 ฝาก/ย้าย</button>
-            <button class="action-btn btn-alert" onclick="openReportModal('${itemData}')">🚨 ปัญหา</button>
+            <button class="action-btn btn-in" onclick="openMovementModal('IN', '${itemData}')">${escapeHtml(txtIn)}</button>
+            <button class="action-btn btn-out" onclick="openMovementModal('OUT', '${itemData}')">${escapeHtml(txtOut)}</button>
+            <button class="action-btn btn-move" onclick="openMovementModal('MOVE', '${itemData}')">${escapeHtml(txtMove)}</button>
+            <button class="action-btn btn-alert" onclick="openReportModal('${itemData}')">${escapeHtml(txtAlert)}</button>
           </div>
         </div>
       `;
     }
-
     function render(q=""){
       currentQuery = q;
       grid.innerHTML = "";
