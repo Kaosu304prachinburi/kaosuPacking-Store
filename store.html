@@ -330,6 +330,8 @@
     <div class="report-modal" onclick="event.stopPropagation()">
       <div class="report-header" id="t_report_header">🚨 แจ้งปัญหา</div>
       <div class="report-body">
+        <label>รหัสพนักงาน / ผู้แจ้ง <span style="color:red">*</span></label>
+        <input id="reportReporter" placeholder="ระบุรหัสพนักงาน (บังคับกรอก)">
         <label id="t_report_item_lbl">Location / งาน</label>
         <input id="reportItem" placeholder="เช่น A1-01 / Part Name">
 
@@ -564,7 +566,7 @@
     }
 
     // ===================== CONFIG =====================
-    const API_BASE = "https://script.google.com/macros/s/AKfycbw2nJfMNwghYjW4rPn-N9ZTmy3apzMRGy06IsCfQzaC8R3DIN4wH9qIJ7J672rQCfafag/exec";
+    const API_BASE = "https://script.google.com/macros/s/AKfycbzkNIh_rL3qExRSBJingYUCJXVJA_o1D7xVA3QymOL0ADaTlHvu1wRTYexv_cJrieTICg/exec";
     const LIMIT = 200;
 
     // ===================== ELEMENTS =====================
@@ -685,7 +687,7 @@
     }
     document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeSettings(); });
 
-    // ===================== REPORT MODAL =====================
+// ===================== REPORT MODAL =====================
     function openReportModal(itemEncoded){
       try{
         const it = JSON.parse(decodeURIComponent(itemEncoded));
@@ -699,6 +701,10 @@
         reportItem.value = "";
         reportLocation.value = "";
       }
+      
+      // 🆕 ล้างค่ารหัสพนักงานเก่าทิ้งทุกครั้งที่เปิดหน้าต่าง
+      document.getElementById('reportReporter').value = "";
+      
       document.querySelectorAll('input[name="reportType"]').forEach(r=>r.checked=false);
       reportDetail.value = "";
       reportOverlay.style.display = "flex";
@@ -708,6 +714,10 @@
       CURRENT_REPORT = null;
       reportItem.value = (qEl.value || "").trim();
       reportLocation.value = "";
+      
+      // 🆕 ล้างค่ารหัสพนักงานเก่าทิ้ง
+      document.getElementById('reportReporter').value = "";
+
       document.querySelectorAll('input[name="reportType"]').forEach(r=>r.checked=false);
       reportDetail.value = "";
       reportOverlay.style.display = "flex";
@@ -718,11 +728,20 @@
       CURRENT_REPORT = null;
     }
 
-   async function submitReport(){
+    async function submitReport(){
+      // 🆕 ดึงค่ารหัสพนักงานที่พิมพ์ไว้
+      const reporter = (document.getElementById('reportReporter').value || "").trim();
+
       const type = document.querySelector('input[name="reportType"]:checked')?.value || "";
       const item = (reportItem.value || "").trim();
       const location = (reportLocation.value || "").trim();
       const detail = (reportDetail.value || "").trim();
+
+      // 🚨 เช็คว่ากรอกรหัสพนักงานหรือยัง (ถ้ายัง ไม่ให้ส่ง!)
+      if(!reporter){
+        alert("กรุณาระบุรหัสพนักงาน/ผู้แจ้งก่อนครับ 🛑");
+        return;
+      }
 
       if(!item && !detail){
         alert("กรุณาระบุอย่างน้อยชื่อ Location/งาน หรือรายละเอียดปัญหา");
@@ -730,8 +749,11 @@
       }
 
       const page = "Store";
+      
+      // 🆕 ต่อข้อความ &reporter= เข้าไปใน URL เพื่อส่งไปให้ Code.gs
       const url = API_BASE + 
         "?action=report" + 
+        "&reporter=" + encodeURIComponent(reporter) +
         "&item=" + encodeURIComponent(item) +
         "&location=" + encodeURIComponent(location) +
         "&type=" + encodeURIComponent(type) + 
@@ -751,7 +773,7 @@
       }catch(err){
         alert("ติดต่อหลังบ้านไม่สำเร็จ ❌ (อาจลืมกด Deploy เวอร์ชันใหม่ หรือชีทมีปัญหา)\n" + err.message);
       }finally{
-        hideLoading(); // ⚡️ สำคัญมาก: บังคับลบความเบลอทิ้งทุกกรณี (แก้ปัญหาจอเบลอค้าง!)
+        hideLoading(); // ยกเลิกหน้าจอเบลอ
       }
     }
     // ================= MOVEMENT LOGIC =================
