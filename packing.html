@@ -678,7 +678,6 @@ function applyLang(code){
   if(sel) sel.value = LANG;
   if(sel2) sel2.value = LANG;
 
-  // ฟังก์ชันช่วยเซ็ตข้อความ
   const setText = (id, key, fb) => { const el = document.getElementById(id); if(el) el.textContent = t(key, fb); };
 
   setText('t_packing_title', 'packing_title', 'PACKING');
@@ -695,20 +694,9 @@ function applyLang(code){
   setText('btnShowAll', 'packing_show_all', 'แสดงทั้งหมด');
   setText('btnReportMain', 'packing_report_main', '🚨 แจ้งปัญหา (งานไม่อยู่ในฐาน)');
 
-  // อัปเดตปุ่ม Filter (คงตัวเลขเอาไว้)
-  const sumAll = document.getElementById('sumAll')?.textContent || '0';
-  const sumOK = document.getElementById('sumOK')?.textContent || '0';
-  const sumNG = document.getElementById('sumNG')?.textContent || '0';
-  
-  const btnAllEl = document.getElementById('btnAll');
-  if(btnAllEl) btnAllEl.innerHTML = `${t('packing_all', 'ทั้งหมด')} (<span id="sumAll">${sumAll}</span>)`;
-  const btnOKEl = document.getElementById('btnOK');
-  if(btnOKEl) btnOKEl.innerHTML = `${t('packing_filter_ok', '✅ WI ครบ')} (<span id="sumOK">${sumOK}</span>)`;
-  const btnNGEl = document.getElementById('btnNG');
-  if(btnNGEl) btnNGEl.innerHTML = `${t('packing_filter_ng', '⚠️ WI ยังไม่ครบ')} (<span id="sumNG">${sumNG}</span>)`;
+  updateCountsUI(); // อัปเดตตัวเลขปุ่ม filter
   setText('btnReload', 'packing_reload', '🔄 Reload');
 
-  // ดึงข้อความมาเก็บไว้ในตัวแปรสำหรับใช้วาดการ์ด (Card)
   STR.customer = t('packing_customer', 'ลูกค้า:');
   STR.job = t('packing_job', 'งาน:');
   STR.pack = t('packing_pack', 'แพ็ค:');
@@ -722,7 +710,6 @@ function applyLang(code){
   STR.badgeOK = t('packing_badge_ok', 'ข้อมูลพร้อม');
   STR.badgeNG = t('packing_badge_ng', 'ยังไม่ครบ WI');
 
-  // Modal Report
   setText('t_report_header', 'packing_report', '🚨 แจ้งปัญหา');
   setText('t_report_item_lbl', 'packing_report_item', 'Location / งาน');
   setText('t_report_loc_lbl', 'packing_report_location', 'Location');
@@ -739,7 +726,6 @@ function applyLang(code){
   const rd = document.getElementById('reportDetail');
   if(rd) rd.placeholder = t('packing_report_more', '');
 
-  // Modal Settings
   setText('t_settings_title', 'settings_title', '⚙️ ตั้งค่า');
   setText('t_settings_theme', 'settings_theme', '🌙 ธีม:');
   setText('t_settings_lang', 'settings_language', '🌐 ภาษา:');
@@ -748,26 +734,15 @@ function applyLang(code){
 
 function setLang(code){
   applyLang(code);
-  applyFilter(); // รีเฟรชข้อมูลในการ์ดให้เป็นภาษาใหม่
+  applyFilter();
 }
 
-// ===== SETTINGS (mobile ⋯) =====
-function openSettings(){
-  const el = document.getElementById('settingsOverlay');
-  if(el) el.style.display='flex';
-}
-function closeSettings(){
-  const el = document.getElementById('settingsOverlay');
-  if(el) el.style.display='none';
-}
+// ===== SETTINGS =====
+function openSettings(){ document.getElementById('settingsOverlay').style.display='flex'; }
+function closeSettings(){ document.getElementById('settingsOverlay').style.display='none'; }
 function setTheme(mode){
-  if(mode==='light'){
-    document.body.classList.add('light');
-    localStorage.setItem('theme','light');
-  }else{
-    document.body.classList.remove('light');
-    localStorage.setItem('theme','dark');
-  }
+  if(mode==='light'){ document.body.classList.add('light'); localStorage.setItem('theme','light'); }
+  else{ document.body.classList.remove('light'); localStorage.setItem('theme','dark'); }
 }
 
 // ===== CONFIG =====
@@ -780,10 +755,6 @@ const loadedNote = document.getElementById("loadedNote");
 const loading = document.getElementById("loading");
 const modal = document.getElementById("modal");
 const modalImg = document.getElementById("modalImg");
-
-const sumAll = document.getElementById("sumAll");
-const sumOK = document.getElementById("sumOK");
-const sumNG = document.getElementById("sumNG");
 
 const qEl = document.getElementById("q");
 const btnSearch = document.getElementById("btnSearch");
@@ -807,32 +778,17 @@ let offset = 0;
 let finished = false;
 let fetching = false;
 
-const okVal = v => {
-  const t = String(v ?? "").trim();
-  return t !== "" && t !== "#N/A";
-};
+const okVal = v => { const t = String(v ?? "").trim(); return t !== "" && t !== "#N/A"; };
 const hasWI = it => okVal(it.wi_front_url) || okVal(it.wi_back_url) || okVal(it.label_image_url);
 
-// JSONP
 function jsonp(url){
   return new Promise((resolve,reject)=>{
     const cb = "cb_" + Math.random().toString(36).slice(2);
     const s  = document.createElement("script");
-
-    const timer = setTimeout(()=>{
-      cleanup();
-      reject(new Error("JSONP timeout"));
-    }, 15000);
-
-    function cleanup(){
-      clearTimeout(timer);
-      try { delete window[cb]; } catch(e) {}
-      try { s.remove(); } catch(e) {}
-    }
-
+    const timer = setTimeout(()=>{ cleanup(); reject(new Error("JSONP timeout")); }, 15000);
+    function cleanup(){ clearTimeout(timer); try { delete window[cb]; } catch(e) {} try { s.remove(); } catch(e) {} }
     window[cb] = (d) => { cleanup(); resolve(d); };
     s.onerror = () => { cleanup(); reject(new Error("JSONP failed")); };
-
     s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
     document.body.appendChild(s);
   });
@@ -840,26 +796,19 @@ function jsonp(url){
 
 function showLoading(){ loading.style.display="flex"; }
 function hideLoading(){ loading.style.display="none"; }
+function openModal(src){ modalImg.src = String(src || ""); modal.style.display = "flex"; }
 
-function openModal(src){
-  modalImg.src = String(src || "");
-  modal.style.display = "flex";
-}
-
-// ===== REPORT MODAL LOGIC =====
+// ===== REPORT MODAL =====
 let CURRENT_REPORT = null;
-
 function openReportModal(itemEncoded){
   const it = JSON.parse(decodeURIComponent(itemEncoded));
   CURRENT_REPORT = it;
-
   reportItem.value = it.part_name || "";
   reportLocation.value = ""; 
   document.querySelectorAll('input[name="reportType"]').forEach(r=>r.checked=false);
   reportDetail.value = "";
   reportOverlay.style.display = "flex";
 }
-
 function openReportModalManual(){
   CURRENT_REPORT = null;
   reportItem.value = qEl.value.trim() || "";
@@ -868,48 +817,21 @@ function openReportModalManual(){
   reportDetail.value = "";
   reportOverlay.style.display = "flex";
 }
-
-function closeReportModal(){
-  reportOverlay.style.display = "none";
-  CURRENT_REPORT = null;
-}
-
+function closeReportModal(){ reportOverlay.style.display = "none"; CURRENT_REPORT = null; }
 async function submitReport(){
   const type = document.querySelector('input[name="reportType"]:checked')?.value || "";
   const item = reportItem.value || (CURRENT_REPORT?.part_name || "");
   const location = reportLocation.value || "";
   const detail = reportDetail.value || "";
-
-  if(!type && !detail){
-    alert(t('packing_err_select', "กรุณาเลือกประเภทปัญหาหรือใส่รายละเอียดอย่างน้อย 1 อย่าง"));
-    return;
-  }
-
+  if(!type && !detail){ alert(t('packing_err_select', "กรุณาเลือกประเภทปัญหาหรือใส่รายละเอียดอย่างน้อย 1 อย่าง")); return; }
   const page = "Packing";
-  const url =
-    API_BASE +
-    "?action=report" +
-    "&item=" + encodeURIComponent(item) +
-    "&location=" + encodeURIComponent(location) +
-    "&type=" + encodeURIComponent(type) +
-    "&detail=" + encodeURIComponent(detail) +
-    "&page=" + encodeURIComponent(page);
-
+  const url = API_BASE + "?action=report&item=" + encodeURIComponent(item) + "&location=" + encodeURIComponent(location) + "&type=" + encodeURIComponent(type) + "&detail=" + encodeURIComponent(detail) + "&page=" + encodeURIComponent(page);
   try{
-    showLoading();
-    const res = await jsonp(url);
-    hideLoading();
-    closeReportModal();
-
+    showLoading(); const res = await jsonp(url); hideLoading(); closeReportModal();
     if(res && res.ok === true && res.saved === true){
       alert(t('packing_send_success', "ส่งแจ้งปัญหาเรียบร้อย ✅") + (res.lineSent ? "\n" + t('packing_line_sent', "LINE ส่งแล้ว ✅") : "\n" + t('packing_line_not_sent', "LINE ยังไม่ส่ง ⚠️")));
-    }else{
-      alert(t('packing_send_fail', "ส่งไม่สำเร็จ ❌") + "\n" + JSON.stringify(res));
-    }
-  }catch(err){
-    hideLoading();
-    alert(t('packing_backend_fail', "เรียกหลังบ้านไม่สำเร็จ ❌") + "\n" + err.message);
-  }
+    }else{ alert(t('packing_send_fail', "ส่งไม่สำเร็จ ❌") + "\n" + JSON.stringify(res)); }
+  }catch(err){ hideLoading(); alert(t('packing_backend_fail', "เรียกหลังบ้านไม่สำเร็จ ❌") + "\n" + err.message); }
 }
 
 // ===== UI RENDER =====
@@ -918,30 +840,19 @@ function card(it){
   <div class="item" onclick="setActive(this)">
     <div class="item-body">
       <div class="info">
-        <div class="field">
-          <span class="badge ${hasWI(it)?'ok':'warn'}">
-            ${hasWI(it) ? STR.badgeOK : STR.badgeNG}
-          </span>
-        </div>
-
+        <div class="field"><span class="badge ${hasWI(it)?'ok':'warn'}">${hasWI(it) ? STR.badgeOK : STR.badgeNG}</span></div>
         <div class="field">${STR.customer} <b>${it.customer_code || ""}</b></div>
         <div class="field">${STR.job} <b>${it.part_name || ""}</b></div>
-
         <div class="field">${STR.qtyPerPack} <b style="color:var(--accent2);">${it.qty_per_pack || "-"}</b></div>
-
         <div class="field">${STR.pack} ${okVal(it.packing_type)?it.packing_type:`<span class="missing">${STR.missing}</span>`}</div>
         <div class="field">${STR.sticker} ${okVal(it.label_color)?it.label_color:`<span class="missing">${STR.missing}</span>`}</div>
       </div>
     </div>
-
     <div class="wi-bar" onclick="event.stopPropagation()">
       <button class="${okVal(it.wi_front_url)?'on':'off'}" ${okVal(it.wi_front_url)?`onclick="openModal('${it.wi_front_url}')"`:"disabled"}>${STR.wiFront}</button>
       <button class="${okVal(it.wi_back_url)?'on':'off'}" ${okVal(it.wi_back_url)?`onclick="openModal('${it.wi_back_url}')"`:"disabled"}>${STR.wiBack}</button>
       <button class="${okVal(it.label_image_url)?'on':'off'}" ${okVal(it.label_image_url)?`onclick="openModal('${it.label_image_url}')"`:"disabled"}>${STR.btnSticker}</button>
-
-      <button class="report-btn" onclick="event.stopPropagation(); openReportModal('${encodeURIComponent(JSON.stringify(it))}')">
-        ${STR.reportBtn}
-      </button>
+      <button class="report-btn" onclick="event.stopPropagation(); openReportModal('${encodeURIComponent(JSON.stringify(it))}')">${STR.reportBtn}</button>
     </div>
   </div>`;
 }
@@ -951,12 +862,19 @@ function setActive(el){
   el.classList.add("active");
 }
 
-function updateCounts(){
-  document.getElementById("sumAll").textContent = ALL_ITEMS.length;
-  document.getElementById("sumOK").textContent = ALL_ITEMS.filter(hasWI).length;
-  document.getElementById("sumNG").textContent = ALL_ITEMS.filter(i=>!hasWI(i)).length;
+function updateCountsUI(){
+  const a = ALL_ITEMS.length;
+  const ok = ALL_ITEMS.filter(hasWI).length;
+  const ng = a - ok;
+  document.getElementById("sumAll").textContent = a;
+  document.getElementById("sumOK").textContent = ok;
+  document.getElementById("sumNG").textContent = ng;
+  document.getElementById('btnAll').innerHTML = `${t('packing_all', 'ทั้งหมด')} (<span id="sumAll">${a}</span>)`;
+  document.getElementById('btnOK').innerHTML = `${t('packing_filter_ok', '✅ WI ครบ')} (<span id="sumOK">${ok}</span>)`;
+  document.getElementById('btnNG').innerHTML = `${t('packing_filter_ng', '⚠️ WI ยังไม่ครบ')} (<span id="sumNG">${ng}</span>)`;
 }
 
+// 🚀 ใหม่: ค้นหาในเครื่อง 100% (Instant Search) ไม่วิ่งไปกวนหลังบ้าน
 function applyFilter(){
   btnAll.classList.remove("active");
   btnOK.classList.remove("active");
@@ -964,87 +882,93 @@ function applyFilter(){
 
   let items = ALL_ITEMS;
 
-  if(FILTER_MODE==="ok"){
-    items = ALL_ITEMS.filter(hasWI);
-    btnOK.classList.add("active");
-  }else if(FILTER_MODE==="ng"){
-    items = ALL_ITEMS.filter(i=>!hasWI(i));
-    btnNG.classList.add("active");
-  }else{
-    btnAll.classList.add("active");
+  // กรองตามปุ่มสถานะ
+  if(FILTER_MODE==="ok"){ items = items.filter(hasWI); btnOK.classList.add("active"); }
+  else if(FILTER_MODE==="ng"){ items = items.filter(i=>!hasWI(i)); btnNG.classList.add("active"); }
+  else{ btnAll.classList.add("active"); }
+
+  // 🚀 กรองตามคำค้นหา (พิมปุ๊บเจอปั๊บ)
+  const q = qEl.value.trim().toLowerCase();
+  if(q){
+    items = items.filter(it => {
+      const c = (it.customer_code || "").toLowerCase();
+      const p = (it.part_name || "").toLowerCase();
+      const pk = (it.packing_type || "").toLowerCase();
+      const lb = (it.label_color || "").toLowerCase();
+      return c.includes(q) || p.includes(q) || pk.includes(q) || lb.includes(q);
+    });
   }
 
   VIEW_ITEMS = items;
   list.innerHTML = "";
   VIEW_ITEMS.forEach(it=>list.insertAdjacentHTML("beforeend", card(it)));
-  loadedNote.textContent = `${t('store_show_all', 'แสดงทั้งหมด')} ${VIEW_ITEMS.length} ${t('store_items', 'รายการ')}`;
+
+  if(VIEW_ITEMS.length === 0 && q){
+    loadedNote.textContent = t('packing_no_data_click', "ไม่พบข้อมูล — กด 🚨 แจ้งปัญหา");
+  } else {
+    loadedNote.textContent = `${t('store_show_all', 'แสดงทั้งหมด')} ${VIEW_ITEMS.length} ${t('store_items', 'รายการ')}`;
+  }
 }
 
-async function loadAllPages(){
+// 🚀 ใหม่: ระบบโหลดและดึง Cache
+async function loadAllPages(forceReload = false){
   if(fetching) return;
   fetching = true;
 
-  offset = 0;
-  finished = false;
-  ALL_ITEMS = [];
-  list.innerHTML = "";
-  loadedNote.textContent = t('packing_loading', "กำลังโหลด...");
-  updateCounts();
-  applyFilter();
-  showLoading();
+  // ถ้าเปิดหน้าเว็บปกติ ให้ลองดึง Cache มาโชว์ก่อนเลย (Instant Load)
+  if(!forceReload) {
+    const cachedData = localStorage.getItem("packing_data");
+    if(cachedData){
+      try {
+        ALL_ITEMS = JSON.parse(cachedData);
+        updateCountsUI();
+        applyFilter();
+        loadedNote.textContent = "กำลังอัปเดตข้อมูลล่าสุด..."; 
+        // ไม่ต้องโชว์ Loading จอดำ ให้พนักงานดูข้อมูลเก่าทำงานได้เลย
+      } catch(e) {}
+    } else {
+      showLoading(); // ถ้าไม่มี Cache เลย (เปิดครั้งแรก) ค่อยโชว์จอดำ
+    }
+  } else {
+    showLoading(); // ถ้ากดปุ่ม Reload ค่อยบังคับโชว์จอดำ
+    ALL_ITEMS = []; 
+  }
+
+  offset = 0; finished = false;
+  let tempItems = [];
 
   try{
     while(!finished){
       const r = await jsonp(API_BASE + `?action=list&limit=${LIMIT}&offset=${offset}`);
       const items = r.items || r.results || [];
-      ALL_ITEMS = ALL_ITEMS.concat(items);
+      tempItems = tempItems.concat(items);
       offset += items.length;
-
       if(items.length < LIMIT) finished = true;
       await new Promise(res=>setTimeout(res, 60));
     }
-
-    updateCounts();
+    
+    ALL_ITEMS = tempItems;
+    localStorage.setItem("packing_data", JSON.stringify(ALL_ITEMS)); // บันทึกข้อมูลใหม่ลง Cache
+    updateCountsUI();
     applyFilter();
+    
+    const now = new Date();
+    loadedNote.textContent = `✅ อัปเดตล่าสุด: ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} น.`;
+  }catch(err){
+    console.error(err);
+    if(ALL_ITEMS.length === 0) loadedNote.textContent = "❌ โหลดไม่สำเร็จ กรุณากด Reload";
   }finally{
     hideLoading();
     fetching = false;
   }
 }
 
-async function doSearch(){
-  const q = qEl.value.trim();
-  if(!q) return loadAllPages();
-
-  showLoading();
-  try{
-    const r = await jsonp(API_BASE + "?action=search&q=" + encodeURIComponent(q));
-    ALL_ITEMS = r.results || r.items || [];
-
-    FILTER_MODE = "all";
-    updateCounts();
-    applyFilter();
-
-    if(ALL_ITEMS.length === 0){
-      loadedNote.textContent = t('packing_no_data_click', "ไม่พบข้อมูล — กด 🚨 แจ้งปัญหา");
-    }
-  }finally{
-    hideLoading();
-  }
-}
-
-function showAll(){
-  qEl.value = "";
-  FILTER_MODE="all";
-  return loadAllPages();
-}
-
-function reloadData(){ return loadAllPages(); }
-
 // EVENTS
-btnSearch.onclick = doSearch;
-btnShowAll.onclick = showAll;
-btnReload.onclick = reloadData;
+btnSearch.onclick = () => { applyFilter(); }; // เปลี่ยนมาค้นหาในเครื่อง
+qEl.addEventListener("keyup", () => { applyFilter(); }); // พิมพ์ปุ๊บ ค้นหาปั๊บ ทันที!
+
+btnShowAll.onclick = () => { qEl.value = ""; FILTER_MODE="all"; applyFilter(); };
+btnReload.onclick = () => { qEl.value = ""; FILTER_MODE="all"; loadAllPages(true); };
 
 btnAll.onclick = ()=>{ FILTER_MODE="all"; applyFilter(); };
 btnOK.onclick = ()=>{ FILTER_MODE="ok"; applyFilter(); };
@@ -1052,17 +976,15 @@ btnNG.onclick = ()=>{ FILTER_MODE="ng"; applyFilter(); };
 
 btnReportMain.onclick = openReportModalManual;
 
-qEl.addEventListener("keydown",(e)=>{ if(e.key==="Enter") doSearch(); });
-
 document.getElementById('settingsOverlay')?.addEventListener('click', (e) => {
   if (e.target.id === 'settingsOverlay') closeSettings();
 });
 document.getElementById('kebabBtn')?.addEventListener('click', openSettings);
 
-// START (โหลดไฟล์ JSON ก่อน แล้วค่อยดึงข้อมูลจาก Sheet)
+// START
 loadI18N().then(() => {
   applyLang(LANG);
-  loadAllPages();
+  loadAllPages(false);
 });
 </script>
 
