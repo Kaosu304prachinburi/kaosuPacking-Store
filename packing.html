@@ -714,6 +714,7 @@ function applyLang(code){
   STR.pack = t('packing_pack', 'แพ็ค:');
   STR.sticker = t('packing_sticker', 'สติ๊กเกอร์:');
   STR.missing = t('packing_missing', 'ยังไม่ได้ใส่');
+  STR.qtyPerPack = t('packing_qty_per_pack', 'จำนวนบรรจุ:');
   STR.wiFront = t('packing_btn_wi_front', 'WI หน้า');
   STR.wiBack = t('packing_btn_wi_back', 'WI หลัง');
   STR.btnSticker = t('packing_btn_sticker', 'สติ๊กเกอร์');
@@ -925,6 +926,8 @@ function card(it){
 
         <div class="field">${STR.customer} <b>${it.customer_code || ""}</b></div>
         <div class="field">${STR.job} <b>${it.part_name || ""}</b></div>
+
+        <div class="field">${STR.qtyPerPack} <b style="color:var(--accent2);">${it.qty_per_pack || "-"}</b></div>
 
         <div class="field">${STR.pack} ${okVal(it.packing_type)?it.packing_type:`<span class="missing">${STR.missing}</span>`}</div>
         <div class="field">${STR.sticker} ${okVal(it.label_color)?it.label_color:`<span class="missing">${STR.missing}</span>`}</div>
