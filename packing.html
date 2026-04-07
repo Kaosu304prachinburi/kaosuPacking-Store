@@ -746,7 +746,7 @@ function setTheme(mode){
 }
 
 // ===== CONFIG =====
-const API_BASE = "https://script.google.com/macros/s/AKfycbyhpb6qBbfbYsdBJzQsfAVrdbx6RUlDEelMpeqVKcZS8RTMJ_7uFWJDEfl91AjdGe93Xg/exec";
+const API_BASE = "https://script.google.com/macros/s/AKfycbz7-pZBElmFoZj9NluvUkEFjWPdRpzzzA172evXlCHNt4WY9ac4mzfR5d-8UWYbfOiICg/exec";
 const LIMIT = 200;
 
 // ===== ELEMENTS =====
@@ -939,7 +939,7 @@ async function loadAllPages(forceReload = false){
 
   try{
     while(!finished){
-      const r = await jsonp(API_BASE + `?action=list&limit=${LIMIT}&offset=${offset}`);
+      const r = await jsonp(API_BASE + `?action=master_list&limit=${LIMIT}&offset=${offset}`);
       const items = r.items || r.results || [];
       tempItems = tempItems.concat(items);
       offset += items.length;
