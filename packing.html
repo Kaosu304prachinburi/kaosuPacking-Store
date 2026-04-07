@@ -910,35 +910,38 @@ function applyFilter(){
   }
 }
 
-// 🚀 ใหม่: ระบบโหลดและดึง Cache
+// 🚀 ใหม่: ระบบโหลดแบบ Instant Cache + Background Sync
 async function loadAllPages(forceReload = false){
   if(fetching) return;
-  fetching = true;
-
-  // ถ้าเปิดหน้าเว็บปกติ ให้ลองดึง Cache มาโชว์ก่อนเลย (Instant Load)
-  if(!forceReload) {
-    const cachedData = localStorage.getItem("packing_data");
-    if(cachedData){
-      try {
-        ALL_ITEMS = JSON.parse(cachedData);
-        updateCountsUI();
-        applyFilter();
-        loadedNote.textContent = "กำลังอัปเดตข้อมูลล่าสุด..."; 
-        // ไม่ต้องโชว์ Loading จอดำ ให้พนักงานดูข้อมูลเก่าทำงานได้เลย
-      } catch(e) {}
-    } else {
-      showLoading(); // ถ้าไม่มี Cache เลย (เปิดครั้งแรก) ค่อยโชว์จอดำ
-    }
+  
+  // 1. จัดการ UI ตอนเริ่มโหลด
+  const cachedData = localStorage.getItem("packing_data");
+  
+  if(!forceReload && cachedData) {
+    try {
+      // มี Cache: เอาของเก่ามาโชว์ให้ทำงานได้ทันทีก่อน
+      ALL_ITEMS = JSON.parse(cachedData);
+      updateCountsUI();
+      applyFilter();
+      // ขึ้นข้อความเล็กๆ ว่ากำลังดึงข้อมูลใหม่หลังบ้าน โดยไม่บังจอ
+      loadedNote.textContent = "🔄 กำลังเช็คข้อมูลใหม่..."; 
+      loadedNote.style.color = "var(--warn)"; // สีส้มเตือนว่ากำลังโหลด
+    } catch(e) {}
   } else {
-    showLoading(); // ถ้ากดปุ่ม Reload ค่อยบังคับโชว์จอดำ
+    // ไม่มี Cache หรือโดนบังคับ Reload: โชว์หน้าจอดำโหลดดิ้งไปเลย
+    showLoading(); 
     ALL_ITEMS = []; 
   }
 
-  offset = 0; finished = false;
+  fetching = true;
+  offset = 0; 
+  finished = false;
   let tempItems = [];
 
+  // 2. แอบดึงข้อมูลจากหลังบ้าน
   try{
     while(!finished){
+      // ⚠️ ตรงนี้ใช้ action=master_list ตามที่เราแก้กันไปล่าสุดนะครับ
       const r = await jsonp(API_BASE + `?action=master_list&limit=${LIMIT}&offset=${offset}`);
       const items = r.items || r.results || [];
       tempItems = tempItems.concat(items);
@@ -947,22 +950,32 @@ async function loadAllPages(forceReload = false){
       await new Promise(res=>setTimeout(res, 60));
     }
     
+    // 3. เอาข้อมูลใหม่ที่ได้ ไปทับของเก่า
     ALL_ITEMS = tempItems;
-    localStorage.setItem("packing_data", JSON.stringify(ALL_ITEMS)); // บันทึกข้อมูลใหม่ลง Cache
-    updateCountsUI();
-    applyFilter();
+    localStorage.setItem("packing_data", JSON.stringify(ALL_ITEMS)); // เซฟลง Cache ใหม่
     
+    updateCountsUI();
+    applyFilter(); // รีเฟรชหน้าจอให้เป็นข้อมูลล่าสุด
+    
+    // โชว์เวลาที่อัปเดตเสร็จ
     const now = new Date();
     loadedNote.textContent = `✅ อัปเดตล่าสุด: ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} น.`;
+    loadedNote.style.color = "var(--accent)"; // สีเขียว
+
   }catch(err){
     console.error(err);
-    if(ALL_ITEMS.length === 0) loadedNote.textContent = "❌ โหลดไม่สำเร็จ กรุณากด Reload";
+    if(ALL_ITEMS.length === 0) {
+      loadedNote.textContent = "❌ โหลดไม่สำเร็จ กรุณากด Reload";
+      loadedNote.style.color = "var(--danger)";
+    } else {
+      loadedNote.textContent = "⚠️ ออฟไลน์ (กำลังใช้ข้อมูลเก่า)";
+      loadedNote.style.color = "var(--warn)";
+    }
   }finally{
-    hideLoading();
+    hideLoading(); // ปิดจอดำ (ถ้ามี)
     fetching = false;
   }
 }
-
 // EVENTS
 btnSearch.onclick = () => { applyFilter(); }; // เปลี่ยนมาค้นหาในเครื่อง
 qEl.addEventListener("keyup", () => { applyFilter(); }); // พิมพ์ปุ๊บ ค้นหาปั๊บ ทันที!
