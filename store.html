@@ -1028,18 +1028,15 @@ async function doSearch(){
 
       render(qv);
     }
-    // ✅ ฟังก์ชันสำหรับล้างแคชและโหลดข้อมูลใหม่ทันที
+    // ✅ ฟังก์ชันสำหรับล้างแคชและบังคับรีเฟรชหน้าเว็บใหม่แบบ 100%
     function forceRefresh() {
-      if(confirm("ต้องการอัปเดตข้อมูลล่าสุดจากเซิร์ฟเวอร์ใช่หรือไม่?")) {
-        localStorage.removeItem("STORE_CACHE"); // ล้างความจำเก่า
-        ALL = [];
-        VIEW = [];
-        grid.innerHTML = "";
-        count.textContent = "0";
-        currentQuery = "";
-        qEl.value = ""; 
-        fetching = false; 
-        loadAll(); // เริ่มโหลดใหม่แบบ Force Load
+      if(confirm("ต้องการล้างความจำเก่าและอัปเดตข้อมูลล่าสุดใช่หรือไม่?")) {
+        // 1. ล้างความจำ Local Storage ทิ้งให้เกลี้ยง
+        localStorage.removeItem("STORE_CACHE");
+        localStorage.clear(); 
+        
+        // 2. บังคับเบราว์เซอร์ให้โหลดไฟล์ HTML ใหม่ (ป้องกันการจำหน้าเว็บเก่า)
+        window.location.href = window.location.pathname + "?v=" + new Date().getTime();
       }
     }
     // ===================== EVENTS =====================
