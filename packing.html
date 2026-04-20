@@ -215,6 +215,29 @@ button.ghost:hover{filter:brightness(1.06)}
 .badge.warn{background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.35);color:#fde68a}
 .field{margin:6px 0}
 .missing{color:#fecaca;font-weight:700}
+  /* รูปชิ้นงานฝั่งขวา */
+.part-thumb {
+  width: 85px; 
+  height: 85px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.part-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.part-thumb img:hover { transform: scale(1.05); }
+
+/* ให้ info ดันรูปไปขวาสุด */
+.item-body { justify-content: space-between; }
+.info { min-width: 0; }
 
 /* ===== WI BAR ===== */
 .wi-bar{
@@ -746,7 +769,7 @@ function setTheme(mode){
 }
 
 // ===== CONFIG =====
-const API_BASE = "https://script.google.com/macros/s/AKfycbzV6hTeFsZaDjCTFjVlXBIg5z-mRI3wfe8YnQAACle24k_epW-2ELYDjE7baqTjSUJ81w/exec";
+const API_BASE = "https://script.google.com/macros/s/AKfycbwbegCSgy12IXPrej9hQUt2g_tWGeKhclbrFnhfHSKEjbByccSlyyd1zPwdhAVJGQ5gpg/exec";
 const LIMIT = 200;
 
 // ===== ELEMENTS =====
@@ -836,6 +859,11 @@ async function submitReport(){
 
 // ===== UI RENDER =====
 function card(it){
+  // เช็คว่ามีรูปชิ้นงานไหม ถ้ามีให้สร้างกล่องรูป พร้อมใส่ onclick ขยายรูป
+  const partImgHTML = okVal(it.part_image_url) 
+    ? `<div class="part-thumb"><img src="${it.part_image_url}" alt="Part Image" onclick="event.stopPropagation(); openModal('${it.part_image_url}')"></div>` 
+    : '';
+
   return `
   <div class="item" onclick="setActive(this)">
     <div class="item-body">
@@ -847,6 +875,7 @@ function card(it){
         <div class="field">${STR.pack} ${okVal(it.packing_type)?it.packing_type:`<span class="missing">${STR.missing}</span>`}</div>
         <div class="field">${STR.sticker} ${okVal(it.label_color)?it.label_color:`<span class="missing">${STR.missing}</span>`}</div>
       </div>
+      ${partImgHTML}
     </div>
     <div class="wi-bar" onclick="event.stopPropagation()">
       <button class="${okVal(it.wi_front_url)?'on':'off'}" ${okVal(it.wi_front_url)?`onclick="openModal('${it.wi_front_url}')"`:"disabled"}>${STR.wiFront}</button>
