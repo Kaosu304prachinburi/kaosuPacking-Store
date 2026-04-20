@@ -215,30 +215,51 @@ button.ghost:hover{filter:brightness(1.06)}
 .badge.warn{background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.35);color:#fde68a}
 .field{margin:6px 0}
 .missing{color:#fecaca;font-weight:700}
-  /* รูปชิ้นงานฝั่งขวา */
+/* ===== ปรับรูปชิ้นงานฝั่งขวาให้ใหญ่เต็มที่ ===== */
+.item-body { 
+  display: flex;
+  justify-content: space-between; 
+  align-items: stretch; /* ให้กล่องซ้ายขวายืดความสูงเท่ากัน */
+  gap: 16px;
+  padding: 16px;
+}
+
+.info { 
+  flex: 1; /* ให้ข้อมูลกินพื้นที่ที่เหลือ */
+  min-width: 0; 
+}
+
 .part-thumb {
-  width: 85px; 
-  height: 85px;
+  width: 140px; /* ขยายความกว้างรูป (ปรับตัวเลขนี้ได้ตามชอบ) */
   flex-shrink: 0;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.15);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,.15);
+  background: rgba(0,0,0,.2);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .part-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* ตัดส่วนเกินออกให้เต็มกรอบ */
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-.part-thumb img:hover { transform: scale(1.05); }
 
-/* ให้ info ดันรูปไปขวาสุด */
-.item-body { justify-content: space-between; }
-.info { min-width: 0; }
+.part-thumb img:hover { 
+  transform: scale(1.05); 
+}
 
+/* Light Mode สำหรับกรอบรูป */
+body.light .part-thumb {
+  border-color: rgba(15,23,42,.15);
+  background: rgba(255,255,255,.8);
+  box-shadow: 0 4px 12px rgba(15,23,42,.1);
+}
 /* ===== WI BAR ===== */
 .wi-bar{
   display:flex;gap:10px;padding:12px;border-top:1px solid rgba(255,255,255,.10);
@@ -390,15 +411,27 @@ body.light .badge.warn{
   color:#92400e;
 }
 
-/* ===== MOBILE ===== */
+/* ===== MOBILE (มือถือ) ===== */
 @media (max-width:640px){
-  .grid{grid-template-columns:1fr}
-  .item-body{flex-direction:column}
-  .wi-bar{flex-direction:column}
-  .small-note{margin-left:0;width:100%}
-  #btnReportMain{ flex-basis:100%; }
-}
+  .grid { grid-template-columns: 1fr; }
+  
+  /* บังคับให้อยู่ซ้าย-ขวาเหมือนเดิม ไม่ให้ร่วงลงไป */
+  .item-body { 
+    flex-direction: row; 
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  /* ข้อมูลตัวเล็กลงนิดนึงจะได้ไม่เบียดรูป */
+  .field { font-size: 13px; margin: 4px 0; }
+  
+  /* ลดขนาดรูปในมือถือนิดหน่อยให้พอดีจอ */
+  .part-thumb { width: 110px; } 
 
+  .wi-bar { flex-direction: column; }
+  .small-note { margin-left: 0; width: 100%; }
+  #btnReportMain { flex-basis: 100%; }
+}
 
 /* ===== Language switch (match STORE) ===== */
 .lang-switch{
