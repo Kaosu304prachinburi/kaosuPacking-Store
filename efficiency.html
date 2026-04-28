@@ -88,7 +88,23 @@
             <button class="btn-save" style="background: var(--blue);" onclick="submitAuto(this)">💾 บันทึกข้อมูลเครื่องออโต้</button>
         </div>
     </div>
+<div style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid var(--blue); padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 12px;">
+                <span style="font-size: 24px; line-height: 1;">💡</span>
+                <div style="font-size: 13px;">
+                    <strong style="color: var(--blue); font-size: 14px;">เคล็ดลับคีย์ข้อมูลไว (ไม่ต้องจับเมาส์)</strong>
+                    <div style="margin-top: 6px; color: var(--text); line-height: 1.6;">
+                        <span style="display: inline-block; margin-right: 15px;">👉 <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--warn);">Enter</kbd> หรือ <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--warn);">⬇</kbd> : เลื่อนลงล่าง (ถ้าอยู่บรรทัดสุดท้ายตารางจะเพิ่มแถวให้เอง)</span>
+                        <span style="display: inline-block; margin-right: 15px;">👉 <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--warn);">⬆</kbd> : เลื่อนขึ้นบน</span><br>
+                        <span style="display: inline-block; margin-right: 15px;">👉 <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--accent);">Tab</kbd> : เลื่อนไปช่องขวา</span>
+                        <span style="display: inline-block;">👉 <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--accent);">Shift + Tab</kbd> : เลื่อนกลับช่องซ้าย</span>
+                    </div>
+                </div>
+            </div>
+            ```
 
+พอวางเสร็จ หน้าเว็บจะมีกล่องไฟเตือนความจำสีฟ้าๆ สวยๆ พร้อมปุ่มกดที่ทำไฮไลท์สีส้ม/สีเขียวไว้อย่างชัดเจนครับ พนักงานอ่านปุ๊บเข้าใจปั๊บแน่นอน!
+
+ถ้าทดสอบระบบคีย์บอร์ดกับหน้า UI เสร็จเรียบร้อยแล้ว **ส่ง ID ของไฟล์ Google Sheets (ที่ทำเป็น Template 12 ชีท)** มาให้ผมได้เลยนะครับ ผมวอร์มนิ้วรอเขียนโค้ด Export Excel ให้แล้วครับ! 🚀
     <div id="tab2" class="tab-content">
         <div class="card">
             <h3 style="color:var(--blue); margin-top:0;">🌐 ยอดรวมจากเว็บ & ยอดบรรจุ</h3>
@@ -218,6 +234,57 @@
         fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ type: 'SUMMARY', user: document.getElementById('user_id').value || "ไม่ระบุ", payload: d }) })
         .then(() => { alert("บันทึกยอดรวมสำเร็จ!"); location.reload(); });
     }
+    // =========================================================
+    // 🚀 ระบบนำทางด้วยคีย์บอร์ดแบบ Excel (Enter / Up / Down)
+    // =========================================================
+    document.addEventListener('keydown', function(e) {
+        // เช็คว่ากดอยู่ในช่องกรอกข้อมูลหรือไม่
+        if (e.target.tagName !== 'INPUT') return;
+
+        // รองรับปุ่ม Enter, ขึ้น, ลง
+        if (['Enter', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+            const td = e.target.closest('td');
+            if (!td) return; // ถ้าไม่ได้อยู่ในตาราง ให้ข้ามไป
+
+            const tr = td.parentElement;
+            const tbody = tr.parentElement;
+            const colIndex = Array.from(tr.children).indexOf(td);
+            const rowIndex = Array.from(tbody.children).indexOf(tr);
+
+            let targetRow = null;
+
+            if (e.key === 'ArrowUp' && rowIndex > 0) {
+                e.preventDefault(); // กันหน้าจอเลื่อน
+                targetRow = tbody.children[rowIndex - 1]; // ไปบรรทัดบน
+            } 
+            else if ((e.key === 'ArrowDown' || e.key === 'Enter') && rowIndex < tbody.children.length - 1) {
+                e.preventDefault();
+                targetRow = tbody.children[rowIndex + 1]; // ไปบรรทัดล่าง
+            } 
+            else if (e.key === 'Enter' && rowIndex === tbody.children.length - 1) {
+                // 🌟 ทีเด็ด: กด Enter บรรทัดสุดท้าย -> สร้างบรรทัดใหม่ให้เลย!
+                e.preventDefault();
+                addRow();
+                setTimeout(() => {
+                    const newTr = tbody.children[rowIndex + 1];
+                    if (newTr) {
+                        const newTarget = newTr.children[colIndex].querySelector('input');
+                        if (newTarget) newTarget.focus();
+                    }
+                }, 50);
+                return;
+            }
+
+            // สั่งให้ช่องเป้าหมายกระพริบรอรับข้อมูล
+            if (targetRow) {
+                const targetInput = targetRow.children[colIndex].querySelector('input');
+                if (targetInput) {
+                    targetInput.focus();
+                    targetInput.select(); // คลุมดำข้อความเดิมให้พิมพ์ทับได้เลย
+                }
+            }
+        }
+    });
 </script>
 </body>
 </html>
