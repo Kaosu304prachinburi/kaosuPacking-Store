@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Efficiency Report | KAOSU</title>
+<style>
+    :root {
+        --bg1: #020617; --bg2: #0f172a; --glass: rgba(255,255,255,.08); --border: rgba(255,255,255,.18);
+        --text: #e5e7eb; --muted: #94a3b8; --accent: #22c55e; --blue: #3b82f6; --danger: #ef4444; --warn: #f59e0b;
+    }
+    body { margin: 0; font-family: system-ui, sans-serif; color: var(--text); background: var(--bg2); padding: 20px; }
+    .wrap { max-width: 1100px; margin: auto; }
+    .card { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .row-header { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 10px; }
+    label { font-size: 13px; color: var(--muted); font-weight: bold; display: block; margin-bottom: 5px; }
+    input, select { width: 100%; height: 38px; border-radius: 6px; padding: 0 10px; font-size: 14px; border: 1px solid var(--border); background: rgba(0,0,0,.3); color: #fff; box-sizing: border-box; }
+    input:focus { border-color: var(--blue); outline: none; }
+    input[readonly] { color: var(--accent); background: rgba(255,255,255,0.03); border: 1px dashed var(--border); text-align: center; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--glass); color: var(--text); font-weight: bold; cursor: pointer; }
+    .tab-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th { background: rgba(59,130,246,.2); padding: 12px 5px; font-size: 12px; color: #fff; text-align: left; border-bottom: 2px solid var(--blue); }
+    td { padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,.05); vertical-align: top; }
+    .btn-add { background: transparent; border: 1px dashed var(--blue); color: var(--blue); padding: 10px; width: 100%; border-radius: 6px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+    .btn-save { background: var(--accent); color: #fff; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    .grid-summary { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 8px; }
+    .excel-input { color: var(--warn) !important; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+    <h2 style="text-align: center; color: #fff; margin-top: 0;">📊 บันทึกรายงานประสิทธิภาพ & ยอดรวม</h2>
+  <div class="card" style="border-color: var(--warn); text-align: center; background: rgba(245, 158, 11, 0.05);">
+        <h3 style="color: var(--warn); margin-top: 0; font-size: 16px;">📅 ดาวน์โหลดรายงานประจำเดือน</h3>
+        <div style="display: flex; gap: 10px; justify-content: center; align-items: flex-end; flex-wrap: wrap;">
+            <div style="width: 180px;">
+                <label style="font-size: 11px;">ระบุเดือน/ปี (เช่น 04_2026)</label>
+                <input type="text" id="export_month" placeholder="MM_yyyy" style="text-align: center;">
+            </div>
+            <button class="btn-save" style="background: var(--warn); width: auto; margin-top: 0; padding: 8px 20px;" onclick="downloadExcel()">📥 โหลดไฟล์ Excel</button>
+        </div>
+    </div>
+    ```
+
+*(มันจะไปอยู่คั่นกลาง ระหว่างชื่อหัวข้อ กับ กล่องที่ให้กรอกรหัสพนักงาน/วันที่ ครับ)*
+
+---
+
+### 📍 จุดที่ 2: วางคำสั่งให้ปุ่มทำงาน (ในส่วน Script)
+เลื่อนลงมาด้านล่างสุดของไฟล์ หาบรรทัดที่เขียนว่า `<script>` 
+จากนั้นให้ก๊อปปี้โค้ดด้านล่างนี้ ไปวางไว้ **ใต้คำว่า `<script>`** ได้เลยครับ:
+
+```javascript
+    function downloadExcel() {
+        const month = document.getElementById('export_month').value.trim();
+        if(!month) { 
+            alert("กรุณาระบุเดือน/ปี เช่น 04_2026"); 
+            return; 
+        }
+        // เรียกใช้ SCRIPT_URL ส่ง action=export ไปที่ Apps Script
+        const url = SCRIPT_URL + "?action=export&month=" + month;
+        window.open(url, '_blank');
+    }
+    
+    <div class="card" style="border-color: var(--border);">
+        <div class="row-header">
+            <div><label>👤 รหัสพนักงาน (ผู้บันทึก)</label><input type="text" id="user_id" placeholder="ระบุรหัสพนักงาน..."></div>
+            <div><label>📅 วันที่ทำงาน</label><input type="date" id="doc_date"></div>
+            <div><label>⏱️ กะ</label><select id="shift"><option value="A">A</option><option value="B">B</option></select></div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab1', this)">⚙️ 1. รายงานประสิทธิภาพ (รายเครื่อง)</button>
+        <button class="tab-btn" onclick="switchTab('tab2', this)">📦 2. สรุปยอดรวม (ทั้งกะ)</button>
+    </div>
+
+    <div id="tab1" class="tab-content active">
+        <div class="card">
+            <div style="margin-bottom: 15px; width: 250px;">
+                <label>🖥️ เลือกเครื่องจักรที่ต้องการบันทึก</label>
+                <select id="machine_no">
+                    <option value="AUTO 1">AUTO 1</option><option value="AUTO 2">AUTO 2</option>
+                    <option value="AUTO 3">AUTO 3</option><option value="AUTO 4">AUTO 4</option><option value="AUTO 5">AUTO 5</option>
+                </select>
+            </div>
+            <table id="entryTable" style="min-width: 900px;">
+                <thead>
+                    <tr>
+                        <th style="width: 18%;">ค้นหาชิ้นงาน / รหัส</th>
+                        <th style="width: 10%; text-align: center;">บรรจุ<br><span style="font-size:10px; font-weight:normal;">(ชิ้น/ถุง)</span></th>
+                        <th style="width: 12%;">เวลาเริ่ม</th><th style="width: 12%;">เวลาสิ้นสุด</th>
+                        <th style="width: 14%;">เวลาสูญเสีย (HH:MM:SS)</th><th style="width: 12%;">จำนวน (ถุง)</th>
+                        <th style="width: 15%; text-align: center;">วิ/ถุง</th><th style="width: 7%;">ลบ</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+            <button class="btn-add" onclick="addRow()">+ เพิ่มรายการงานใหม่ (เครื่องนี้)</button>
+            <button class="btn-save" style="background: var(--blue);" onclick="submitAuto(this)">💾 บันทึกข้อมูลเครื่องออโต้</button>
+        </div>
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <div class="card">
+            <h3 style="color:var(--blue); margin-top:0;">🌐 1. ยอดรวมจากเว็บบริษัท</h3>
+            <div style="width: 300px;"><label>จำนวนรวม (ถุง)</label><input type="text" id="s_web" class="excel-input" onblur="mathEval(this)" placeholder="คีย์แบบ 10+20 ได้"></div>
+            
+            <hr style="border: 0.5px solid var(--border); margin: 25px 0;">
+
+            <h3 style="color:var(--accent); margin-top:0;">📦 2. สรุปยอดบรรจุ (ถุง และ ชิ้น)</h3>
+            <div class="grid-summary" style="color: var(--muted); font-size: 12px; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-align: center;">
+                <div style="text-align: left;">ประเภทงาน</div><div>จำนวน (ถุง / สติกเกอร์)</div><div>จำนวน (ชิ้นรวม)</div>
+            </div>
+            
+            <div class="grid-summary"><div>หน้าเครื่อง</div><div><input type="text" id="s_fB" class="excel-input" onblur="mathEval(this)"></div><div><input type="text" id="s_fP" class="excel-input" onblur="mathEval(this)"></div></div>
+            <div class="grid-summary"><div>AUTO</div><div><input type="text" id="s_aB" class="excel-input" onblur="mathEval(this)"></div><div><input type="text" id="s_aP" class="excel-input" onblur="mathEval(this)"></div></div>
+            <div class="grid-summary"><div>Manual</div><div><input type="text" id="s_mB" class="excel-input" onblur="mathEval(this)"></div><div><input type="text" id="s_mP" class="excel-input" onblur="mathEval(this)"></div></div>
+            <div class="grid-summary"><div>EPP</div><div><input type="text" id="s_eB" class="excel-input" onblur="mathEval(this)"></div><div><input type="text" id="s_eP" class="excel-input" onblur="mathEval(this)"></div></div>
+            <div class="grid-summary"><div>ติดฟิล์ม</div><div><input type="text" id="s_fiB" class="excel-input" onblur="mathEval(this)"></div><div><input type="text" id="s_fiP" class="excel-input" onblur="mathEval(this)"></div></div>
+            <div class="grid-summary"><div>บรรจุกล่อง</div><div><input type="text" id="s_bB" class="excel-input" onblur="mathEval(this)"></div><div><input type="text" id="s_bP" class="excel-input" onblur="mathEval(this)"></div></div>
+            <div class="grid-summary"><div>บรรจุรถแล็ค</div><div><input type="text" id="s_rB" class="excel-input" onblur="mathEval(this)"></div><div><input type="text" id="s_rP" class="excel-input" onblur="mathEval(this)"></div></div>
+
+            <hr style="border: 0.5px solid var(--border); margin: 25px 0;">
+
+            <h3 style="color:var(--warn); margin-top:0;">👑 3. รายงานยอดลูกค้า CL (หน้าเครื่องเท่านั้น)</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px;">
+                <div><label>CL-177</label><input type="text" id="c177" class="excel-input" onblur="mathEval(this)"></div>
+                <div><label>CL-136</label><input type="text" id="c136" class="excel-input" onblur="mathEval(this)"></div>
+                <div><label>CL-183</label><input type="text" id="c183" class="excel-input" onblur="mathEval(this)"></div>
+                <div><label>CO-013</label><input type="text" id="c013" class="excel-input" onblur="mathEval(this)"></div>
+                <div><label>CL-1035</label><input type="text" id="c1035" class="excel-input" onblur="mathEval(this)"></div>
+                <div><label>CL-1002</label><input type="text" id="c1002" class="excel-input" onblur="mathEval(this)"></div>
+                <div><label>CL-1056</label><input type="text" id="c1056" class="excel-input" onblur="mathEval(this)"></div>
+            </div>
+
+            <button class="btn-save" onclick="submitSummary(this)">💾 บันทึกยอดรวมประจำวัน</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 🔴🔴🔴 วาง URL ของเว็บแอปจาก Apps Script ตรงนี้ 🔴🔴🔴
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCtexOFXSdF1jme2V3Y0TJR3h7HQ65lkpIYW4jHQltncIc4urMteX_KwuFOunG481kcQ/exec";
+
+    function mathEval(input) {
+        let val = input.value.trim();
+        if (val === "") return;
+        try {
+            let cleanVal = val.replace(/[^-+*/.0-9]/g, '');
+            input.value = Function('"use strict";return (' + cleanVal + ')')();
+        } catch (e) { }
+    }
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    document.getElementById('doc_date').valueAsDate = new Date();
+    window.onload = function() { addRow(); };
+
+    let rowCount = 0;
+    function addRow() {
+        rowCount++;
+        const tbody = document.getElementById('tableBody');
+        const tr = document.createElement('tr');
+        tr.id = `row_${rowCount}`;
+        tr.innerHTML = `
+            <td><input type="text" id="part_${rowCount}" placeholder="พิมพ์ชื่อ/รหัส..."></td>
+            <td><input type="text" id="qtyPer_${rowCount}" class="excel-input" placeholder="จำนวน"></td>
+            <td><input type="time" id="start_${rowCount}" onchange="calcRow(${rowCount})"></td>
+            <td><input type="time" id="end_${rowCount}" onchange="calcRow(${rowCount})"></td>
+            <td><input type="text" id="loss_${rowCount}" class="excel-input" value="00:00:00" onblur="calcRow(${rowCount})"></td>
+            <td><input type="text" id="qty_${rowCount}" class="excel-input" onblur="mathEval(this); calcRow(${rowCount})"></td>
+            <td style="text-align:center;"><input type="text" id="res_${rowCount}" readonly></td>
+            <td><button style="color:red; border:none; background:none; cursor:pointer;" onclick="this.parentElement.parentElement.remove()">X</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function parseLossToSec(timeStr) {
+        if(!timeStr) return 0;
+        let p = timeStr.split(':');
+        if(p.length === 3) return (+p[0])*3600 + (+p[1])*60 + (+p[2]); 
+        if(p.length === 2) return (+p[0])*60 + (+p[1]); 
+        return 0;
+    }
+
+    let netSecArray = {};
+    function calcRow(id) {
+        let s = document.getElementById(`start_${id}`).value;
+        let e = document.getElementById(`end_${id}`).value;
+        let bags = parseFloat(document.getElementById(`qty_${id}`).value) || 0;
+        let lossSec = parseLossToSec(document.getElementById(`loss_${id}`).value);
+        if(s && e) {
+            let diff = (new Date("1970-01-01 " + e) - new Date("1970-01-01 " + s)) / 1000;
+            if(diff < 0) diff += 86400;
+            let net = diff - lossSec;
+            if(net < 0) net = 0;
+            netSecArray[id] = net; 
+            if(bags > 0) document.getElementById(`res_${id}`).value = (net/bags).toFixed(2);
+        }
+    }
+
+    function submitAuto(btn) {
+        btn.innerText = "กำลังบันทึก..."; btn.disabled = true;
+        let payload = [];
+        let date = document.getElementById('doc_date').value;
+        let shift = document.getElementById('shift').value;
+        let machine = document.getElementById('machine_no').value;
+        let user = document.getElementById('user_id').value || "ไม่ระบุ";
+
+        const rows = document.querySelectorAll('#tableBody tr');
+        rows.forEach(tr => {
+            let id = tr.id.split('_')[1];
+            let part = document.getElementById(`part_${id}`).value;
+            let qtyPer = document.getElementById(`qtyPer_${id}`).value;
+            let start = document.getElementById(`start_${id}`).value;
+            let end = document.getElementById(`end_${id}`).value;
+            let loss = document.getElementById(`loss_${id}`).value;
+            let bags = document.getElementById(`qty_${id}`).value;
+            let secBag = document.getElementById(`res_${id}`).value;
+            if(part && start && end) {
+                payload.push({ date: date, shift: shift, machine: machine, part: part, qtyPerBag: qtyPer, start: start, end: end, lossTime: loss, totalBags: bags, netSec: netSecArray[id] || 0, secPerBag: secBag });
+            }
+        });
+        if(payload.length === 0) { alert("กรุณากรอกข้อมูลให้ครบ!"); btn.innerText = "💾 บันทึกข้อมูลเครื่องออโต้"; btn.disabled = false; return; }
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({ type: 'AUTO', user: user, payload: payload }),
+            headers: { "Content-Type": "text/plain;charset=utf-8" }
+        }).then(r => r.json()).then(data => {
+            alert("บันทึกข้อมูลสำเร็จ!");
+            document.getElementById('tableBody').innerHTML = ''; addRow();
+            btn.innerText = "💾 บันทึกข้อมูลเครื่องออโต้"; btn.disabled = false;
+        }).catch(err => { alert("Error!"); btn.innerText = "💾 บันทึกข้อมูลเครื่องออโต้"; btn.disabled = false; });
+    }
+
+    function submitSummary(btn) {
+        btn.innerText = "กำลังบันทึก..."; btn.disabled = true;
+        let payload = {
+            date: document.getElementById('doc_date').value, shift: document.getElementById('shift').value,
+            webTotal: document.getElementById('s_web').value || 0,
+            frontBag: document.getElementById('s_fB').value || 0, frontPcs: document.getElementById('s_fP').value || 0,
+            autoBag: document.getElementById('s_aB').value || 0, autoPcs: document.getElementById('s_aP').value || 0,
+            manBag: document.getElementById('s_mB').value || 0, manPcs: document.getElementById('s_mP').value || 0,
+            eppBag: document.getElementById('s_eB').value || 0, eppPcs: document.getElementById('s_eP').value || 0,
+            filmBag: document.getElementById('s_fiB').value || 0, filmPcs: document.getElementById('s_fiP').value || 0,
+            boxBag: document.getElementById('s_bB').value || 0, boxPcs: document.getElementById('s_bP').value || 0,
+            rackBag: document.getElementById('s_rB').value || 0, rackPcs: document.getElementById('s_rP').value || 0,
+            cl177: document.getElementById('c177').value || 0, cl136: document.getElementById('c136').value || 0,
+            cl183: document.getElementById('c183').value || 0, co013: document.getElementById('c013').value || 0,
+            cl1035: document.getElementById('c1035').value || 0, cl1002: document.getElementById('c1002').value || 0,
+            cl1056: document.getElementById('c1056').value || 0
+        };
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({ type: 'SUMMARY', user: document.getElementById('user_id').value || "ไม่ระบุ", payload: payload }),
+            headers: { "Content-Type": "text/plain;charset=utf-8" }
+        }).then(r => r.json()).then(data => {
+            alert("บันทึกยอดรวมสำเร็จ!");
+            document.querySelectorAll('#tab2 input[type="text"]').forEach(input => input.value = '');
+            btn.innerText = "💾 บันทึกยอดรวมประจำวัน"; btn.disabled = false;
+        }).catch(err => { alert("Error!"); btn.innerText = "💾 บันทึกยอดรวมประจำวัน"; btn.disabled = false; });
+    }
+</script>
+</body>
+</html>
