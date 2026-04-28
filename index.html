@@ -158,8 +158,20 @@
     <div class="brand">KAOSU PACKING</div>
     <div class="sub">Sriracha Industry · Prachinburi Branch</div>
 
+   <div style="text-align: left; font-size: 12px; font-weight: bold; color: var(--muted); margin-bottom: 8px; margin-top: 5px;">📦 PACKING DEPARTMENT</div>
+    <div class="menu" style="margin-bottom: 16px;">
+      <button class="menu-btn pack" style="font-size: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;" onclick="location.href='packing.html'">
+        <span>🔍 ค้นหาไอเทม</span>
+        <span style="font-size: 10px; font-weight: normal; opacity: 0.8;">(ไม่ต้องล็อกอิน)</span>
+      </button>
+      <button class="menu-btn pack" style="font-size: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 14px 36px rgba(245,158,11,.3);" onclick="checkLoginForReport()">
+        <span>📊 บันทึกรายงาน</span>
+        <span style="font-size: 10px; font-weight: normal; opacity: 0.8;">(ต้องล็อกอิน)</span>
+      </button>
+    </div>
+
+    <div style="text-align: left; font-size: 12px; font-weight: bold; color: var(--muted); margin-bottom: 8px;">🏢 STORE DEPARTMENT</div>
     <div class="menu">
-      <button class="menu-btn pack" onclick="location.href='packing.html'">PACKING</button>
       <button class="menu-btn store" onclick="location.href='store.html'">STORE</button>
     </div>
 
@@ -194,6 +206,20 @@
       navigator.serviceWorker.register("sw.js");
     }
   </script>
-
+<script>
+    function checkLoginForReport() {
+      // เช็คว่าเคยล็อกอินไว้ในระบบหรือยัง
+      let currentUser = localStorage.getItem("username") || sessionStorage.getItem("username");
+      
+      if (currentUser) {
+        // ล็อกอินแล้ว ไปหน้า Efficiency ได้เลย
+        window.location.href = "efficiency.html";
+      } else {
+        // ยังไม่ล็อกอิน เด้งเตือนและพาไปหน้า login
+        alert("🔒 กรุณาล็อกอินก่อนเข้าสู่หน้ารายงานครับ!");
+        window.location.href = "login.html";
+      }
+    }
+  </script>
 </body>
 </html>
