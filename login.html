@@ -245,13 +245,21 @@ async function doLogin(){
       return;
     }
 
+ // --- [เริ่มแก้ตรงนี้] ---
     localStorage.setItem("user", JSON.stringify(data));
+    localStorage.setItem("username", user); // ⭐ สำคัญมาก: เพิ่มตัวนี้ให้ index.html เช็คว่าล็อกอินแล้ว
 
     msg.textContent = "✅ เข้าสู่ระบบสำเร็จ กำลังนำทาง...";
     msg.style.color = "#22c55e";
 
-    setTimeout(()=> location.href="issue-center.html", 700);
+    // ⭐ อ่านค่าว่าก่อนหน้านี้กดมาจากปุ่มไหน (ตั๋วบอกทาง)
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectPage = urlParams.get('redirect') || 'issue-center.html'; // ถ้าไม่ได้ระบุ ให้ไป issue-center เหมือนเดิม
 
+    setTimeout(() => {
+        window.location.href = redirectPage;
+    }, 700);
+    // --- [จบที่แก้ตรงนี้] ---
   }catch(e){
     msg.textContent = "❌ error: " + e;
     msg.style.color = "var(--danger)";
