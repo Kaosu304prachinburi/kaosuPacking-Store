@@ -1,222 +1,249 @@
 <!doctype html>
-<html lang="th">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>KAOSU PACKING · Smart Operation</title>
 
-  <!-- ✅ PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#020617">
-
-  <!-- ✅ iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="KAOSU">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
-  
-  <!-- ✅ STYLE -->
   <style>
-    :root{
-      --bg1:#020617;
-      --bg2:#0f172a;
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-      --glass:rgba(255,255,255,.08);
-      --border:rgba(255,255,255,.18);
-      --pack:#2563eb;
-      --store:#16a34a;
-      --issue:#e63946;
-      --header-shadow: radial-gradient(900px 500px at top, var(--bg2) 0%, transparent 60%);
+    :root {
+      /* Dark Theme (Default) */
+      --bg1: #020617; 
+      --bg2: #0f172a; 
+      --text: #f8fafc; 
+      --muted: #94a3b8;
+      --glass: rgba(255, 255, 255, 0.04); 
+      --glass-hover: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.1);
+      --header-shadow: radial-gradient(800px 400px at top, rgba(30,41,59,0.8) 0%, transparent 70%);
+      
+      /* Colors */
+      --pack-bg: linear-gradient(135deg, #2563eb, #1d4ed8);
+      --report-bg: linear-gradient(135deg, #f59e0b, #d97706);
+      --store-bg: linear-gradient(135deg, #10b981, #047857);
+      --issue-bg: linear-gradient(135deg, #ef4444, #b91c1c);
     }
 
-    body.light{
-      --bg1:#f5f7fa;
-      --bg2:#e2e8f0;
-      --text:#0f172a;
-      --muted:#64748b;
-      --glass:rgba(255,255,255,.92);
-      --border:rgba(0,0,0,.08);
-      --header-shadow:none;
+    /* Light Theme */
+    body.light {
+      --bg1: #f8fafc; 
+      --bg2: #e2e8f0; 
+      --text: #0f172a; 
+      --muted: #64748b;
+      --glass: rgba(255, 255, 255, 0.85); 
+      --glass-hover: rgba(255, 255, 255, 1);
+      --border: rgba(15, 23, 42, 0.08);
+      --header-shadow: none;
     }
 
-    *{box-sizing:border-box;}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body{
-      margin:0;
-      height:100vh;
-      font-family:system-ui,-apple-system,Segoe UI,Arial;
-      color:var(--text);
-      background:
-        var(--header-shadow),
-        linear-gradient(180deg,var(--bg1),var(--bg2));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      transition:background .25s ease,color .25s ease;
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      background: var(--header-shadow), linear-gradient(180deg, var(--bg1), var(--bg2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s ease, color 0.4s ease;
+      padding: 20px; /* กันชนขอบจอเวลาจดเล็ก */
     }
 
-    .toggle-theme{
-      position:fixed;
-      top:16px;
-      right:16px;
-      padding:8px 14px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background:var(--glass);
-      backdrop-filter:blur(10px);
-      cursor:pointer;
-      color:var(--text);
-      font-size:13px;
-      z-index:9999;
+    /* Theme Toggle Button */
+    .toggle-theme {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 9999;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .toggle-theme:hover { background: var(--glass-hover); transform: translateY(-2px); }
+
+    /* Main Card */
+    .card {
+      width: 400px;
+      max-width: 100%; /* ยืดหยุ่นตามหน้าจอมือถือ */
+      padding: 35px 25px;
+      border-radius: 28px;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      text-align: center;
     }
 
-    .card{
-      width:380px;
-      max-width:92%;
-      padding:34px 26px 30px;
-      border-radius:28px;
-      background:var(--glass);
-      backdrop-filter: blur(16px);
-      border:1px solid var(--border);
-      box-shadow:0 40px 90px rgba(0,0,0,.65);
-      text-align:center;
+    /* Header & Branding */
+    .logo { width: 80px; margin-bottom: 15px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+    .brand { font-size: 22px; font-weight: 900; letter-spacing: 1px; margin-bottom: 4px; }
+    .sub { font-size: 13px; color: var(--muted); font-weight: 500; margin-bottom: 25px; }
+
+    /* Section Titles */
+    .section-title {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      margin-bottom: 12px;
+      margin-top: 20px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
     }
 
-    .logo{
-      width:92px;
-      margin-bottom:16px;
+    /* Grid Layout for Packing Dept */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* แบ่ง 2 คอลัมน์เท่ากัน */
+      gap: 15px;
     }
 
-    .brand{
-      font-size:22px;
-      font-weight:900;
-      letter-spacing:.6px;
+    /* Action Buttons */
+    .action-btn {
+      width: 100%;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 10px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
     }
+    
+    /* Button Hover & Tap Effects */
+    .action-btn:hover { transform: translateY(-4px); filter: brightness(1.1); box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.4); }
+    .action-btn:active { transform: translateY(1px); filter: brightness(0.95); }
 
-    .sub{
-      font-size:13px;
-      color:var(--muted);
-      margin-top:6px;
-      margin-bottom:30px;
-    }
+    /* Typography inside buttons */
+    .btn-icon { font-size: 28px; margin-bottom: 8px; }
+    .btn-title { font-size: 15px; font-weight: 800; letter-spacing: 0.5px; }
+    .btn-sub { font-size: 11px; font-weight: 500; opacity: 0.85; margin-top: 4px; }
 
-    .menu{display:flex;gap:14px;}
+    /* Specific Button Backgrounds */
+    .bg-pack { background: var(--pack-bg); }
+    .bg-report { background: var(--report-bg); }
+    
+    /* Full Width Buttons (Store & Issue) */
+    .bg-store { background: var(--store-bg); flex-direction: row; gap: 15px; padding: 18px; margin-bottom: 15px;}
+    .bg-issue { background: var(--issue-bg); flex-direction: row; gap: 15px; padding: 18px; }
+    
+    .full-width-icon { font-size: 24px; margin: 0; }
+    .full-width-title { font-size: 17px; font-weight: 800; letter-spacing: 1px; }
 
-    .menu-btn{
-      flex:1;
-      height:68px;
-      border-radius:20px;
-      border:none;
-      cursor:pointer;
-      font-size:18px;
-      font-weight:800;
-      letter-spacing:.8px;
-      color:#fff;
-      box-shadow:0 14px 36px rgba(0,0,0,.55);
-    }
+    /* Footer */
+    .footer { margin-top: 30px; font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.5px; }
 
-    .menu-btn.pack{
-      background:linear-gradient(135deg,#3b82f6,var(--pack));
-    }
-
-    .menu-btn.store{
-      background:linear-gradient(135deg,#22c55e,var(--store));
-    }
-
-    .issue-wrapper{margin-top:16px;}
-
-    .issue-btn{
-      width:100%;
-      height:65px;
-      border-radius:20px;
-      border:none;
-      cursor:pointer;
-      color:#fff;
-      font-size:20px;
-      font-weight:900;
-      letter-spacing:.8px;
-      background:linear-gradient(135deg,#ff6b6b,var(--issue));
-      box-shadow:0 14px 36px rgba(0,0,0,.55);
-    }
-
-    .footer{
-      margin-top:26px;
-      font-size:11px;
-      color:var(--muted);
+    /* 📱 Responsive Adjustments for very small phones */
+    @media (max-width: 360px) {
+      .card { padding: 25px 20px; }
+      .menu-grid { gap: 10px; }
+      .action-btn { padding: 15px 5px; }
+      .btn-icon { font-size: 24px; }
+      .btn-title { font-size: 13px; }
+      .full-width-title { font-size: 15px; }
     }
   </style>
 </head>
 
 <body>
 
-  <button class="toggle-theme" onclick="toggleTheme()">🌙 / 🔆</button>
+  <button class="toggle-theme" onclick="toggleTheme()" id="themeBtn">🌙 / 🔆</button>
 
   <div class="card">
-    <img src="assets/logo.png" class="logo" alt="Kaosu Packing">
+    <img src="assets/logo.png" class="logo" alt="Kaosu Logo" onerror="this.style.display='none'">
     <div class="brand">KAOSU PACKING</div>
-    <div class="sub">Sriracha Industry · Prachinburi Branch</div>
+    <div class="sub">Smart Operation · Prachinburi</div>
 
-   <div style="text-align: left; font-size: 12px; font-weight: bold; color: var(--muted); margin-bottom: 8px; margin-top: 5px;">📦 PACKING DEPARTMENT</div>
-    <div class="menu" style="margin-bottom: 16px;">
-      <button class="menu-btn pack" style="font-size: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;" onclick="location.href='packing.html'">
-        <span>🔍 ค้นหาไอเทม</span>
-        <span style="font-size: 10px; font-weight: normal; opacity: 0.8;">(ไม่ต้องล็อกอิน)</span>
+    <div class="section-title">📦 Packing Department</div>
+    <div class="menu-grid">
+      <button class="action-btn bg-pack" onclick="location.href='packing.html'">
+        <span class="btn-icon">🔍</span>
+        <span class="btn-title">SEARCH</span>
+        <span class="btn-sub">Item & Location</span>
       </button>
-      <button class="menu-btn pack" style="font-size: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 14px 36px rgba(245,158,11,.3);" onclick="checkLoginForReport()">
-        <span>📊 บันทึกรายงาน</span>
-        <span style="font-size: 10px; font-weight: normal; opacity: 0.8;">(ต้องล็อกอิน)</span>
+      
+      <button class="action-btn bg-report" onclick="checkLoginForReport()">
+        <span class="btn-icon">📊</span>
+        <span class="btn-title">REPORT</span>
+        <span class="btn-sub">Efficiency (Login)</span>
       </button>
     </div>
 
-    <div style="text-align: left; font-size: 12px; font-weight: bold; color: var(--muted); margin-bottom: 8px;">🏢 STORE DEPARTMENT</div>
-    <div class="menu">
-      <button class="menu-btn store" onclick="location.href='store.html'">STORE</button>
-    </div>
+    <div class="section-title">🏢 Store Department</div>
+    <button class="action-btn bg-store" onclick="location.href='store.html'">
+      <span class="full-width-icon">📦</span>
+      <span class="full-width-title">SMART WAREHOUSE</span>
+    </button>
 
-    <div class="issue-wrapper">
-      <button class="issue-btn" onclick="location.href='issue-center.html'">ISSUE CENTER</button>
-    </div>
+    <div class="section-title" style="margin-top: 20px;">🚨 Help & Support</div>
+    <button class="action-btn bg-issue" onclick="location.href='issue-center.html'">
+      <span class="full-width-icon">⚠️</span>
+      <span class="full-width-title">ISSUE CENTER</span>
+    </button>
 
-    <div class="footer">Smart Operation System · Prototype</div>
+    <div class="footer">System V2.0 · Prototype</div>
   </div>
 
-  <!-- ✅ THEME -->
   <script>
-    (function(){
+    // 1. Theme Management
+    function applyTheme() {
       const t = localStorage.getItem("theme") || "dark";
-      if(t === "light") document.body.classList.add("light");
-    })();
-
-    function toggleTheme(){
-      if(document.body.classList.contains("light")){
-        document.body.classList.remove("light");
-        localStorage.setItem("theme","dark");
-      }else{
+      const btn = document.getElementById("themeBtn");
+      if (t === "light") {
         document.body.classList.add("light");
-        localStorage.setItem("theme","light");
+        btn.textContent = "🌙 Dark Mode";
+      } else {
+        document.body.classList.remove("light");
+        btn.textContent = "🔆 Light Mode";
       }
     }
-  </script>
 
-  <!-- ✅ SERVICE WORKER -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js");
+    function toggleTheme() {
+      if (document.body.classList.contains("light")) {
+        localStorage.setItem("theme", "dark");
+      } else {
+        localStorage.setItem("theme", "light");
+      }
+      applyTheme();
     }
-  </script>
-<script>
+    
+    // Initial Load
+    applyTheme();
+
+    // 2. Service Worker (PWA)
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").catch(err => console.log("SW Error:", err));
+    }
+
+    // 3. Login Check Logic
     function checkLoginForReport() {
-      // เช็คว่าเคยล็อกอินไว้ในระบบหรือยัง
       let currentUser = localStorage.getItem("username") || sessionStorage.getItem("username");
       
       if (currentUser) {
-        // ล็อกอินแล้ว ไปหน้า Efficiency ได้เลย
         window.location.href = "efficiency.html";
       } else {
-        // ยังไม่ล็อกอิน เด้งเตือนและพาไปหน้า login
-        alert("🔒 กรุณาล็อกอินก่อนเข้าสู่หน้ารายงานครับ!");
+        alert("🔒 Please login to access the Efficiency Report.");
         window.location.href = "login.html?redirect=efficiency.html";
       }
     }
